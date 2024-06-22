@@ -1,0 +1,196 @@
+.Hero{
+    height: 920px;
+    background: linear-gradient( #F3FBF1, #439D4C 110%);
+    position: relative;
+    margin-top: 80px;
+}
+.TxtHero{
+ font-size: 4rem;
+ margin-left: 190px;
+ padding-top: 250px;
+ position: flex;
+color:#1f5c25 ;
+}
+.Img1{
+    width: 10px;
+}
+.TxtHero2{
+ font-size: 3rem;
+ color: #fafafa;
+ margin-left: 190px;
+ padding-top: 0px;
+ position: flex;
+}
+
+.Serviço{
+    height: 1080px;
+    background-color:bisque;
+    position: flex;
+}
+.TxtServiço1{
+    color: #c54635;
+    text-align: center;
+    padding-top: 50px;
+}
+.TxtServiço2{
+    font-size:50px;
+    color: #2f7c37;
+    text-align: center;
+    padding-top: 0px;
+}
+.TxtServiço3{
+    font-size: 22px;
+    color: #287a30;
+    text-align: center;
+    padding-top: 2px;
+}
+.format-container {
+    width: 1142px;
+    margin: 0 auto;
+    margin-top: 50px;
+    align-items: center;
+  }
+
+  .courses_box {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: start;
+    -ms-flex-align: start;
+    align-items: flex-start;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: 70px 0;
+  }
+  .courses_item {
+    -ms-flex-preferred-size: calc(33.33333% - 30px);
+    flex-basis: calc(33.33333% - 30px);
+  
+    margin: 0 15px 30px;
+  
+    overflow: hidden;
+  
+    border-radius: 28px;
+  }
+  .item_link {
+    display: block;
+    padding: 30px 20px;
+    background-color: #7fc08d;
+  
+    overflow: hidden;
+  
+    position: relative;
+  }
+  .item_link:hover,
+  .item_link:hover .item_date {
+    text-decoration: none;
+    color: #FFF;
+  }
+  .item_link:hover .item_bg {
+    -webkit-transform: scale(10);
+    -ms-transform: scale(10);
+    transform: scale(10);
+  }
+  .item_title {
+    min-height: 189px;
+    margin: 120px 10px 15px;
+    overflow: hidden;
+    font-weight: bold;
+    font-size: 30px;
+    color: #fafafa;
+  
+    z-index: 1;
+    position: relative;
+  }
+  .item_date-box {
+    font-size: 18px;
+    color: #fafafa;
+  
+    z-index: 2;
+    position: relative;
+  }
+  .item_date {
+    font-weight: bold;
+    color: #2d7534;
+  
+    -webkit-transition: color .5s ease;
+    -o-transition: color .5s ease;
+    transition: color .5s ease
+  }
+  .item_bg {
+    height: 158px;
+    width: 158px;
+    background-color: #f9b234;
+  
+    z-index: 1;
+    position: absolute;
+    top: -85px;
+    right: -85px;
+  
+    border-radius: 50%;
+  
+    -webkit-transition: all .5s ease;
+    -o-transition: all .5s ease;
+    transition: all .5s ease;
+  }
+ 
+  .courses_item:nth-child(2n) .item_bg {
+    background-color: #3ecd5e;
+  }
+  .courses_item:nth-child(3n) .item_bg {
+    background-color: #e44002;
+  }
+  .courses_item:nth-child(4n) .item_bg {
+    background-color: #e44002;
+  }
+  .courses_item:nth-child(5n) .item_bg {
+    background-color: #e44002;
+  }
+  
+  .counters{
+    padding: 1em 2em;
+    background: #439D4C;
+    color: #fafafa;
+    text-align: center;
+
+  }
+  .counters > div{
+    max-width: 900px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4em 2em;
+  }
+
+  .counter{
+    position: relative;
+     margin-top: 10%;
+}
+
+  .counter h1{
+    font-size: 3em;
+    margin-bottom: 0.2em;
+  }
+
+  .counter:not(:last-child)::before{
+    content: '';
+    background: #fafafa;
+    position: absolute;
+    width: 2px;
+    height: 3em;
+    top: 50%;
+    transform: translateY(-50%);
+    right: -1em;
+  }
+
+  .Contador{
+    min-height: 20em;
+  }
+.Orçamento{
+    height: 920px;
+    background-color:rgb(255, 248, 237);
+    position: flex;
+}
+
+/*MEDIA QUERY DE 1152PX ATÉ ATINGIR A LATERAL DO CARD*/

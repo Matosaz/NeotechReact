@@ -1,0 +1,41 @@
+.header{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 20px 10%;
+    background:linear-gradient(to left, #548D4E, #90ca96 90%);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1;
+}
+
+.logo{
+    font-size: 32px;
+    color: #fafafa;
+    font-weight: 700;
+}
+
+.navbar a{
+    position: relative;
+    font-size: 18px;
+    color: #fafafa;
+    font-weight: 500;
+    margin-left: 60px;
+}
+
+.navbar a::before{
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: #fafafa;
+    transition: .3s;
+}
+
+.navbar a:hover::before{
+    width: 100%;
+}
