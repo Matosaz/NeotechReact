@@ -1,4 +1,129 @@
 .Footer{
-    height: 400px;
-    background-color: blueviolet;
+    padding: 20px 70px 70px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, auto));
+    gap: 3.5rem;
+    background: #488042;
+    align-items: center;
+}
+
+.conteudofooter h4{
+    color: #fafafa;
+    margin-bottom: 1.5rem;
+    font-size: 20px;
+    padding-top: 10%;
+}
+
+.conteudofooter li{
+    margin-bottom: 16px;
+    list-style-type: none;
+}
+
+.conteudofooter li a{
+    display: block;
+    color: #fafafa;
+    font-size: 15px;
+    font-weight: 400px;
+    transition: all .40s ease;
+}
+
+.conteudofooter li a:hover{
+    transform: translateY(-3px) translateX(-4px);
+    font-weight: bold;
+   
+}
+
+.conteudofooter p{
+    color: #d6d6d6;
+    line-height: 30px;
+}
+.LogoNeotech{
+    width: 200px;
+  margin-left: 11%;
+}
+
+.icons a{
+    display: inline-block;
+    font-size: 22px;
+    color: #d6d6d6;
+    margin-left: 12%;
+    transition: all .40s ease;
+}
+
+.icons a:hover{
+    transform: translateY(-3px) translateX(-4px);
+}
+
+.Emailconteudo{
+    text-decoration: none;
+    color: #d6d6d6;
+    line-height: 30px;
+}
+input, textarea{
+    border-radius: 8px;
+    width: 70%;
+    height: 40px;
+    background:#fafafa;
+    font-family: 'Poppins';
+    text-align: center;
+    color:#121212;
+    font-size: 15px;
+    border-style: none;
+    transition: all .40s ease;
+}
+
+input:hover{
+    transform: scale(1.03)
+}
+textarea:hover{
+    transform: scale(1.03)
+}
+textarea {
+    padding-top: 10px;
+}
+.botao{
+    width: 150px;
+    height: 40px;
+    text-align: center;
+    margin-left: 0;
+    border-radius: 8px;
+    background: #5eb654;
+    border-style: none;
+    margin-top: 10px;
+    transition: all .40s ease;
+}
+
+.botao:hover{
+    transform: scale(1.03)
+}
+button{
+    display: absolute;
+}
+@media (max-width: 1649px){
+    .Footer{
+        padding: 50px 5% 40px;
+    }
+
+    .botao{
+        margin-left: 0;
+}
+
+@media (max-width: 1120px){
+    .Footer{
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, auto));
+        gap: 2rem;
+        .botao{
+        margin-left: 0%;
+    }
+    }
+}
+
+@media (max-width: 700px){
+    .Footer{
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, auto));
+        gap: 2.5rem;
+    }
+    }
 }

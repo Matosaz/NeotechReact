@@ -1,7 +1,8 @@
 import React from 'react'
 import './Home.css'
 import Img1 from '../assets/Vetor1.avif'
-const Home = () => {
+import RecVideo from '../assets/RecVideo.mp4'
+  const Home = () => {
   const counters = document.querySelectorAll(".counters span");
   const container = document.querySelector(".counters");
 
@@ -9,7 +10,7 @@ const Home = () => {
 
   window.addEventListener("scroll", () => {
     if (
-      pageYOffset > container.offsetTop - container.offsetHeight - 200 &&
+      pageYOffset > container.offsetTop - container.offsetHeight - 400 &&
       activated === false
     ) {
       counters.forEach((counter) => {
@@ -147,11 +148,32 @@ const Home = () => {
         </section>
         {/* Fim Serviços*/}
 
-        {/* Início Orçamento*/}
-     <section className="Orçamento">
+        {/* Início Timeline*/}
+     <section className="timeline">
 
      </section>
-      {/* Fim Orçamento*/}
+      {/* Fim Timeline*/}
+
+
+      {/* Início Orçamento*/}
+     <section className="Orçamento">
+        <div className="coluna" id='orçamento'>
+          <div className="video">
+            <video src={RecVideo} className='videocontent' autoPlay loop muted ></video>
+          </div>
+          <div className="wrapconteudo">
+            <div className="conteudo">
+              <h2 className='TituloOrçamento'>Orçamento</h2>
+              <p>orem ipsum dolor sit amet consectetur, adipisicing elit. Deleniti quasi
+                 ipsa,Lorem ipsum dolor sit amet consectetur, adipisicing elit. Deleniti quasi
+                 ipsa, qui nobis nesciunt aliquam repellendus ea minima molestiae corrupti!</p>
+              <a href='#' className='botao2'>Faça um orçamento</a>
+            </div>
+          </div>
+        </div>
+    </section>
+    {/* Fim Orçamento*/}
+
    </body>
   )
 }
