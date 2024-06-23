@@ -22,7 +22,7 @@
     font-size: 18px;
     color: #fafafa;
     font-weight: 500;
-    margin-left: 60px;
+    margin-left: 90px;
 }
 
 .navbar a::before{
@@ -81,9 +81,63 @@
     display: none;
 }
 
-.Userimg{
-  padding-top: 0px;
+.sub-menu-wrap{
+    position: absolute;
+    top: 48px;
+    right: -80px;
+    width: 350px;
+    max-height: 0px;
+    overflow: hidden;
+    transition: max-height 0.5s;
+  }
+.sub-menu-wrap.open-menu{
+  max-height: 400px;
 }
+.sub-menu{
+    background-color: #96bd9a31;
+    box-shadow: -5px 0 5px rgba( 0, 0, 0, 0.1 );
+    backdrop-filter: blur(20px);
+    padding: 20px;
+    margin: 10px;
+}
+
+.user-info{
+  display: flex;
+  text-align: center;
+  color: #333;
+  font-weight: 200;
+}
+
+.sub-menu hr{
+  border: 0;
+  height: 1px;
+  width: 100%;
+  background: #ccc;
+  margin: 15px 0 10px;
+}
+.sub-menu-link{
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: #525252;
+  margin: 20px 10px;
+}
+.sub-menu-link p{
+    color: #121212;
+    transition: .3s;
+    margin-left: 20px;
+}
+.sub-menu-link img{
+  width: 40px;
+  background-color: #f5eaea;
+  border-radius: 50%;
+  margin-left: -80px;
+
+}
+.sub-menu-link:hover p{
+  transform: scale(1.03);
+}
+
 @media (max-width:1200px){
     .FecharMenu{
         display: none;
