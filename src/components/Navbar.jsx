@@ -31,13 +31,13 @@ const Navbar = () => {
     <a href='#' onClick={Fecharmenu}><svg className='Fechar'xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#121212"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg></a>
     <a href='#'>Saiba mais</a>
     <a href='#Serviço'>Serviços</a>
-    <a href='#'>Orçamento</a>
+    <a href='#Orçamento'>Orçamento</a>
     <a href='#'>Contato</a>
     <a href='#'>Perfil</a>
   </div>
     <a className="FecharMenu" href='#'>Saiba mais</a>
     <a className="FecharMenu" href='#Serviço'>Serviços</a>
-    <a className="FecharMenu" href='#'>Orçamento</a>
+    <a className="FecharMenu" href='#Orçamento'>Orçamento</a>
     <a className="FecharMenu" href='#' >Contato</a>
     <a className="FecharMenu" href='#' onClick={toggleMenu}> 
     Perfil

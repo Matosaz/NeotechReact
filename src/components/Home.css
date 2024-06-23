@@ -1,18 +1,17 @@
 .Hero{
     height: 920px;
-    background: linear-gradient( #F3FBF1, #439D4C 110%);
+    background-size: cover;
+    background: url('/src/assets/Backgroundhero.png') no-repeat;
+    background-position: center;
     position: relative;
     margin-top: 80px;
 }
 .TxtHero{
- font-size: 4rem;
+ font-size: 4rem; max-width: 100%;
  margin-left: 190px;
  padding-top: 250px;
  position: flex;
-color:#1f5c25 ;
-}
-.Img1{
-    width: 10px;
+ color:#1f5c25 ;
 }
 .TxtHero2{
  font-size: 3rem;

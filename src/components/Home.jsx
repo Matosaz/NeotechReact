@@ -1,6 +1,5 @@
 import React from 'react'
 import './Home.css'
-import Img1 from '../assets/Vetor1.avif'
 import RecVideo from '../assets/RecVideo.mp4'
   const Home = () => {
   const counters = document.querySelectorAll(".counters span");
@@ -51,7 +50,7 @@ import RecVideo from '../assets/RecVideo.mp4'
         <section className='Hero'>
         <h2 className='TxtHero'> NeoTech</h2>
         <h3 className='TxtHero2'> The future is near</h3>
-        <img className="Img1"src={Img1} />
+
         </section>
 
         {/* Início Serviços*/}
@@ -156,7 +155,7 @@ import RecVideo from '../assets/RecVideo.mp4'
 
 
       {/* Início Orçamento*/}
-     <section className="Orçamento">
+     <section className="Orçamento" id='Orçamento'>
         <div className="coluna" id='orçamento'>
           <div className="video">
             <video src={RecVideo} className='videocontent' autoPlay loop muted ></video>
