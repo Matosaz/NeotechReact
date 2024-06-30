@@ -5,9 +5,10 @@
     background-position: center;
     position: relative;
     margin-top: 80px;
+   text-align: left;
 }
 .TxtHero{
- font-size: 4rem; max-width: 100%;
+ font-size: 4rem;
  margin-left: 190px;
  padding-top: 250px;
  position: flex;
@@ -190,17 +191,144 @@
   .Contador{
     min-height: 20em;
   }
-
+/*Inicio Timeline*/
 .timeline{
-  height: 920px;
-  background-color:rgb(178, 216, 173);
+  height: 1550px;
+  background: linear-gradient(to  bottom,rgb(178, 216, 173) 30%, rgb(253, 246, 234) 102%);
+ /*  background-color:rgb(178, 216, 173); */
   position: flex;
 }
+
+.txtTL1{
+  color: #c54635;
+  text-align: center;
+}
+
+.txtTL2{
+    font-size:50px;
+    color: #2f7c37;
+    text-align: center;
+}
+.containerTL{
+  padding: 1rem;
+  margin: 0 auto;
+  max-width: 9000px;
+}
+
+.top-section{
+  text-align: center;
+  padding: 4rem 0;
+  margin: 0 auto;
+}
+
+.timelineCont{
+  position: relative;
+  min-height: 1090px;
+  
+}
+
+.timeline h2{
+  display:flex;
+  font-size: 28px;
+}
+
+.linha{
+  position: absolute;
+  z-index: 2;
+  left: calc(50% - 1px);
+  width: 2px;
+  top: 0px;
+  background-color: #cff8dd;
+  display: none;
+}
+
+.linha:before, .linha::after{
+  position: absolute;
+  display: inline;
+  content: '';
+  height: 1rem;
+  width: 1rem;
+  border-radius: 50%;
+  background-color: rgb(94, 192, 107);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.linha:after{
+  bottom: 0;
+}
+
+.h2esquer{
+  margin-left: 560px;
+  text-align: end;
+ 
+}
+.sectionTL{
+  top: 0px;
+  display: flex;
+  opacity: 0;
+  transform: translateX(-100%);
+  transition: 900ms ease-in-out;
+  position: relative;
+  z-index: 1;
+  margin: 190px 0px;
+  padding: 1.1rem;
+  align-items: center;
+}
+
+.sectionTL p{
+  width: 700px;
+  margin-top: 5px;
+  text-align: justify;
+}
+
+.sectionTL:nth-child(odd) .contentTL{
+  flex-direction: row-reverse;
+  transform: translateX(-50%);
+  margin-left: -730px;
+}
+
+
+
+.Area{
+  position: absolute;
+  display: inline-block;
+  height: 1rem;
+  width: 1rem;
+  border-radius: 50%;
+  background-color: rgb(94, 192, 107);
+  left: 50%;
+  top: 0px;
+  transform: translateX(-150%);
+}
+
+.contentTL{
+  width: calc(50% - 2rem);
+  padding-left: 2rem;
+}
+
+.contentTL h2{
+  font-weight: 700;
+  color: #2f7c37;
+}
+
+.show-me:nth-child(n){
+  transform: translateX(0);
+  opacity: 1;
+}
+
+
+
+
+
+
+
+/*Fim Timeline*/
 
 /*Inicio Orçamento*/
 .Orçamento{
     height: 690px;
-    background: linear-gradient(to bottom right, rgb(250, 246, 241) 10%, #579450);
+    background-color:rgb(178, 216, 173);
     position: flex;
 }
 

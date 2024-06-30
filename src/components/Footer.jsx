@@ -3,7 +3,7 @@ import './Footer.css'
 import Logo from '../assets/Logo.png'
 const Footer = () => {
   return (
-   <footer className='Footer'>
+   <footer className='Footer' id='Footer'>
     <link rel="stylesheet" href="https://unpkg.com/boxicons@latest/css/boxicons.min.css" />
     <section className='conteudofooter'>
       <img className='LogoNeotech' src={Logo} alt='logo'/>

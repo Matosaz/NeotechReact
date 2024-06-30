@@ -1,6 +1,9 @@
 import React from 'react'
 import './Home.css'
 import RecVideo from '../assets/RecVideo.mp4'
+import ImgTL1 from '../assets/Teclado.jpg'
+import ImgTL2 from '../assets/Comput.jpg'
+import ImgTL3 from '../assets/Person.jpg'
   const Home = () => {
   const counters = document.querySelectorAll(".counters span");
   const container = document.querySelector(".counters");
@@ -43,7 +46,57 @@ import RecVideo from '../assets/RecVideo.mp4'
     }
   });
 
-    
+  function qs(selector, all = false) {
+    return all ? document.querySelectorAll(selector) : document.querySelector(selector);
+  }
+  
+  const sections = qs('.sectionTL', true);
+  const timeline = qs('.timelineCont');
+  const linha = qs('.linha');
+  
+  if (linha && timeline && sections.length) {
+    linha.style.bottom = `calc(100% - 20px)`;
+    let up, down;
+    let full = false;
+    let set = 0;
+    let prevScrollY = window.scrollY;
+    const targetY = window.innerHeight * 0.8;
+  
+    function scrollHandler() {
+      const { scrollY } = window;
+      up = scrollY < prevScrollY;
+      down = !up;
+      const timelineRect = timeline.getBoundingClientRect();
+  
+      const dist = targetY - timelineRect.top;
+      console.log(dist);
+  
+      if (down && !full) {
+        set = Math.max(set, dist);
+        linha.style.bottom = `calc(100% - ${set}px)`;
+      }
+  
+      if (dist > timeline.offsetHeight + 50 && !full) {
+        full = true;
+        linha.style.bottom = `-50px`;
+      }
+  
+      sections.forEach(item => {
+        const rect = item.getBoundingClientRect();
+        
+        if (rect.top + item.offsetHeight / 5 < targetY) {
+          item.classList.add('show-me');
+        }
+      });
+  
+      prevScrollY = window.scrollY;
+    }
+  
+    linha.style.display = 'block';
+    window.addEventListener('scroll', scrollHandler);
+    scrollHandler();
+  }
+
   return (
     
    <body>
@@ -148,9 +201,69 @@ import RecVideo from '../assets/RecVideo.mp4'
         {/* Fim Serviços*/}
 
         {/* Início Timeline*/}
-     <section className="timeline">
+     <section className="timeline" id='Timeline'>
+        <div className="containerTL">
+            <div className="top-section">
+              <h1 className='txtTL1'>Sobre nós</h1>
+              <h1 className='txtTL2'>Conheça mais sobre nós e nossos serviços!</h1>
+
+            </div>
+            <div className="timelineCont">
+              <div className="linha">
+                <div className="sectionTL">
+                  <div className="Area">
+                    <div className="contentTL">
+                      <h2 className='h2esquer'> Conheça a Neotech</h2>
+                      <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Molestiae reiciendis,
+                       ligendigies unde perferendis saepe at non harum. Eligendi optio, dolorum a odit quae eum non fugit dolor.
+                       Dicta,t dolor.
+                         Dicta, magni sequi.</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="sectionTL">
+                  <div className="Area">
+                    <div className="contentTL">
+                      <h2>Importância</h2>
+                      <p>olorum a odit quae eum non fugit di sequies unde perferendis saepe at non harum. Eligendi optio, dolorum a odit quae eum non fugit dolor.
+                      Dictaes unde perferendis saepe at non harum. Eligendi optio, dolorum a odit quae eum non fugit dolor.
+                      Dicta,, magni .</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="sectionTL">
+                  <div className="Area">
+                    <div className="contentTL">
+                      <h2 className='h2esquer'>Nossos Objetivos</h2>
+                      <p>res unde perferendis saepe at non harum. Eligendi optio, dolorum a odit quae eum non fugit dolor.
+                         Dicta,es unde perferendis saepe at non harum. Eligendi optio, dolorum a odit quae eum non fugit dolor.
+                         Dicta, magni sequi.</p>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="sectionTL">
+                  <div className="Area">
+                    <div className="contentTL">
+                      <h2>Serviços</h2>
+                      <p>olorum aes unde perferendis saepe at non harum. Eligendi optio, dolorum a odit quae eum non fugit dolor.
+                      Dicta, odit quae eum non fugit di sequies unde perferendis saepe at non harum. Eligendi optio, dolorum a odit quae eum non fugit dolor.
+                      Dicta, magni .</p>
+                    </div>
+                  </div>
+                </div>
+                
+              </div>
+            </div>
+          </div> 
+    
+
 
      </section>
+
+     
       {/* Fim Timeline*/}
 
 
