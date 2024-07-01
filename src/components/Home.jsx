@@ -206,7 +206,7 @@ import ImgTL3 from '../assets/Person.jpg'
             <div className="top-section">
               <h1 className='txtTL1'>Sobre nós</h1>
               <h1 className='txtTL2'>Conheça mais sobre nós e nossos serviços!</h1>
-
+              
             </div>
             <div className="timelineCont">
               <div className="linha">

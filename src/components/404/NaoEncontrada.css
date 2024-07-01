@@ -1,0 +1,40 @@
+
+.Errorh1{
+    padding-top: 200px;
+    margin-left: 200px;
+    font-size: 4rem;
+    color: #2f7c37;
+    font-weight: 800;
+}
+.Errorh3{
+    padding-top: 20px;
+    margin-left: 200px;
+    max-width: 600px;
+    font-size: 1.8rem;
+    color: #2f7c37; 
+    font-weight: 700;
+}
+.Error{
+    background: linear-gradient(#000000,#121212,  #252424);
+    height: 920px;
+}
+
+.voltar{
+    width: 100px;
+    border: #2f7c37 solid;
+    border-radius: 8px;
+    color: #fafafa;
+    font-size: 1.2rem;
+    margin-top: 30px;
+    background-color: #2f7c37;
+    margin-left: 200px;
+    text-align: center;
+    transition: all 200ms;
+    font-weight: 600;
+}
+
+.voltar:hover{
+    background-color:#fafafa ;
+    color: #2f7c37;
+    scale: 1.05;
+}
