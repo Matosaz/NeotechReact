@@ -4,6 +4,7 @@ import RecVideo from '../assets/RecVideo.mp4'
 import ImgTL1 from '../assets/Teclado.jpg'
 import ImgTL2 from '../assets/Comput.jpg'
 import ImgTL3 from '../assets/Person.jpg'
+import Phoneimg from '../assets/Mockup3.png'
   const Home = () => {
   const counters = document.querySelectorAll(".counters span");
   const container = document.querySelector(".counters");
@@ -103,7 +104,7 @@ import ImgTL3 from '../assets/Person.jpg'
         <section className='Hero'>
         <h2 className='TxtHero'> NeoTech</h2>
         <h3 className='TxtHero2'> The future is near</h3>
-
+        <img src={Phoneimg} className='Phoneimg'/>
         </section>
 
         {/* Início Serviços*/}

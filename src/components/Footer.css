@@ -87,7 +87,7 @@ textarea {
     text-align: center;
     margin-left: 0;
     border-radius: 8px;
-    background: #5eb654;
+    background: #63c458;
     border-style: none;
     margin-top: 10px;
     transition: all .40s ease;
@@ -107,6 +107,7 @@ button{
     .botao{
         margin-left: 0;
 }
+
 
 @media (max-width: 1120px){
     .Footer{

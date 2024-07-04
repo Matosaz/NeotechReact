@@ -22,6 +22,11 @@ padding-top: 0px;
 position: flex;
 }
 
+.Phoneimg{
+  width: 1300px;
+  margin-left: 550px;
+  margin-top: -350px;
+}
 .Serviço{
   height: 1080px;
   background-color:bisque;
@@ -336,6 +341,7 @@ opacity: 1;
 width: 700px;
 margin-left: 50px;
 display: flex;
+border-radius: 8px;
 }
 
 .coluna{
@@ -381,8 +387,137 @@ transform: scale(1.03);
 }
 /*Fim Orçamento*/
 
+/* MEDIA QUERY PARA TELAS INFERIORES A 100% DO ZOOM DA PÁGINA */
 
+@media(min-width: 1920px){
+  .TxtHero{
+    margin-left: 290px;
+  }
+  .TxtHero2{
+    margin-left: 290px;
+  }
+  .Phoneimg{
+    margin-left: 600px;
+  }
+}
+
+@media(min-width:2220px){
+  .TxtHero{
+    margin-left: 490px;
+  }
+  .TxtHero2{
+    margin-left: 490px;
+  }
+  .Phoneimg{
+    margin-left: 800px;
+  }
+}
+
+@media(min-width:2620px){
+  .TxtHero{
+    margin-left: 690px;
+  }
+  .TxtHero2{
+    margin-left: 690px;
+  }
+  .Phoneimg{
+    margin-left: 1000px;
+  }
+}
+
+
+@media(min-width:3020px){
+  .TxtHero{
+    margin-left: 1190px;
+  }
+  .TxtHero2{
+    margin-left: 1190px;
+  }
+  .Phoneimg{
+    margin-left: 1400px;
+  }
+}
+
+
+@media(min-width:3920px){
+  .TxtHero{
+    margin-left: 2190px;
+  }
+  .TxtHero2{
+    margin-left: 2190px;
+  }
+  .Phoneimg{
+    margin-left: 2400px;
+  }
+}
+
+
+@media(min-width:5920px){
+  .TxtHero{
+    margin-left: 3190px;
+  }
+  .TxtHero2{
+    margin-left: 3190px;
+  }
+  .Phoneimg{
+    margin-left: 3400px;
+  }
+}
 /*MEDIA QUERY DE 1152PX ATÉ ATINGIR A LATERAL DO CARD*/
+
+@media(max-width: 1604px){
+  .Phoneimg{
+      margin-left: 400px;
+  }
+}
+
+@media(max-width: 1455px){
+  .Phoneimg{
+      margin-left: 310px;
+  }
+}
+
+@media(max-width: 1365px){
+  .Phoneimg{
+      margin-left: 330px;
+      width: 1200px;
+  }
+}
+
+@media(max-width: 1305px){
+  .Phoneimg{
+      margin-left: 380px;
+      width: 1000px;
+      margin-top: -330px;
+  }
+}
+
+@media(max-width: 1196px){
+  .Phoneimg{
+      opacity: 0;
+  }
+
+  .TxtHero{
+    text-align: center;
+  }
+
+  .TxtHero2{
+    text-align: center;
+  }
+}
+
+@media(max-width: 900px){
+
+  .TxtHero{
+    margin-left: 0px;
+  }
+
+  .TxtHero2{
+    margin-left: 0px;
+  }
+}
+
+
 @media(max-width: 1470px){
 .contentTL p{
   max-width: 600px;

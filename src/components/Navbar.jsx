@@ -39,7 +39,7 @@ const Navbar = () => {
     <a className="FecharMenu" href='#Timeline'>Serviços</a>
     <a className="FecharMenu" href='#Orçamento'>Orçamento</a>
     <a className="FecharMenu" href='#Footer' >Contato</a>
-    <a className="FecharMenu" href='#' onClick={toggleMenu}> 
+    <a className="FecharMenu" onClick={toggleMenu}> 
     Perfil
     <div className="sub-menu-wrap" id="subMenu" >
                 <div className="sub-menu"> 
