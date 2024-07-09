@@ -100,6 +100,7 @@ import Phoneimg from '../assets/Mockup3.png'
 
   return (
     
+    //Atualizado//
    <body>
         <section className='Hero'>
         <h2 className='TxtHero'> NeoTech</h2>
