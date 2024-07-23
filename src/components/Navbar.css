@@ -59,9 +59,8 @@
     height: 100vh;
     width: 250px;
     z-index: 999;
-    background-color: #cfeed249;
-    backdrop-filter: blur(10px);
-    box-shadow: -10px 0 10px rgba( 0, 0, 0, 0.1 );
+    background-color: #07220949;
+    box-shadow: -10px 0 10px rgba( 0, 0, 0, 0.2 );
     display: none;
     flex-direction: column;
     align-items: flex-start;
@@ -101,11 +100,12 @@
     backdrop-filter: blur(20px);
     padding: 20px;
     margin: 10px;
+    border-radius: 10px;
 }
 
 .user-info{
   display: flex;
-  text-align: center;
+  margin-left: 40px;
   color: #333;
   font-weight: 200;
 }
@@ -114,7 +114,7 @@
   border: 0;
   height: 1px;
   width: 100%;
-  background: #ccc;
+  background: #301616;
   margin: 15px 0 10px;
 }
 .sub-menu-link{
@@ -131,7 +131,7 @@
 }
 .sub-menu-link img{
   width: 40px;
-  background-color: #f5eaea;
+  background-color: #dff0dd;
   border-radius: 50%;
   margin-left: -80px;
 

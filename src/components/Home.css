@@ -1,3 +1,8 @@
+body::-webkit-scrollbar{
+  display: none;
+}
+
+
 .Hero{
   height: 920px;
   background-size: cover;
@@ -273,7 +278,7 @@ top: 0px;
 display: flex;
 opacity: 0;
 transform: translateX(-100%);
-transition: 900ms ease-in-out;
+transition: 300ms ease-out;
 position: relative;
 z-index: 1;
 margin: 190px 0px;
