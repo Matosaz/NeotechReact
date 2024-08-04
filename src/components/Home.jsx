@@ -228,9 +228,7 @@ import Phoneimg from '../assets/Mockup3.png'
                   <div className="Area">
                     <div className="contentTL">
                       <h2>Importância</h2>
-                      <p>olorum a odit quae eum non fugit di sequies unde perferendis saepe at non harum. Eligendi optio, dolorum a odit quae eum non fugit dolor.
-                      Dictaes unde perferendis saepe at non harum. Eligendi optio, dolorum a odit quae eum non fugit dolor.
-                      Dicta,, magni .</p>
+                      <p>A reciclagem de eletroeletrônicos é essencial para proteger o meio ambiente e evitar a poluição causada por substâncias tóxicas. Nosso empreendimento promove uma destinação segura e responsável dos resíduos, contribuindo para um planeta mais limpo e saudável.</p>
                     </div>
                   </div>
                 </div>
@@ -239,9 +237,7 @@ import Phoneimg from '../assets/Mockup3.png'
                   <div className="Area">
                     <div className="contentTL">
                       <h2 className='h2esquer'>Nossos Objetivos</h2>
-                      <p>res unde perferendis saepe at non harum. Eligendi optio, dolorum a odit quae eum non fugit dolor.
-                         Dicta,es unde perferendis saepe at non harum. Eligendi optio, dolorum a odit quae eum non fugit dolor.
-                         Dicta, magni sequi.</p>
+                      <p> Possuímos como nossos objetivos preservar o meio ambiente, disseminar a importância da reciclagem, implementar práticas sustentáveis e oferecer soluções econômicas para transformar resíduos em recursos valiosos e, deste modo, promovermos uma sociedade mais consciente e em harmonia com o planeta.</p>
                     </div>
                   </div>
                 </div>
@@ -278,9 +274,8 @@ import Phoneimg from '../assets/Mockup3.png'
           <div className="wrapconteudo">
             <div className="conteudo">
               <h2 className='TituloOrçamento'>Orçamento</h2>
-              <p>orem ipsum dolor sit amet consectetur, adipisicing elit. Deleniti quasi
-                 ipsa,Lorem ipsum dolor sit amet consectetur, adipisicing elit. Deleniti quasi
-                 ipsa, qui nobis nesciunt aliquam repellendus ea minima molestiae corrupti!</p>
+              <p>
+              Recicle seus eletroeletrônicos e contribua para um planeta mais sustentável! Solicite um orçamento conosco e descubra como podemos transformar seus resíduos em novas oportunidades. Com um atendimento rápido e eficiente, garantimos a destinação correta dos materiais. Entre em contato agora e colabore para um futuro sustentável!</p>
               <a href='#' className='botao2'>Faça um orçamento</a>
             </div>
           </div>

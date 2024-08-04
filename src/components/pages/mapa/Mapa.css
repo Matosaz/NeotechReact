@@ -1,0 +1,28 @@
+.mapafundo{
+    background:linear-gradient(to top right, rgb(178, 216, 173), #f4f7f4);
+    height: 919px;
+}
+
+.mapaview{
+    width: 1200px;
+    height: 600px;
+    border-radius: 10px;
+    margin-left: 330px;
+    padding-top: 10px;
+    box-shadow: rgba(17, 12, 46, 0.15) 0px 88px 100px 10px;
+    loading: lazy
+}
+
+.encontre{
+padding-top: 70px;
+font-size: 2.5rem;
+text-align: center;
+text-shadow: 0px 0px 3px rgba(18, 18, 18, 0.15);
+
+position: flex;
+color:#1f5c25 ;
+}
+
+.voltar{
+    margin-left: 50px;
+}

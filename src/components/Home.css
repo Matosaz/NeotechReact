@@ -9,8 +9,8 @@ body::-webkit-scrollbar{
   background: url('/src/assets/Backgroundhero.png') no-repeat;
   background-position: center;
   position: relative;
-  margin-top: 80px;
- text-align: left;
+  padding-top: 75px;
+  text-align: left;
 }
 .TxtHero{
 font-size: 4rem;
@@ -362,16 +362,16 @@ width: 70%;
 }
 
 .conteudo h2{
-  padding-top: 5%;
+  padding-top: 2%;
   font-size: 3rem;
   color: #287a30;
   text-align: center;
-  padding-bottom: 2rem;
+  padding-bottom: 1.5rem;
 }
 
 .conteudo p{
 font-weight: bold;
-color: #797979;
+color: #646262;
 }
 
 .botao2{

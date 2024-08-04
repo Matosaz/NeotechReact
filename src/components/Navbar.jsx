@@ -29,12 +29,14 @@ const Navbar = () => {
     <nav className ="navbar">
       <div className="sidebar"> 
     <a href='#' onClick={Fecharmenu}><svg className='Fechar'xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#121212"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg></a>
+    <a href='/mapa'>Ponto de coleta</a>
     <a href='#Serviço'>Saiba mais</a>
     <a href='#Timeline'>Serviços</a>
     <a href='#Orçamento'>Orçamento</a>
     <a href='#'>Contato</a>
     <a href='#Footer'>Perfil</a>
   </div>
+    <a className="FecharMenu" href='/mapa'>Ponto de coleta</a>
     <a className="FecharMenu" href='#Serviço'>Saiba mais</a>
     <a className="FecharMenu" href='#Timeline'>Serviços</a>
     <a className="FecharMenu" href='#Orçamento'>Orçamento</a>
