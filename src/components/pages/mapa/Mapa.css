@@ -23,6 +23,25 @@ position: flex;
 color:#1f5c25 ;
 }
 
-.voltar{
+.voltarmapa{
+    width: 100px;
+    border: #2f7c37 solid;
+    border-radius: 8px;
+    color: #fafafa;
+    font-size: 1.2rem;
+    margin-top: 30px;
+    background-color: #2f7c37;
+    margin-left: 200px;
+
+    text-align: center;
+    transition: all 200ms;
+    font-weight: 600;
     margin-left: 50px;
+}
+
+
+.voltarmapa:hover{
+    background-color:#fafafa ;
+    color: #2f7c37;
+    scale: 1.05;
 }

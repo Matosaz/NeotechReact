@@ -1,11 +1,13 @@
-import React from 'react'
+
 import './Home.css'
 import RecVideo from '../assets/RecVideo.mp4'
 import ImgTL1 from '../assets/Teclado.jpg'
 import ImgTL2 from '../assets/Comput.jpg'
 import ImgTL3 from '../assets/Person.jpg'
 import Phoneimg from '../assets/Mockup3.png'
+import React, {useEffect} from 'react';
   const Home = () => {
+    useEffect(() => {
   const counters = document.querySelectorAll(".counters span");
   const container = document.querySelector(".counters");
 
@@ -96,7 +98,12 @@ import Phoneimg from '../assets/Mockup3.png'
     linha.style.display = 'block';
     window.addEventListener('scroll', scrollHandler);
     scrollHandler();
+
+    return() =>{
+      window.removeEventListener('scroll', scrollHandler);
+    }
   }
+},[]);
 
   return (
     

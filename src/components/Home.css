@@ -10,6 +10,7 @@ body::-webkit-scrollbar{
   background-position: center;
   position: relative;
   padding-top: 75px;
+  margin-top: 11px;
   text-align: left;
 }
 .TxtHero{

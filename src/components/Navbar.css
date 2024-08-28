@@ -4,7 +4,7 @@
     left: 0;
     width: 100%;
     padding: 20px 70px;
-    background:linear-gradient(to left, transparent 0.9%, #90ca96 90%);
+    background:linear-gradient(to left, transparent 0.10%, #90ca96 90%);
     display: flex;
     justify-content: space-between;
     align-items: center;
