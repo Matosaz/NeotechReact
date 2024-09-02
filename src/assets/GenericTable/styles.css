@@ -1,0 +1,40 @@
+/* styles.css */
+
+/* Estilo geral da tabela */
+table {
+    width: 100%;
+    border-collapse: collapse; /* Remove espaços entre bordas de células */
+    margin: 20px 0; /* Margem acima e abaixo da tabela */
+  }
+  
+  /* Estilo das células de cabeçalho */
+  th.th-style {
+    background-color: #f4f4f4; /* Cor de fundo do cabeçalho */
+    padding: 12px; /* Espaçamento interno */
+    text-align: left; /* Alinhamento do texto */
+    border-bottom: 2px solid #ddd; /* Linha abaixo do cabeçalho */
+  }
+  
+
+  td {
+    padding: 20px; 
+    border-bottom: 1px solid #ddd; 
+    text-align: left; 
+  }
+  
+*
+  button.generic-button {
+    background-color: #007bff; 
+    color: white; 
+    border: none; 
+    padding: 8px 12px; 
+    margin: 0 5px; 
+    cursor: pointer;
+    border-radius: 4px; 
+    font-size: 14px; 
+  }
+  
+  button.generic-button:hover {
+    background-color: #0056b3; 
+  }
+  

@@ -50,9 +50,9 @@ const Navbar = () => {
                   </div>
                   <hr/>
                   
-                  <a href="#" className="sub-menu-link">
+                  <a href="/Management" className="sub-menu-link">
                     <img src={profile} />
-                    <p> Editar perfil</p>
+                    <p> Gerenciamento de usuários</p>
                    
                   </a>
                   <a href="#" className="sub-menu-link">
