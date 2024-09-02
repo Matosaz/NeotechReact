@@ -1,3 +1,14 @@
+
+
+h2{
+    color: #052908;
+    letter-spacing: 1px;
+}
+.management__title{
+    margin-top: 20px;
+    color: #052908;
+    letter-spacing: 1px;
+}
 .custom-contentadmin {
     gap: 15px;
 }
@@ -5,7 +16,9 @@
 
 .management__boxview {
     display: flex;
+    align-items: center;
     gap: 20px;
+
 }
 
 .management__boxview-button {
@@ -17,25 +30,65 @@
     padding: 5px 10px;
     transition: box-shadow 0.3s, background-color 0.3s;
     font-size: 1rem;
+    margin-bottom: 20px;
 }
 
 .management__boxview-button:hover {
     box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.5);
-    background-color: #f0f0f0;
+    background-color: #cae4ce;
     color: #fff;
 }
 
 .management__boxview-button:focus,
 .management__boxview-button.active {
     outline: none;
-    box-shadow: 0 0 0 1px rgba(0, 0, 255, 0.5);
-    background-color: #6583b1;
+    box-shadow: 0 0 0 1px rgba(202, 202, 204, 0.5);
+    background-color: #2f7c37;
     color: white;
 }
 
 
+.voltarmanagement{
+    width: 100px;
+    border: #2f7c37 solid;
+    border-radius: 8px;
+    color: #fafafa;
+    font-size: 1.2rem;
+    margin-top: 30px;
+    background-color: #2f7c37;
+    text-align: center;
+    transition: all 200ms;
+    font-weight: 600;
+    margin-left: 0px;
+    scale: 0.9
+}
 
 
+.voltarmanagement:hover{
+    background-color:#fafafa ;
+    color: #2f7c37;
+    scale: 0.95
+}
+
+.management-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 99.9vh;
+ 
+  }
+  
+  .contentadmin {
+    flex: 1;
+  }
+  
+  .footer {
+    width: 100%;
+    scale: 1.7;
+    height: 100px; /* Ajuste conforme necessário */
+    background: url('../Flor.png') repeat center bottom;
+    background-size:contain;
+  }
+ 
 
 
 

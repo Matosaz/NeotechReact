@@ -3,6 +3,7 @@
     align-items: end;
     flex-wrap: wrap;
     gap: 15px;
+    margin-top: 10px;
 }
 
 
@@ -18,7 +19,7 @@
     border: none;
     outline: none;
     border-radius: 8px;
-    background-color: #d6deea;
+    background-color: #e5f0ec;
     padding: 10px 5px;
     width: 220px;
     box-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.5);

@@ -9,10 +9,11 @@ table {
   
   /* Estilo das células de cabeçalho */
   th.th-style {
-    background-color: #f4f4f4; /* Cor de fundo do cabeçalho */
+    background-color: #90ca96; /* Cor de fundo do cabeçalho */
     padding: 12px; /* Espaçamento interno */
     text-align: left; /* Alinhamento do texto */
     border-bottom: 2px solid #ddd; /* Linha abaixo do cabeçalho */
+    color: #fafafa;
   }
   
 
@@ -24,7 +25,7 @@ table {
   
 *
   button.generic-button {
-    background-color: #007bff; 
+    background-color: #90ca96; 
     color: white; 
     border: none; 
     padding: 8px 12px; 
@@ -32,9 +33,10 @@ table {
     cursor: pointer;
     border-radius: 4px; 
     font-size: 14px; 
+    transition: 0.3s
   }
   
   button.generic-button:hover {
-    background-color: #0056b3; 
+    background-color: #7db183; 
   }
   

@@ -4,6 +4,7 @@ import AdminTable from '../../assets/AdminTable/index.jsx';  // Tabela de Admin
 import AdminForm from '../../assets/AdminForm/index.jsx';    // Formulário de Admin
 import UserTable from '../../assets/UserTable/index.jsx';    // Tabela de User
 import UserForm from '../../assets/UserForm/index.jsx';      // Formulário de User
+import flor from "../Flor.png";
 
 function Management() {
   const [admins, setAdmins] = useState([]);
@@ -48,55 +49,64 @@ function Management() {
     setView(newView); // Atualiza o estado para o botão clicado
   };
 
-  return (
-    <main className='contentadmin custom-contentadmin'>
-      <h1 className='management__title'>Gerenciamento</h1>
-    
-      <div className='management__boxview'>
-      <button
-        className={`management__boxview-button ${view === 'admin' ? 'active' : ''}`}
-        onClick={() => handleClick('admin')}
-      >
-        Gerenciar Admins
-      </button>
-      <button
-        className={`management__boxview-button ${view === 'user' ? 'active' : ''}`}
-        onClick={() => handleClick('user')}
-      >
-        Gerenciar Usuários
-      </button>
-      </div>
+  const Voltarmanagement = () => {
+    window.history.back();
+  };
 
-      {view === 'admin' ? (
-        <>
-          <h2>Administradores</h2>
-          <AdminForm 
-            onAddAdmin={handleAddAdmin} 
-            onUpdateAdmin={handleUpdateAdmin} 
-            editingAdmin={editingAdmin} 
-          />
-          <AdminTable 
-            admins={admins} 
-            onDeleteAdmin={handleDeleteAdmin} 
-            onEditClick={(admin) => setEditingAdmin(admin)} 
-          />
-        </>
-      ) : (
-        <>
-          <h2>Usuários</h2>
-          <UserForm 
-            onAddUser={handleAddUser} 
-            onUpdateUser={handleUpdateUser} 
-            editingUser={editingUser} 
-          />
-          <UserTable 
-            users={users} 
-            onDeleteUser={handleDeleteUser} 
-            onEditClick={(user) => setEditingUser(user)} 
-          />
-        </>
-      )}
-    </main>
+  return (
+    <div className="management-container">
+      <main className='contentadmin custom-contentadmin'>
+        <button onClick={Voltarmanagement} className='voltarmanagement'> Retornar</button>
+        <h1 className='management__title'>Gerenciamento</h1>
+
+        <div className='management__boxview'>
+          <button
+            className={`management__boxview-button ${view === 'admin' ? 'active' : ''}`}
+            onClick={() => handleClick('admin')}
+          >
+            Gerenciar Admins
+          </button>
+          <button
+            className={`management__boxview-button ${view === 'user' ? 'active' : ''}`}
+            onClick={() => handleClick('user')}
+          >
+            Gerenciar Usuários
+          </button>
+        </div>
+
+        {view === 'admin' ? (
+          <>
+            <h2>Administradores</h2>
+            <AdminForm 
+              onAddAdmin={handleAddAdmin} 
+              onUpdateAdmin={handleUpdateAdmin} 
+              editingAdmin={editingAdmin} 
+            />
+            <AdminTable 
+              admins={admins} 
+              onDeleteAdmin={handleDeleteAdmin} 
+              onEditClick={(admin) => setEditingAdmin(admin)} 
+            />
+          </>
+        ) : (
+          <>
+            <h2>Usuários</h2>
+            <UserForm 
+              onAddUser={handleAddUser} 
+              onUpdateUser={handleUpdateUser} 
+              editingUser={editingUser} 
+            />
+            <UserTable 
+              users={users} 
+              onDeleteUser={handleDeleteUser} 
+              onEditClick={(user) => setEditingUser(user)} 
+            />
+          </>
+        )}
+      </main>
+      <footer className='footer'>
+      </footer>
+    </div>
   );
 }
 

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import GenericForm from '../GenericForm/index.jsx';
 
 const userFields = [
+  { name: 'id', label: 'ID', type: 'name', placeholder: 'Digite o ID do usuário' },
   { name: 'email', label: 'Email', type: 'email', placeholder: 'Digite o email do usuário' },
   { name: 'senha', label: 'Senha', type: 'password', placeholder: 'Digite a senha' }
 ];
