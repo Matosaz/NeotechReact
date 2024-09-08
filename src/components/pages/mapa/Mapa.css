@@ -29,10 +29,11 @@ color:#1f5c25 ;
     border-radius: 8px;
     color: #fafafa;
     font-size: 1.2rem;
+    height: 40px;
+    padding-top: 2.5px;
     margin-top: 30px;
     background-color: #2f7c37;
-    margin-left: 200px;
-
+    padding-left: 5px;
     text-align: center;
     transition: all 200ms;
     font-weight: 600;

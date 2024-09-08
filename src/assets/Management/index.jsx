@@ -76,82 +76,83 @@ function App() {
 
       {/* Formulário para Adicionar/Editar Usuários */}
       <div className="form-container">
-        <form 
-          onSubmit={(event) => {
-            event.preventDefault(); // Impede o comportamento padrão de envio
-            if (isEditing) {
-              handleUpdateUser();
-            } else {
-              handleAddUser();
-            }
-          }}
-        >
-          <h2>{isEditing ? 'Editar Usuário' : 'Adicionar Novo Usuário'}</h2>
+      <form 
+  onSubmit={(event) => {
+    event.preventDefault(); // Impede o comportamento padrão de envio
+    if (isEditing) {
+      handleUpdateUser();
+    } else {
+      handleAddUser();
+    }
+  }}
+>
+  <h2>{isEditing ? 'Editar Usuário' : 'Adicionar Novo Usuário'}</h2>
 
-          <input 
-            className='nome'
-            type="text" 
-            name="nome" 
-            placeholder="Nome do Usuário" 
-            value={newUser.nome} 
-            onChange={handleInputChange} 
-            required
-          />
+  <div className="form-row">
+    <input 
+      className='nome'
+      type="text" 
+      name="nome" 
+      placeholder="Nome do Usuário" 
+      value={newUser.nome} 
+      onChange={handleInputChange} 
+      required
+    />
 
-          <input 
-            className='email'
-            type="email" 
-            name="email" 
-            placeholder="Email" 
-            value={newUser.email} 
-            onChange={handleInputChange} 
-            required
-          />
+    <input 
+      className='email'
+      type="email" 
+      name="email" 
+      placeholder="Email" 
+      value={newUser.email} 
+      onChange={handleInputChange} 
+      required
+    />
 
-          <div className="password-container">
-            <input 
-              type={showPassword ? 'text' : 'password'} 
-              name="senha" 
-              placeholder="Senha" 
-              value={newUser.senha} 
-              onChange={handleInputChange} 
-              required
-            />
-            <button 
-              type="button" 
-              onClick={toggleShowPassword} 
-              className="toggle-password"
-            >
-              <img src={showPassword ? hide : show} alt={showPassword ? "Ocultar senha" : "Mostrar senha"} />
-            </button>
-          </div>
+    <div className="password-container">
+      <input 
+        type={showPassword ? 'text' : 'password'} 
+        name="senha" 
+        placeholder="Senha" 
+        value={newUser.senha} 
+        onChange={handleInputChange} 
+        required
+      />
+      <button 
+        type="button" 
+        onClick={toggleShowPassword} 
+        className="toggle-password"
+      >
+        <img src={showPassword ? hide : show} alt={showPassword ? "Ocultar senha" : "Mostrar senha"} />
+      </button>
+    </div>
 
-          <div className="form-checkboxes">
-            <label>
-              <input 
-                type="checkbox" 
-                name="ativo" 
-                checked={newUser.ativo} 
-                onChange={() => setNewUser({ ...newUser, ativo: !newUser.ativo })} 
-              />
-              Ativo
-            </label>
+    <label>
+      <input className='ativo' 
+        type="checkbox" 
+        name="ativo" 
+        checked={newUser.ativo} 
+        onChange={() => setNewUser({ ...newUser, ativo: !newUser.ativo })} 
+      />
+      Ativo
+    </label>
 
-            <label>
-              <input 
-                type="checkbox" 
-                name="administrador" 
-                checked={newUser.administrador} 
-                onChange={() => setNewUser({ ...newUser, administrador: !newUser.administrador })} 
-              />
-              Administrador
-            </label>
-          </div>
+    <label>
+      <input className='adm' 
+        type="checkbox" 
+        name="administrador" 
+        checked={newUser.administrador} 
+        onChange={() => setNewUser({ ...newUser, administrador: !newUser.administrador })} 
+      />
+      Administrador
+    </label>
 
-          <button className='ADD_button' type="submit">
-            {isEditing ? 'Atualizar Usuário' : 'Adicionar Usuário'}
-          </button>
-        </form>
+    <button className='ADD_button' type="submit">
+      {isEditing ? 'Atualizar Usuário' : 'Adicionar Usuário'}
+    </button>
+  </div>
+</form>
+
       </div>
 
       {/* Tabela de Usuários */}

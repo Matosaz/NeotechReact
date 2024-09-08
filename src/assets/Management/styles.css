@@ -8,6 +8,7 @@
     align-items: center;
     align-content: center;
     color: #121212;
+    margin-top: 20px;
 }
 
 h1 {
@@ -25,7 +26,7 @@ h1 {
 .search-container input {
     padding: 8px;
     font-size: 14px;
-    width: 300px;
+    width: 350px;
     background-color: #ced6d1;
 }
 
@@ -68,39 +69,64 @@ button:hover {
     height: 50px;
     margin-top: 0;
 }
-
 .password-container {
+    display: flex;
     position: relative;
-    width: 60%; /* O input de senha ocupará 30% */
-}
+    width: 0%; /* Ajuste a largura do campo de senha */
+  }
 
 .password-container input {
-    width: 100%; 
+    width: 300px; 
 }
+
 
 .toggle-password {
     position: absolute;
-    top: 58%;
-    right: 0px;
+    top: 50%;
+    right: 8px;
     transform: translateY(-50%);
     background: none;
     border: none;
-    cursor:pointer;
-}
+    cursor: pointer;
+  }
 
 .toggle-password img {
     width: 24px;
     height: 24px;
+    margin-top: 5px;
 }
 
-.form-checkboxes input {
+
+.form-row label {
     display: flex;
-    gap: 10px;
+   align-items: center;
     scale: 0.7;
-    font-family: 'Poppins';
+    margin-left: -20px;
+    color: #121212;
+    font-family: "Poppins";
+  }
   
-}
+.form-row label .ativo{
+    
+    margin-left: 30px;
+  }
+  .form-row label .adm{
+    position: relative;;
+    margin-left: -50px
+  }
 
+
+  .form-row {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* Espaçamento entre os elementos */
+  }
+  
+  .form-row input,
+  .form-row .password-container,
+  .form-row label {
+    flex-basis: 30%; /* Cada elemento ocupa 20% da largura */
+  }
 
 .table-container {
     overflow-x: auto;
@@ -135,6 +161,22 @@ th {
     gap: 10px;
 }
 
+.ADD_button {
+    align-self: flex-start;
+    height: 50px;
+    width: 250px;
+    background-color: #5faa84;
+    color: white;
+    border: none;
+    padding: 5px;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+
+.ADD_button:hover {
+    background-color: #4c906b;
+  }
+
 /* Responsividade */
 @media (max-width: 768px) {
     .form-container {
@@ -147,7 +189,4 @@ th {
         width: 100%; /* Em telas menores, os inputs ocuparão 100% da largura */
     }
 
-    .ADD_button {
-        width: 100%; /* O botão também ocupará 100% da largura em telas menores */
-    }
 }
