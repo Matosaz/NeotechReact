@@ -6,7 +6,6 @@ import NaoEncontrada from './components/pages/404/NaoEncontrada'
 import Mapa from './components/pages/mapa/Mapa'
 import Auth from './components/pages/LoginCadastro/Auth'
 import Management from './assets/Management'
-
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 
 const Layout = () =>{
@@ -28,12 +27,14 @@ const Mapa1 = () =>{
   )
 }
 
+
+ 
 function App ()  {
   return (
       <BrowserRouter>
         <Routes>
-
-          
+    
+         
           <Route path='/Auth' element={<Auth/>}/>
           <Route path='/Management' element={<Management/>}/>
           <Route path='/Mapa' element={<Mapa1/>}/>

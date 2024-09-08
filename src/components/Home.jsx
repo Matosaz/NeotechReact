@@ -8,7 +8,6 @@ import Phoneimg from '../assets/Mockup3.png'
 import React, {useEffect, useState} from 'react';
   const Home = () => {
     useEffect(() => {
- 
   const counters = document.querySelectorAll(".counters span");
   const container = document.querySelector(".counters");
 
@@ -108,10 +107,8 @@ import React, {useEffect, useState} from 'react';
 
   return (
     
-    //Atualizado//
+    
    <body>
-        <Navbar userName={userName}/>
-        <Auth onLogin={handleLogin}/>
         <section className='Hero'>
         <h2 className='TxtHero'> NeoTech</h2>
         <h3 className='TxtHero2'> The future is near</h3>
