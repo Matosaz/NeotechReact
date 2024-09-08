@@ -5,9 +5,10 @@ import ImgTL1 from '../assets/Teclado.jpg'
 import ImgTL2 from '../assets/Comput.jpg'
 import ImgTL3 from '../assets/Person.jpg'
 import Phoneimg from '../assets/Mockup3.png'
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
   const Home = () => {
     useEffect(() => {
+ 
   const counters = document.querySelectorAll(".counters span");
   const container = document.querySelector(".counters");
 
@@ -109,6 +110,8 @@ import React, {useEffect} from 'react';
     
     //Atualizado//
    <body>
+        <Navbar userName={userName}/>
+        <Auth onLogin={handleLogin}/>
         <section className='Hero'>
         <h2 className='TxtHero'> NeoTech</h2>
         <h3 className='TxtHero2'> The future is near</h3>

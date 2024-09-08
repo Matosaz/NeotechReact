@@ -30,6 +30,7 @@ const Auth = () => {
       alert('Senhas incondizentes!');
       return;
     }
+    
     alert(isLoginMode ? 'Acesso bem sucedido!' : 'Cadastrado bem sucedido!');
   };
 

@@ -46,7 +46,7 @@ const Navbar = () => {
     <div className="sub-menu-wrap" id="subMenu" >
                 <div className="sub-menu"> 
                   <div className="user-info">
-                    <h2>Fernando Luís</h2>
+                    <h2>{userName || 'Fernando Luís'}</h2>
                   </div>
                   <hr/>
                   
