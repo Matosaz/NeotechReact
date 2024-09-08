@@ -1,5 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap');
 
+body{
+    background-color: #fafafa;
+}
 .container {
     max-width: 1280px;
     margin: 0 auto;
@@ -9,6 +12,7 @@
     align-content: center;
     color: #121212;
     margin-top: 20px;
+
 }
 
 h1 {
@@ -93,7 +97,7 @@ button:hover {
 .toggle-password img {
     width: 24px;
     height: 24px;
-    margin-top: 5px;
+    margin-top: 7px;
 }
 
 

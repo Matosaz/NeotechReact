@@ -62,7 +62,9 @@ function App() {
   };
 
   return (
-    <div className="container">
+   
+    <div className="container"> 
+
       <h1>Usuários</h1>
       <div className="search-container">
         <input 
@@ -76,7 +78,9 @@ function App() {
 
       {/* Formulário para Adicionar/Editar Usuários */}
       <div className="form-container">
+        
       <form 
+      
   onSubmit={(event) => {
     event.preventDefault(); // Impede o comportamento padrão de envio
     if (isEditing) {

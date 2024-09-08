@@ -1,6 +1,6 @@
 .header{
     position: fixed;
-    top: 0;
+    top: 0px;
     left: 0;
     width: 100%;
     padding: 20px 70px;
@@ -9,8 +9,7 @@
     justify-content: space-between;
     align-items: center;
     z-index: 999;
-    backdrop-filter: blur(10px);
-   
+    backdrop-filter: blur(25px);
 }
 
 .logo{

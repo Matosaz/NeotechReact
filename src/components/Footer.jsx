@@ -41,10 +41,10 @@ const Footer = () => {
             </div>
             <div className="msg">
               <div className="text">Mensagem</div>
-              <textarea rows={2} cols={25}  placeholder="Deixe uma mensagem"></textarea>
+              <textarea rows={2} cols={25}  placeholder="Deixe uma mensagem" required></textarea>
             </div>
          
-              <button className='botao'type='submit'>Enviar</button>
+              <button className='botao'type='submit'>Enviar </button>
             
 
         </div>

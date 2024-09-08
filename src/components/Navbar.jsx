@@ -65,7 +65,7 @@ const Navbar = () => {
                     <p> Ajuda e suporte</p>
                   </a>
 
-                  <a href="#" className="sub-menu-link">
+                  <a href="/Auth" className="sub-menu-link">
                     <img src={logout} />
                     <p> Sair do perfil</p>
                   </a>

@@ -1,6 +1,9 @@
 body::-webkit-scrollbar{
   display: none;
 }
+body{
+  background-color: #90ca96;
+}
 
 
 .Hero{
@@ -10,7 +13,7 @@ body::-webkit-scrollbar{
   background-position: center;
   position: relative;
   padding-top: 75px;
-  margin-top: 11px;
+  margin-top: 34px;
   text-align: left;
 }
 .TxtHero{
