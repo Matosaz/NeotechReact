@@ -2,8 +2,22 @@ import React, { useState } from 'react';
 import './styles.css';
 import show from './olho.png';  // Ícone para mostrar a senha
 import hide from './visivel.png'; // Ícone para ocultar a senha
-
+import Sidebar1 from './Sidebar/SidebarManagement';
 const initialUsersData = [
+  {
+    nome: 'Rodrigo Salomão',
+    ativo: true,
+    administrador: false,
+    email: 'rodrigosalomao2001@gmail.com',
+    senha: 'batatacomlimao'
+  },
+  {
+    nome: 'Tiago Soares Moura',
+    ativo: true,
+    administrador: true,
+    email: 'tiagosoares21@gmail.com',
+    senha: 'senhorafarofa'
+  },
 
 ];
 
@@ -62,9 +76,12 @@ function App() {
   };
 
   return (
-   
+  
     <div className="container"> 
-
+     <div style={{ display: "flex" }}> 
+       <Sidebar1 />
+     </div>
+      
       <h1>Usuários</h1>
       <div className="search-container">
         <input 

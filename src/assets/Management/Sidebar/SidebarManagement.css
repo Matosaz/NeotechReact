@@ -1,0 +1,31 @@
+/* Sidebar */
+.sidebarManagement {
+    height: 100vh; /* Fixa a altura da sidebar ao tamanho da janela */
+    width: 60px;
+    background-color: #7ead83;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 20px;
+    position: fixed; /* Faz a barra lateral ficar fixa na tela */
+    top: 0;
+    left: 0;
+  }
+  
+  /* Estilo dos ícones */
+  .icon-wrapperManagement {
+    margin: 15px 0;
+    cursor: pointer;
+    transition: filter 0.3s;
+  }
+  
+  .icon-wrapperManagement img {
+    width: 30px;
+    height: 30px;
+  }
+  
+  /* Efeito hover nos ícones */
+  .icon-wrapperManagement:hover img {
+    filter: invert(100%);
+  }
+  
