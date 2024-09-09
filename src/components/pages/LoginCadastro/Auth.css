@@ -4,18 +4,27 @@
   justify-content: center;
   align-items: center;
   height: 100vh;
-  
-  background-color: #d0dfd6;
 }
 /*ced8cb*/
+
+.VideoBackground{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: auto;
+  height: 120vh;
+  z-index: -1;
+  transform: translate(-50%, -50%);
+  background-size: cover;
+}
 .auth-box {
  
-  background: rgba(255, 255, 255, 0.25);
+  background: rgba(216, 215, 215, 0.25);
   box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
   backdrop-filter: blur( 5.5px );
   -webkit-backdrop-filter: blur( 5.5px );
   border-radius: 10px;
-  border: 1px solid rgba( 255, 255, 255, 0.18 );
+  border: 1px solid rgba(255, 252, 252, 0.18);
   padding: 2rem;
   box-shadow: 1px 8px 20px rgba(0, 0, 0, 0.1);
   width: 100%;

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './Auth.css';
+import LoginVideo from './LoginBackground.mp4'
 
 const Auth = () => {
   const [isLoginMode, setIsLoginMode] = useState(true);
@@ -36,6 +37,7 @@ const Auth = () => {
 
   return (
     <div className="auth-container">
+      <video autoPlay loop playsInline className="VideoBackground"src={LoginVideo}></video>
       <div className="auth-box">
       <h2 className='boasvindas'>{isLoginMode ? 'Bem vindo de volta!' : 'Bem vindo!'}</h2>
       
