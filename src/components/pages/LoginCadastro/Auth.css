@@ -4,22 +4,22 @@
   justify-content: center;
   align-items: center;
   height: 100vh;
+
 }
 /*ced8cb*/
 
 .VideoBackground{
   position: absolute;
-  top: 50%;
-  left: 50%;
+  
+  z-index: -3000;
+  height:auto;
   width: auto;
-  height: 120vh;
-  z-index: -1;
-  transform: translate(-50%, -50%);
-  background-size: cover;
+  
+  background-size:cover;
 }
 .auth-box {
  
-  background: rgba(216, 215, 215, 0.25);
+  background: rgba(248, 247, 241, 0.575);
   box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
   backdrop-filter: blur( 5.5px );
   -webkit-backdrop-filter: blur( 5.5px );
@@ -117,4 +117,11 @@
   scale: 0.8;
   color: #fafafa;
   text-decoration: underline 2.3px rgba(0, 0, 0, 0.7);
+}
+.LogoNeotech{
+  display: flex;
+  margin-left: 100px;
+  width: 150px;
+  margin-bottom: -5px;
+  filter: invert(80%);
 }
