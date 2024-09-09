@@ -1,31 +1,52 @@
 /* Sidebar */
 .sidebarManagement {
-    height: 100vh; /* Fixa a altura da sidebar ao tamanho da janela */
-    width: 60px;
-    background-color: #7ead83;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding-top: 20px;
-    position: fixed; /* Faz a barra lateral ficar fixa na tela */
-    top: 0;
-    left: 0;
-  }
-  
-  /* Estilo dos ícones */
-  .icon-wrapperManagement {
-    margin: 15px 0;
-    cursor: pointer;
-    transition: filter 0.3s;
-  }
-  
-  .icon-wrapperManagement img {
-    width: 30px;
-    height: 30px;
-  }
-  
-  /* Efeito hover nos ícones */
-  .icon-wrapperManagement:hover img {
-    filter: invert(100%);
-  }
-  
+  height: 100vh; /* Fixa a altura da sidebar ao tamanho da janela */
+  width: 60px;
+  background-color: #7ead83;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 20px;
+  position: fixed; /* Faz a barra lateral ficar fixa na tela */
+  top: 0;
+  left: 0;
+}
+
+/* Estilo dos ícones */
+.icon-wrapperManagement {
+  margin: 15px 0;
+  cursor: pointer;
+  transition: filter 0.3s;
+}
+
+.icon-wrapperManagement img {
+  width: 30px;
+  height: 30px;
+}
+
+/* Ícone ativo */
+.icon-wrapperManagement.active img {
+  filter: invert(100%); /* Altera a cor do ícone ativo para branco */
+}
+
+/* Efeito hover nos ícones */
+.icon-wrapperManagement:hover img {
+  filter: invert(100%);
+}
+.icon-Seta{
+ padding-top: 10px;
+  cursor: pointer;
+  transition: filter 0.3s;
+}
+
+.icon-Seta img {
+  width: 50px;
+  height: 50px;
+}
+
+
+
+/* Efeito hover nos ícones */
+.icon-Seta:hover img {
+  filter: invert(100%);
+}

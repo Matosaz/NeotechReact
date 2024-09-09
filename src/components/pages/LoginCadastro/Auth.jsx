@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './Auth.css';
 import LoginVideo from './LoginBackground.mp4'
-import LogoNeotech from "../../../assets/Logo.png";
+import LogoNeotech2 from './LogoLogin.png'
 const Auth = () => {
   const [isLoginMode, setIsLoginMode] = useState(true);
   const [formData, setFormData] = useState({
@@ -39,7 +39,7 @@ const Auth = () => {
     <div className="auth-container">
       <video autoPlay loop playsInline className="VideoBackground"src={LoginVideo}></video>
       <div className="auth-box">
-      <img className="LogoNeotech"src={LogoNeotech} alt="Logo da Neotech" />
+      <img className="LogoNeotech2"src={LogoNeotech2} alt="Logo da Neotech" />
       <h2 className='boasvindas'>{isLoginMode ? 'Bem vindo de volta!' : 'Bem vindo!'}</h2>
       
       

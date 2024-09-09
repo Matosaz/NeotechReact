@@ -51,7 +51,7 @@ const Navbar = () => {
                 <h2> Fernando Luís</h2>
               </div>
               <hr/>
-              <a href="/Management" className="sub-menu-link">
+              <a href="/Dashboard" className="sub-menu-link">
                 <img src={profile} />
                 <p> Gerenciamento de usuários</p>
               </a>

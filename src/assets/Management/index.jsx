@@ -19,6 +19,7 @@ const initialUsersData = [
     senha: 'senhorafarofa'
   },
 
+
 ];
 
 function App() {
