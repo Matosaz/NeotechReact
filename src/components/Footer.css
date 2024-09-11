@@ -28,7 +28,7 @@
 }
 
 .conteudofooter li a:hover{
-    transform: translateY(-3px) translateX(-4px);
+    transform: translateY(-1px) translateX(-1px);
     font-weight: bold;
    
 }
