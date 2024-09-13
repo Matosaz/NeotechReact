@@ -208,8 +208,8 @@ position: flex;
 /*Inicio Timeline*/
 .timeline{
 height: 1550px;
-background: linear-gradient(to  bottom,rgb(178, 216, 173) 30%, rgb(253, 246, 234) 102%);
-/*  background-color:rgb(178, 216, 173); */
+background: rgb(205,238,174);
+background: radial-gradient(circle, rgba(205,238,174,1) 0%, rgba(148,233,175,1) 100%);/*  background-color:rgb(178, 216, 173); */
 position: flex;
 }
 
@@ -342,7 +342,7 @@ opacity: 1;
 /*Inicio Orçamento*/
 .Orçamento{
   height: 690px;
-  background-color:rgb(178, 216, 173);
+  background-color:rgb(255, 238, 218);
   position: flex;
 }
 
