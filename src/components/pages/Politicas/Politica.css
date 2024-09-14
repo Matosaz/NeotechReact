@@ -8,6 +8,9 @@
     line-height: 1.6;
   }
   
+.policy-content h1{
+  font-size: 98rem;
+}
   .voltarpolitica {
     width: 100px;
     border: #2f7c37 solid;
@@ -55,13 +58,13 @@
   }
   
   .privacy-page h1 {
-    font-size: 2.5rem;
+    font-size: 3.5rem;
     margin-bottom: 1.5rem;
     color: #2f7c37;
   }
   
   .privacy-page h2 {
-    font-size: 1.8rem;
+    font-size: 1.9rem;
     margin-top: 2rem;
     margin-bottom: 1rem;
     color: #2f7c37;
