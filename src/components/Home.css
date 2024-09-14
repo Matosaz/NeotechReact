@@ -209,7 +209,7 @@ position: flex;
 .timeline{
 height: 1550px;
 background: rgb(205,238,174);
-background: radial-gradient(circle, rgb(197, 229, 166) 1%, rgb(187, 226, 200) 100%);/*  background-color:rgb(178, 216, 173); */
+background: radial-gradient(circle, rgb(195, 236, 153) 1%, rgb(187, 226, 200) 100%);/*  background-color:rgb(178, 216, 173); */
 position: flex;
 }
 
