@@ -1,0 +1,111 @@
+/* Estilos isolados para a página de política de privacidade */
+
+.privacy-page {
+    font-family: 'Poppins';
+    background: rgb(215,244,207);
+    background: radial-gradient(circle, rgba(215,244,207,1) 0%, rgba(240,241,244,1) 100%);
+    color: #333;
+    line-height: 1.6;
+  }
+  
+  .voltarpolitica {
+    width: 100px;
+    border: #2f7c37 solid;
+    border-radius: 8px;
+    color: #fafafa;
+    font-size: 1.2rem;
+    height: 40px;
+    padding-top: 2.5px;
+    margin-bottom: 25px;
+    background-color: #2f7c37;
+    padding-left: 5px;
+    text-align: center;
+    transition: all 200ms;
+    font-weight: 600;
+  }
+  
+  .voltarpolitica:hover {
+    background-color: #fafafa;
+    color: #2f7c37;
+    scale: 1.05;
+  }
+  
+  .ultimaatualizacao {
+    font-weight: 700;
+    text-decoration: underline;
+  }
+  
+  .privacy-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 2rem;
+  }
+  
+  .policy-content {
+    background: rgb(232, 243, 233);
+    background: linear-gradient(120deg, rgb(255, 255, 255) 0%, rgb(253, 247, 229) 100%);
+    padding: 3rem;
+    max-width: 2000px;
+    width: 100%;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+  }
+  
+  .privacy-page h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+    color: #2f7c37;
+  }
+  
+  .privacy-page h2 {
+    font-size: 1.8rem;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    color: #2f7c37;
+  }
+  
+  .privacy-page h3{
+    color: #143f18;
+    margin-bottom: 10px;
+  }
+  
+  .privacy-page p {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    color: #555;
+  }
+  
+  .privacy-page li {
+    margin-bottom: 5px;
+  }
+  .privacy-page li strong{
+    margin-bottom: 5px;
+    color: #143f18;
+  }
+  
+  .neotechspanpoli {
+    color: #082e0c;
+    font-weight: 700;
+  }
+  
+  @media (max-width: 768px) {
+    .policy-content {
+      padding: 2rem;
+    }
+  
+    .privacy-page h1 {
+      font-size: 2rem;
+    }
+  
+    .privacy-page h2 {
+      font-size: 1.5rem;
+    }
+  
+    .privacy-page p {
+      font-size: 1rem;
+    }
+  }
+  

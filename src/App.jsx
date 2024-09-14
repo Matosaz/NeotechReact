@@ -7,6 +7,7 @@ import Mapa from './components/pages/mapa/Mapa'
 import Auth from './components/pages/LoginCadastro/Auth'
 import Management from './assets/Management'
 import Dashboard from './assets/Management/Dashboard/Dashboard'
+import Politica from './components/pages/Politicas/Politica'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 
 const Layout = () =>{
@@ -34,8 +35,8 @@ function App ()  {
   return (
       <BrowserRouter>
         <Routes>
-    
-        <Route path='/Dashboard' element={<Dashboard/>}/>
+          <Route path='/Politica' element={<Politica/>}/>
+          <Route path='/Dashboard' element={<Dashboard/>}/>
           <Route path='/Auth' element={<Auth/>}/>
           <Route path='/Management' element={<Management/>}/>
           <Route path='/Mapa' element={<Mapa1/>}/>

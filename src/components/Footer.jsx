@@ -1,5 +1,6 @@
 import React from 'react'
 import './Footer.css'
+import Politica from '../components/pages/Politicas/Politica'
 import Logo from '../assets/Logo.png'
 const Footer = () => {
   return (
@@ -18,7 +19,7 @@ const Footer = () => {
     <div className="conteudofooter">
       <h4>Institucional</h4>
       <li><a href='#'>Sobre nós</a></li>
-      <li><a href='#'>Política de Segurança e Privacidade</a></li>
+      <li><a href='/Politica'>Política de Segurança e Privacidade</a></li>
       <li><a href='#'></a></li>
 
     </div>
