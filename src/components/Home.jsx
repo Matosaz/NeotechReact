@@ -10,7 +10,7 @@ import React, {useEffect, useState} from 'react';
     useEffect(() => {
   const counters = document.querySelectorAll(".counters span");
   const container = document.querySelector(".counters");
-
+    
   let activated = false;
 
   window.addEventListener("scroll", () => {
@@ -110,6 +110,7 @@ import React, {useEffect, useState} from 'react';
     
    <body>
         <section className='Hero'>
+
         <h2 className='TxtHero'> NeoTech</h2>
         <h3 className='TxtHero2'> The future is near</h3>
         <img src={Phoneimg} className='Phoneimg'/>
@@ -283,7 +284,7 @@ import React, {useEffect, useState} from 'react';
               <h2 className='TituloOrçamento'>Orçamento</h2>
               <p>
               Recicle seus eletroeletrônicos e contribua para um planeta mais sustentável! Solicite um orçamento conosco e descubra como podemos transformar seus resíduos em novas oportunidades. Com um atendimento rápido e eficiente, garantimos a destinação correta dos materiais. Entre em contato agora e colabore para um futuro sustentável!</p>
-              <a href='#' className='botao2'>Faça um orçamento</a>
+              <a href='/Calculadora' className='botao2'>Faça um orçamento</a>
             </div>
           </div>
         </div>
