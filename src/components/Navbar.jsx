@@ -24,6 +24,7 @@ const Navbar = () => {
 
   return (
     <header className="header">
+  
       <a href='#' className='logo'> NeoTech</a>
       <nav className ="navbar">
         <div className="sidebar"> 
