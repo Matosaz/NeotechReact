@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import './Auth.css';
-import LoginVideo from './LoginBackground.mp4'
-import LogoNeotech2 from './LogoLogin.png'
+import LoginVideo from './LoginBackground.mp4';
+import LogoNeotech2 from './LogoLogin.png';
+import { Link, useNavigate } from 'react-router-dom';
+
 const Auth = () => {
   const [isLoginMode, setIsLoginMode] = useState(true);
   const [formData, setFormData] = useState({
@@ -10,6 +12,7 @@ const Auth = () => {
     password: '',
     confirmPassword: ''
   });
+  const navigate = useNavigate(); // Hook de navegação
 
   const toggleMode = () => {
     setIsLoginMode(!isLoginMode);
@@ -31,19 +34,21 @@ const Auth = () => {
       alert('Senhas incondizentes!');
       return;
     }
-    
+
     alert(isLoginMode ? 'Acesso bem sucedido!' : 'Cadastrado bem sucedido!');
+    
+    // Redireciona para a tela inicial após o sucesso
+    navigate('/Home'); // ou a rota que você definir para a página inicial
   };
 
   return (
     <div className="auth-container">
-      <video autoPlay loop playsInline className="VideoBackground"src={LoginVideo}></video>
+      <video autoPlay loop playsInline className="VideoBackground" src={LoginVideo}></video>
       <div className="auth-box">
-      <img className="LogoNeotech2"src={LogoNeotech2} alt="Logo da Neotech" />
-      <h2 className='boasvindas'>{isLoginMode ? 'Bem vindo de volta!' : 'Bem vindo!'}</h2>
-      
-      
-        <h2>{isLoginMode ? 'Login' : ' Cadastrar'}</h2>
+        <img className="LogoNeotech2" src={LogoNeotech2} alt="Logo da Neotech" />
+        <h2 className='boasvindas'>{isLoginMode ? 'Bem vindo de volta!' : 'Bem vindo!'}</h2>
+        
+        <h2>{isLoginMode ? 'Login' : 'Cadastrar'}</h2>
         <form onSubmit={handleSubmit}>
           {!isLoginMode && (
             <div className="input-container">
@@ -100,8 +105,8 @@ const Auth = () => {
           </button>
         </p>
         <p className="direitos">
-        Todos os direitos reservados <br />
-        <span> © Neotech 2024</span> 
+          Todos os direitos reservados <br />
+          <span> © Neotech 2024</span> 
         </p>
       </div>
     </div>

@@ -140,7 +140,7 @@
   transform: scale(1.03);
 }
 
-@media (max-width:1200px){
+@media (max-width:1367px){
     .FecharMenu{
         display: none;
     }

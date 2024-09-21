@@ -78,7 +78,7 @@ const Voltarcalculadora=() =>{
           <Typography fontWeight='500' fontFamily='Poppins' variant="subtitle1"pt={0.5}>Preço unitário: ${(price / itemQuantity).toFixed(2)}</Typography>
 
           <Box mt={4}>
-            <Button fontFamily='Poppins'variant="contained" color="primary" size="large">Confirmar Reciclagem</Button>
+            <Button fontFamily='Poppins'variant="contained" color="" >Solicitar orçamento mais<br /> detalhado</Button>
           </Box>
         </Box>
 

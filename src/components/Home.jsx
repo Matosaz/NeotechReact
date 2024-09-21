@@ -224,10 +224,12 @@ import React, {useEffect, useState} from 'react';
                   <div className="Area">
                     <div className="contentTL">
                       <h2 className='h2esquer'> Conheça a Neotech</h2>
-                      <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Molestiae reiciendis,
-                       ligendigies unde perferendis saepe at non harum. Eligendi optio, dolorum a odit quae eum non fugit dolor.
-                       Dicta,t dolor.
-                         Dicta, magni sequi.</p>
+                      <p>Somos uma empresa fundada para estabelecermos uma relação harmônica entre o meio ambiente
+                         e o progresso tecnológico e industrial! Possuímos como principal objetivo promover um mundo
+                         tecnologicamente sustentável com uma sociedade ecologicamente consciente por meio da reciclagem.
+                         
+                        
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -254,9 +256,12 @@ import React, {useEffect, useState} from 'react';
                   <div className="Area">
                     <div className="contentTL">
                       <h2>Serviços</h2>
-                      <p>olorum aes unde perferendis saepe at non harum. Eligendi optio, dolorum a odit quae eum non fugit dolor.
-                      Dicta, odit quae eum non fugit di sequies unde perferendis saepe at non harum. Eligendi optio, dolorum a odit quae eum non fugit dolor.
-                      Dicta, magni .</p>
+                      <p> Nós prestamos serviços de reciclagem de descartes eletroeletrônicos, variando de dispositivos de pequeno
+                          porte, como celulares e tablets, à dispositivos eletrônicos de grande porte, como geladeiras e televisões.
+                          Nossos serviços serviços são efetuados com o máximo cuidado e eficiência para lhe promover uma experiência
+                          prática e confivável!
+                          
+                      </p>
                     </div>
                   </div>
                 </div>

@@ -8,6 +8,10 @@
     line-height: 1.6;
   }
   
+  .policy-content li{
+    margin-left: 15px;
+    list-style-type:none;
+  }
 .policy-content h1{
   font-size: 98rem;
 }
