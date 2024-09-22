@@ -38,7 +38,7 @@ const Auth = () => {
     alert(isLoginMode ? 'Acesso bem sucedido!' : 'Cadastrado bem sucedido!');
     
     // Redireciona para a tela inicial após o sucesso
-    navigate('/Home'); // ou a rota que você definir para a página inicial
+    navigate('/#'); // ou a rota que você definir para a página inicial
   };
 
   return (

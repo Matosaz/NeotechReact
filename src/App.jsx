@@ -42,8 +42,8 @@ function App ()  {
           <Route path='/Auth' element={<Auth/>}/>
           <Route path='/Management' element={<Management/>}/>
           <Route path='/Mapa' element={<Mapa1/>}/>
-          <Route path='/' element={<Auth />}/>
-          <Route path='/Home' element={<Layout/>}/>
+          <Route path='/Auth' element={<Auth />}/>
+          <Route path='/' element={<Layout/>}/>
           <Route path='*' element={<NaoEncontrada/>}/>
         </Routes>
       </BrowserRouter>

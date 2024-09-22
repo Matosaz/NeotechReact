@@ -22,7 +22,7 @@ const SidebarManagement = () => {
        <div
         className='icon-Seta'
       >
-        <Link to="/Home">
+        <Link to="/#">
           <img src={Seta} alt="Voltar" />
         </Link>
       </div>
