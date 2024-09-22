@@ -28,7 +28,7 @@ const PrivacyPolicy = () => {
           <h3>Definições</h3>
           <p>Para os fins desta Política de Privacidade:</p>
           <ul>
-            <li>●<strong>Conta:</strong> significa uma conta única criada para que você acesse nosso Serviço ou partes do nosso Serviço.</li>
+            <li><strong>Conta:</strong> significa uma conta única criada para que você acesse nosso Serviço ou partes do nosso Serviço.</li>
             <li><strong>Afiliada:</strong> significa uma entidade que controla, é controlada por ou está sob controle comum com uma parte, onde "controle" significa a posse de 50% ou mais das ações, participação acionária ou outros títulos que têm direito a voto para eleição de diretores ou outra autoridade de gestão.</li>
             <li><strong>Empresa:</strong> refere-se à Neotech.</li>
             <li><strong>Cookies:</strong> são pequenos arquivos colocados no seu dispositivo que contêm detalhes do seu histórico de navegação em um site.</li>

@@ -48,7 +48,13 @@ button {
 button:hover {
     background-color: #4c906b;;
 }
+.botaodeletar{
+    background-color: rgb(247, 71, 71);
+}
 
+.botaodeletar:hover{
+    background-color: rgb(214, 60, 60);
+}
 /* Ajustes na form-container */
 .form-container {
     display: flex;
@@ -100,7 +106,10 @@ button:hover {
     height: 24px;
     margin-top: 7px;
 }
-
+.toggle-password:hover{
+    background:none;
+    opacity: 0.20;
+}
 
 .form-row label {
     display: flex;

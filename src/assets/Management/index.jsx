@@ -195,7 +195,7 @@ function App() {
           
                 <td className="action-buttons">
                   <button onClick={() => handleEditUser(user)}>Editar</button>
-                  <button onClick={() => handleDeleteUser(user.id)}>Excluir</button>
+                  <button className="botaodeletar"onClick={() => handleDeleteUser(user.id)}>Excluir</button>
                 </td>
               </tr>
             ))}

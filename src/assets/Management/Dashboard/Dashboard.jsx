@@ -11,13 +11,7 @@ function Dashboard() {
       email: 'rodrigosalomao2001@gmail.com',
       senha: 'batatacomlimao'
     },
-    {
-      nome: 'Tiago Soares Moura',
-      ativo: true,
-      administrador: true,
-      email: 'tiagosoares21@gmail.com',
-      senha: 'senhorafarofa'
-    },
+    
     
     
   ]);
