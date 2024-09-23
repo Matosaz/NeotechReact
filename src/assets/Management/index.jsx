@@ -3,6 +3,7 @@ import './styles.css';
 import show from './olho.png';  // Ícone para mostrar a senha
 import hide from './visivel.png'; // Ícone para ocultar a senha
 import Sidebar1 from './Sidebar/SidebarManagement';
+
 const initialUsersData = [
   {
     nome: 'Rodrigo Salomão',
@@ -11,9 +12,6 @@ const initialUsersData = [
     email: 'rodrigosalomao2001@gmail.com',
     senha: 'batatacomlimao'
   },
-  
-
-
 ];
 
 function App() {
@@ -33,10 +31,22 @@ function App() {
     setNewUser({ ...newUser, [name]: value });
   };
 
-  const handleAddUser = () => {
+  const handleAddUser = async () => {
     if (newUser.email && newUser.senha && newUser.nome) {
-      setUsers([...users, { ...newUser, id: users.length + 1 }]);
-      resetForm();
+      try {
+        const response = await fetch('http://localhost:8080/api/v1/users', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(newUser),
+        });
+        const data = await response.json();
+        setUsers([...users, data]); // Atualiza a lista de usuários com o dado criado no backend
+        resetForm();
+      } catch (error) {
+        console.error('Erro ao adicionar usuário:', error);
+      }
     }
   };
 
@@ -46,13 +56,32 @@ function App() {
     setNewUser(user);
   };
 
-  const handleUpdateUser = () => {
-    setUsers(users.map(user => (user.id === currentUser.id ? { ...newUser, id: currentUser.id } : user)));
-    resetForm();
+  const handleUpdateUser = async () => {
+    try {
+      const response = await fetch(`http://localhost:8080/api/v1/users/${currentUser.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newUser),
+      });
+      const updatedUser = await response.json();
+      setUsers(users.map(user => (user.id === currentUser.id ? updatedUser : user)));
+      resetForm();
+    } catch (error) {
+      console.error('Erro ao atualizar usuário:', error);
+    }
   };
 
-  const handleDeleteUser = (id) => {
-    setUsers(users.filter(user => user.id !== id));
+  const handleDeleteUser = async (id) => {
+    try {
+      await fetch(`http://localhost:8080/api/v1/users/${id}`, {
+        method: 'DELETE',
+      });
+      setUsers(users.filter(user => user.id !== id));
+    } catch (error) {
+      console.error('Erro ao deletar usuário:', error);
+    }
   };
 
   const resetForm = () => {
