@@ -4,23 +4,14 @@ import show from './olho.png';  // Ícone para mostrar a senha
 import hide from './visivel.png'; // Ícone para ocultar a senha
 import Sidebar1 from './Sidebar/SidebarManagement';
 
-const initialUsersData = [
-  {
-    nome: 'Rodrigo Salomão',
-    ativo: true,
-    administrador: false,
-    email: 'rodrigosalomao2001@gmail.com',
-    senha: 'batatacomlimao'
-  },
-];
-
 function App() {
-  const [users, setUsers] = useState(initialUsersData);
+  const [users, setUsers] = useState([]); // Inicializa com um array vazio
   const [searchTerm, setSearchTerm] = useState('');
   const [newUser, setNewUser] = useState({ nome: '', ativo: false, administrador: false, email: '', senha: '' });
   const [isEditing, setIsEditing] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
-  const [showPassword, setShowPassword] = useState(false); // Controle de exibição da senha
+  const [showPassword, setShowPassword] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
@@ -28,7 +19,10 @@ function App() {
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
-    setNewUser({ ...newUser, [name]: value });
+    setNewUser(prevState => ({
+      ...prevState,
+      [name]: value || ''
+    }));
   };
 
   const handleAddUser = async () => {
@@ -39,12 +33,24 @@ function App() {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(newUser),
+          body: JSON.stringify({
+            nome: newUser.nome,
+            email: newUser.email,
+            senha: newUser.senha,
+            admin: newUser.administrador,
+            codStatus: newUser.ativo ? "A" : "I"
+          }),
         });
+
+        if (!response.ok) {
+          throw new Error('Erro ao adicionar usuário: ' + response.statusText);
+        }
+
         const data = await response.json();
-        setUsers([...users, data]); // Atualiza a lista de usuários com o dado criado no backend
+        setUsers(prevUsers => [...prevUsers, data]);
         resetForm();
       } catch (error) {
+        setErrorMessage(error.message);
         console.error('Erro ao adicionar usuário:', error);
       }
     }
@@ -53,7 +59,7 @@ function App() {
   const handleEditUser = (user) => {
     setIsEditing(true);
     setCurrentUser(user);
-    setNewUser(user);
+    setNewUser({ ...user });
   };
 
   const handleUpdateUser = async () => {
@@ -63,12 +69,25 @@ function App() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(newUser),
+        body: JSON.stringify({
+          nome: newUser.nome,
+          email: newUser.email,
+          senha: newUser.senha,
+          admin: newUser.administrador,
+          codStatus: newUser.ativo ? "A" : "I"
+        }),
       });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Erro ao atualizar usuário: ${response.status} - ${errorText}`);
+      }
+
       const updatedUser = await response.json();
       setUsers(users.map(user => (user.id === currentUser.id ? updatedUser : user)));
       resetForm();
     } catch (error) {
+      setErrorMessage(error.message);
       console.error('Erro ao atualizar usuário:', error);
     }
   };
@@ -80,6 +99,7 @@ function App() {
       });
       setUsers(users.filter(user => user.id !== id));
     } catch (error) {
+      setErrorMessage('Erro ao deletar usuário');
       console.error('Erro ao deletar usuário:', error);
     }
   };
@@ -88,23 +108,22 @@ function App() {
     setIsEditing(false);
     setCurrentUser(null);
     setNewUser({ nome: '', ativo: false, administrador: false, email: '', senha: '' });
+    setErrorMessage('');
   };
 
   const filteredUsers = users.filter(user => 
     user.nome.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Alterna entre mostrar e ocultar a senha
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
   };
 
   return (
-  
     <div className="container"> 
-     <div style={{ display: "flex" }}> 
-       <Sidebar1 />
-     </div>
+      <div style={{ display: "flex" }}> 
+        <Sidebar1 />
+      </div>
       
       <h1>Usuários</h1>
       <div className="search-container">
@@ -117,90 +136,87 @@ function App() {
         <button>Pesquisar</button>
       </div>
 
-      {/* Formulário para Adicionar/Editar Usuários */}
+      {errorMessage && <div className="error-message">{errorMessage}</div>}
+
       <div className="form-container">
-        
-      <form 
-      
-  onSubmit={(event) => {
-    event.preventDefault(); // Impede o comportamento padrão de envio
-    if (isEditing) {
-      handleUpdateUser();
-    } else {
-      handleAddUser();
-    }
-  }}
->
-  <h2>{isEditing ? 'Editar Usuário' : 'Adicionar Novo Usuário'}</h2>
+        <form 
+          onSubmit={(event) => {
+            event.preventDefault();
+            if (isEditing) {
+              handleUpdateUser();
+            } else {
+              handleAddUser();
+            }
+          }}
+        >
+          <h2>{isEditing ? 'Editar Usuário' : 'Adicionar Novo Usuário'}</h2>
 
-  <div className="form-row">
-    <input 
-      className='nome'
-      type="text" 
-      name="nome" 
-      placeholder="Nome do Usuário" 
-      value={newUser.nome} 
-      onChange={handleInputChange} 
-      required
-    />
+          <div className="form-row">
+            <input 
+              className='nome'
+              type="text" 
+              name="nome" 
+              placeholder="Nome do Usuário" 
+              value={newUser.nome} 
+              onChange={handleInputChange} 
+              required
+            />
 
-    <input 
-      className='email'
-      type="email" 
-      name="email" 
-      placeholder="Email" 
-      value={newUser.email} 
-      onChange={handleInputChange} 
-      required
-    />
+            <input 
+              className='email'
+              type="email" 
+              name="email" 
+              placeholder="Email" 
+              value={newUser.email} 
+              onChange={handleInputChange} 
+              required
+            />
 
-    <div className="password-container">
-      <input 
-        type={showPassword ? 'text' : 'password'} 
-        name="senha" 
-        placeholder="Senha" 
-        value={newUser.senha} 
-        onChange={handleInputChange} 
-        required
-      />
-      <button 
-        type="button" 
-        onClick={toggleShowPassword} 
-        className="toggle-password"
-      >
-        <img src={showPassword ? hide : show} alt={showPassword ? "Ocultar senha" : "Mostrar senha"} />
-      </button>
-    </div>
+            <div className="password-container">
+              <input 
+                type={showPassword ? 'text' : 'password'} 
+                name="senha" 
+                placeholder="Senha" 
+                value={newUser.senha} 
+                onChange={handleInputChange} 
+                required
+              />
+              <button 
+                type="button" 
+                onClick={toggleShowPassword} 
+                className="toggle-password"
+              >
+                <img src={showPassword ? hide : show} alt={showPassword ? "Ocultar senha" : "Mostrar senha"} />
+              </button>
+            </div>
 
-    <label>
-      <input className='ativo' 
-        type="checkbox" 
-        name="ativo" 
-        checked={newUser.ativo} 
-        onChange={() => setNewUser({ ...newUser, ativo: !newUser.ativo })} 
-      />
-      Ativo
-    </label>
+            <label>
+              <input className='ativo' 
+                type="checkbox" 
+                name="ativo" 
+                checked={newUser.ativo} 
+                onChange={() => setNewUser(prevState => ({ ...prevState, ativo: !prevState.ativo }))} 
+              />
+              Ativo
+            </label>
 
-    <label>
-      <input className='adm' 
-        type="checkbox" 
-        name="administrador" 
-        checked={newUser.administrador} 
-        onChange={() => setNewUser({ ...newUser, administrador: !newUser.administrador })} 
-      />
-      Administrador
-    </label>
+            <label>
+              <input className='adm' 
+                type="checkbox" 
+                name="administrador" 
+                checked={newUser.administrador} 
+                onChange={() => setNewUser(prevState => ({ ...prevState, administrador: !prevState.administrador }))} 
+              />
+              Administrador
+            </label>
 
-    <button className='ADD_button' type="submit">
-      {isEditing ? 'Atualizar Usuário' : 'Adicionar Usuário'}
-    </button>
-  </div>
-</form>
-
+            <button className='ADD_button' type="submit">
+              {isEditing ? 'Atualizar Usuário' : 'Adicionar Usuário'}
+            </button>
+          </div>
+        </form>
       </div>
 
-      {/* Tabela de Usuários */}
       <div className="table-container">
         <table>
           <thead>
@@ -209,7 +225,6 @@ function App() {
               <th>Usuário ativo</th>
               <th>Administrador</th>
               <th>Email</th>
-              <th>Senha</th>
               <th>Ações</th>
             </tr>
           </thead>
@@ -220,11 +235,9 @@ function App() {
                 <td>{user.ativo ? 'True' : 'False'}</td>
                 <td>{user.administrador ? 'True' : 'False'}</td>
                 <td>{user.email}</td>
-                <td>{user.senha}</td>
-          
                 <td className="action-buttons">
                   <button onClick={() => handleEditUser(user)}>Editar</button>
-                  <button className="botaodeletar"onClick={() => handleDeleteUser(user.id)}>Excluir</button>
+                  <button className="botaodeletar" onClick={() => handleDeleteUser(user.id)}>Excluir</button>
                 </td>
               </tr>
             ))}
