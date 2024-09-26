@@ -18,17 +18,17 @@ function App() {
   };
 
   const handleInputChange = (event) => {
-    const { name, value } = event.target;
+    const { name, value, type, checked } = event.target;
     setNewUser(prevState => ({
       ...prevState,
-      [name]: value || ''
+      [name]: type === 'checkbox' ? checked : value
     }));
   };
 
   const handleAddUser = async () => {
     if (newUser.email && newUser.senha && newUser.nome) {
       try {
-        const response = await fetch('http://localhost:8080/api/v1/users', {
+        const response = await fetch('http://localhost:8080/api/v1/users', {  // Ajuste aqui
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -59,42 +59,64 @@ function App() {
   const handleEditUser = (user) => {
     setIsEditing(true);
     setCurrentUser(user);
-    setNewUser({ ...user });
+    setNewUser({ 
+      nome: user.nome, 
+      ativo: user.codStatus === "A", 
+      administrador: user.admin, 
+      email: user.email, 
+      senha: '' // Limpa a senha para não mostrar ao editar
+    });
   };
-
   const handleUpdateUser = async () => {
-    try {
-      const response = await fetch(`http://localhost:8080/api/v1/users/${currentUser.id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          nome: newUser.nome,
-          email: newUser.email,
-          senha: newUser.senha,
-          admin: newUser.administrador,
-          codStatus: newUser.ativo ? "A" : "I"
-        }),
-      });
+    if (!currentUser || typeof currentUser.id !== 'number') return;
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Erro ao atualizar usuário: ${response.status} - ${errorText}`);
-      }
-
-      const updatedUser = await response.json();
-      setUsers(users.map(user => (user.id === currentUser.id ? updatedUser : user)));
-      resetForm();
-    } catch (error) {
-      setErrorMessage(error.message);
-      console.error('Erro ao atualizar usuário:', error);
+    const updatedFields = {};
+    if (newUser.nome !== currentUser.nome) {
+        updatedFields.nome = newUser.nome;
     }
-  };
+    if (newUser.email && newUser.email !== currentUser.email) {
+        updatedFields.email = newUser.email; // Envia apenas se modificado
+    }
+    if (newUser.senha) {
+        updatedFields.senha = newUser.senha; // Envia a senha apenas se preenchida
+    }
+    if (newUser.administrador !== currentUser.admin) {
+        updatedFields.admin = newUser.administrador;
+    }
+    updatedFields.codStatus = newUser.ativo ? "A" : "I"; // Atualiza codStatus sempre que 'ativo' mudar
+
+    // Verifica se há campos a serem atualizados
+    if (Object.keys(updatedFields).length === 0) {
+        setErrorMessage("Nenhuma alteração detectada.");
+        return;
+    }
+
+    try {
+        const response = await fetch(`http://localhost:8080/api/v1/users/${currentUser.id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(updatedFields),
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`Erro ao atualizar usuário: ${response.status} - ${errorText}`);
+        }
+
+        const updatedUser = await response.json();
+        setUsers(users.map(user => (user.id === currentUser.id ? updatedUser : user)));
+        resetForm();
+    } catch (error) {
+        setErrorMessage(error.message);
+        console.error('Erro ao atualizar usuário:', error);
+    }
+};
 
   const handleDeleteUser = async (id) => {
     try {
-      await fetch(`http://localhost:8080/api/v1/users/${id}`, {
+      await fetch(`/api/v1/users/${id}`, { // Ajuste aqui
         method: 'DELETE',
       });
       setUsers(users.filter(user => user.id !== id));
@@ -179,7 +201,6 @@ function App() {
                 placeholder="Senha" 
                 value={newUser.senha} 
                 onChange={handleInputChange} 
-                required
               />
               <button 
                 type="button" 
@@ -232,8 +253,8 @@ function App() {
             {filteredUsers.map(user => (
               <tr key={user.id}>
                 <td>{user.nome}</td>
-                <td>{user.ativo ? 'True' : 'False'}</td>
-                <td>{user.administrador ? 'True' : 'False'}</td>
+                <td>{user.codStatus === "A" ? 'True' : 'False'}</td>
+                <td>{user.admin ? 'True' : 'False'}</td>
                 <td>{user.email}</td>
                 <td className="action-buttons">
                   <button onClick={() => handleEditUser(user)}>Editar</button>
