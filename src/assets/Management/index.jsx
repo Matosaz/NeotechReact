@@ -38,7 +38,7 @@ function App() {
             email: newUser.email,
             senha: newUser.senha,
             admin: newUser.administrador,
-            codStatus: newUser.ativo ? "A" : "I"
+            codStatus: newUser.ativo ? "ATIVO" : "INATIVO"
           }),
         });
 
@@ -51,7 +51,7 @@ function App() {
         resetForm();
       } catch (error) {
         setErrorMessage(error.message);
-        console.error('Erro ao adicionar usuário:', error);
+        console.log('Erro ao adicionar usuário:', error);
       }
     }
   };
@@ -61,7 +61,7 @@ function App() {
     setCurrentUser(user);
     setNewUser({ 
       nome: user.nome, 
-      ativo: user.codStatus === "A", 
+      ativo: user.codStatus === "ATIVO", 
       administrador: user.admin, 
       email: user.email, 
       senha: '' // Limpa a senha para não mostrar ao editar
@@ -83,7 +83,7 @@ function App() {
     if (newUser.administrador !== currentUser.admin) {
         updatedFields.admin = newUser.administrador;
     }
-    updatedFields.codStatus = newUser.ativo ? "A" : "I"; // Atualiza codStatus sempre que 'ativo' mudar
+    updatedFields.codStatus = newUser.ativo ? "ATIVO" : "INATIVO"; // Atualiza codStatus sempre que 'ativo' mudar
 
     // Verifica se há campos a serem atualizados
     if (Object.keys(updatedFields).length === 0) {
@@ -253,7 +253,7 @@ function App() {
             {filteredUsers.map(user => (
               <tr key={user.id}>
                 <td>{user.nome}</td>
-                <td>{user.codStatus === "A" ? 'True' : 'False'}</td>
+                <td>{user.codStatus === "ATIVO" ? 'True' : 'False'}</td>
                 <td>{user.admin ? 'True' : 'False'}</td>
                 <td>{user.email}</td>
                 <td className="action-buttons">
