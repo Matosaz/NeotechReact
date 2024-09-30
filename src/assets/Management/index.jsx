@@ -69,28 +69,37 @@ function App() {
   };
   const handleUpdateUser = async () => {
     if (!currentUser || typeof currentUser.id !== 'number') return;
-
+  
     const updatedFields = {};
+    
+    // Verificar alterações de nome
     if (newUser.nome !== currentUser.nome) {
         updatedFields.nome = newUser.nome;
     }
+  
+    // Verificar alterações de email
     if (newUser.email && newUser.email !== currentUser.email) {
-        updatedFields.email = newUser.email; // Envia apenas se modificado
+        updatedFields.email = newUser.email; 
     }
+  
+    // Verificar se a senha foi preenchida (não comparar com a senha atual por questões de segurança)
     if (newUser.senha) {
-        updatedFields.senha = newUser.senha; // Envia a senha apenas se preenchida
+        updatedFields.senha = newUser.senha; 
     }
-    if (newUser.administrador !== currentUser.admin) {
-        updatedFields.admin = newUser.administrador;
-    }
-    updatedFields.codStatus = newUser.ativo ? "ATIVO" : "INATIVO"; // Atualiza codStatus sempre que 'ativo' mudar
-
-    // Verifica se há campos a serem atualizados
+   // Verificar alteração no campo de administrador
+   if (typeof newUser.administrador === 'boolean') {
+    updatedFields.admin = newUser.administrador;
+}
+  
+    // Atualizar status de ativo/inativo sempre
+    updatedFields.codStatus = newUser.ativo ? "ATIVO" : "INATIVO"; 
+  
+    // Verificar se há campos a serem atualizados
     if (Object.keys(updatedFields).length === 0) {
         setErrorMessage("Nenhuma alteração detectada.");
         return;
     }
-
+  
     try {
         const response = await fetch(`http://localhost:8080/api/v1/users/${currentUser.id}`, {
             method: 'PUT',
@@ -99,12 +108,12 @@ function App() {
             },
             body: JSON.stringify(updatedFields),
         });
-
+  
         if (!response.ok) {
             const errorText = await response.text();
             throw new Error(`Erro ao atualizar usuário: ${response.status} - ${errorText}`);
         }
-
+  
         const updatedUser = await response.json();
         setUsers(users.map(user => (user.id === currentUser.id ? updatedUser : user)));
         resetForm();
@@ -112,7 +121,8 @@ function App() {
         setErrorMessage(error.message);
         console.error('Erro ao atualizar usuário:', error);
     }
-};
+  };
+  
 
   const handleDeleteUser = async (id) => {
     try {
