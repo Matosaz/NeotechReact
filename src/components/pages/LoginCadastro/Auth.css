@@ -34,6 +34,46 @@
   font-size: 2rem;
   color: #333333ea;
 }
+/* Tooltip container */
+.tooltip-container {
+  position: relative;
+  display: inline-block;
+}
+
+/* Tooltip content */
+.tooltip {
+  visibility: hidden;
+  background-color: #fff;
+  color: #333;
+  text-align: left;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  font-size: 14px;
+  width: 250px;
+  position: absolute;
+  top: -10px;
+  left: 110%;
+  z-index: 1;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Arrow pointing to the field */
+.tooltip::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: -5px;
+  transform: translateY(-50%);
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent #ccc transparent transparent;
+}
+
+/* Tooltip visibility when active */
+.tooltip-container:focus-within .tooltip {
+  visibility: visible;
+}
 
 /* Input */
 .input-container {
