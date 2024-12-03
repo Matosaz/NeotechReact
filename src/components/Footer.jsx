@@ -32,24 +32,28 @@ const Footer = () => {
       <li><a href='#'>Atendimento ao cliente</a></li>
     </div>
 
-    <div className="conteudofooter">
-      <h4>Seja uma empresa parceira!</h4>
-        <div className="Emailconteudo">
-
-            <div className="Email">
-              <div className="text">Email</div>
-              <input type="email" placeholder='Email' required/>
-            </div>
-            <div className="msg">
-              <div className="text">Mensagem</div>
-              <textarea rows={2} cols={25}  placeholder="Deixe uma mensagem" required></textarea>
-            </div>
-         
-              <button className='botaofooter'type='submit'>Enviar </button>
-            
-
-        </div>
+    <div class="conteudofooter">
+  <h4>Seja uma empresa parceira!</h4>
+  <div class="Emailconteudofooter">
+ 
+    <div class="input-containerfooter">
+      <input type="email" id="emailfooter" required />
+      <label for="emailfooter" class="labelfooter">Email</label>
+      <div class="underlinefooter"></div>
     </div>
+
+   
+    <div class="input-containerfooter">
+      <textarea id="messagefooter" rows="2" required></textarea>
+      <label for="messagefooter" class="labelfooter">Mensagem</label>
+      <div class="underlinefooter"></div>
+    </div>
+
+    
+    <button class="botaofooter" type="submit">Enviar</button>
+  </div>
+</div>
+
    </footer>
   )
 }

@@ -59,28 +59,8 @@
     color: #d6d6d6;
     line-height: 30px;
 }
-input, textarea{
-    border-radius: 8px;
-    width: 70%;
-    height: 40px;
-    background:#fafafa;
-    font-family: 'Lexend';
-    text-align: center;
-    color:#121212;
-    font-size: 15px;
-    border-style: none;
-    transition: all .40s ease;
-}
 
-input:hover{
-    transform: scale(1.03)
-}
-textarea:hover{
-    transform: scale(1.03)
-}
-textarea {
-    padding-top: 10px;
-}
+
 .botaofooter{
     width: 150px;
     height: 40px;
@@ -92,7 +72,83 @@ textarea {
     margin-top: 10px;
     transition: all .40s ease;
 }
-
+/* Estilo dos campos */
+.input-containerfooter {
+    position: relative;
+    margin-bottom: 1.7rem;
+    width: 70%;
+    margin-bottom: 0px;
+    margin-top: 10px;
+  }
+  
+  .input-containerfooter input,
+  .input-containerfooter textarea {
+    font-size: 1rem;
+    width: 100%;
+    padding: 1rem;
+    font-family: "Lexend";
+    border: 0;
+    background-color: #fafafa;
+    border-radius: 8px;
+    outline: none;
+    transition: all 0.3s ease-in-out;
+    color: #121212;
+  }
+  
+  .input-containerfooter textarea {
+    resize: none;
+    height: 80px;
+  }
+  
+  /* Label animado */
+  .input-containerfooter .labelfooter {
+    position: absolute;
+    top: 50%;
+    left: 15px;
+    font-size: 1rem;
+    color: #333333d3;
+    transform: translateY(-50%);
+    transition: all 0.3s ease;
+    pointer-events: none;
+  }
+  
+  /* Animação ao focar ou preencher */
+  .input-containerfooter input:focus ~ .labelfooter,
+  .input-containerfooter textarea:focus ~ .labelfooter,
+  .input-containerfooter input:valid ~ .labelfooter,
+  .input-containerfooter textarea:valid ~ .labelfooter {
+    top: 0;
+    padding-top: 12px;
+    left: 15px;
+    font-size: 0.84rem;
+    color:#488042;
+    font-weight: 500;
+   
+  }
+  
+  
+  
+  
+  /* Botão */
+  .botaofooter {
+    width: 150px;
+    height: 40px;
+    text-align: center;
+    margin-left: 0;
+    border-radius: 8px;
+    background: #38a743;
+    border-style: none;
+    color: #fff;
+    font-family: 'Lexend', sans-serif;
+    font-size: 1rem;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  .botaofooter:hover {
+    background: #33973d;
+    transform: scale(1.01);
+  }
+  
 .botaofooter:hover{
     transform: scale(1.01);
     background: #33973d;

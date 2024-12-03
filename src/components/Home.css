@@ -211,6 +211,7 @@ height: 1550px;
 background: rgb(205,238,174);
 background: radial-gradient(circle, rgb(195, 236, 153) 1%, rgb(187, 226, 200) 100%);/*  background-color:rgb(178, 216, 173); */
 position: flex;
+
 }
 
 .txtTL1{
@@ -320,8 +321,12 @@ transform: translateX(-150%);
 width: calc(50% - 2rem);
 padding-left: 2rem;
 margin-top: -15px;
-}
 
+}
+.contentTL p{
+  color: #333333d0;
+  font-weight: 500;
+}
 .contentTL h2{
 font-weight: 700;
 color: #2f7c37;
@@ -363,7 +368,7 @@ padding: 8rem 4rem;
 
 .conteudo{
 text-align: justify;
-width: 70%;
+width: 72%;
 }
 
 .conteudo h2{
@@ -376,7 +381,7 @@ width: 70%;
 
 .conteudo p{
 font-weight: bold;
-color: #646262;
+color: #333333d0;
 }
 
 .botao2{

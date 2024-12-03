@@ -69,7 +69,7 @@
 .input-container input:valid ~ .label {
   top: -20px;
   font-size: 0.9rem;
-  color: #121212;
+  color: #488042;
   font-weight: 450;
 }
 
@@ -79,7 +79,7 @@
   left: 0;
   height: 2px;
   width: 100%;
-  background-color: #333;
+  background-color: #488042;
   transform: scaleX(0);
   transition: all 0.35s ease;
 }
