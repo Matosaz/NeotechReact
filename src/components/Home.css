@@ -168,7 +168,7 @@ position: flex;
 
 .counters{
   padding: 1em 2em;
-  background: #73b97a;   /* #439D4C;*/;  /* ##73b97a;*/;
+  background: #7fc08d;;   /* #439D4C;*/;  /* ##73b97a;*/;
   color: #fafafa;
   text-align: center;
 
@@ -208,8 +208,12 @@ position: flex;
 /*Inicio Timeline*/
 .timeline{
 height: 1550px;
-background: rgb(205,238,174);
-background: radial-gradient(circle, rgb(195, 236, 153) 1%, rgb(187, 226, 200) 100%);/*  background-color:rgb(178, 216, 173); */
+margin-top: 3px;
+
+  background: url('/src/assets/testeorcamento4.png') no-repeat;
+  background-position: center;
+/* background: rgb(205,238,174);
+background: radial-gradient(circle, rgb(195, 236, 153) 1%, rgb(187, 226, 200) 100%); background-color:rgb(178, 216, 173); */
 position: flex;
 
 }
@@ -618,7 +622,7 @@ transform: scale(1.03);
   display: grid;
 }
 .Serviço{
-  height: 1620px;
+  height: 1530px;
 }
 .coluna{
   display: block;
@@ -666,7 +670,7 @@ transform: scale(1.03);
 }
 @media(max-width: 620px){
   .timeline{
-    height: 1700px;
+    height: 1500px;
   }
 }
 @media (max-width: 597px){
@@ -678,7 +682,7 @@ transform: scale(1.03);
   display: grid;
 }
 .Serviço{
-  height: 1620px;
+  height: 1560px;
 }
 .videocontent{
   max-width: 450px;
@@ -695,7 +699,7 @@ transform: scale(1.03);
   display: grid;
 }
 .Serviço{
-  height: 2100px;
+  height: 1970px;
 }
 .videocontent{
   max-width: 390px;
@@ -703,8 +707,11 @@ transform: scale(1.03);
 }
 }
 
-@media(max-width: 373px){
+@media(max-width: 470px){
   .timeline{
-    height: 1790px;
+    height: 1555px;
+  }
+  .Serviço{
+    height: 2030px;
   }
 }

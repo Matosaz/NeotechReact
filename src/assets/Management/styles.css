@@ -15,7 +15,7 @@ body{
     margin-left: 100px;
 }
 
-h1 {
+ h1 {
     font-size: 36px;
     margin-bottom: 20px;
 }
@@ -34,7 +34,7 @@ h1 {
     background-color: #ced6d1;
 }
 
-button {
+ button {
     padding: 8px 12px;
     background-color: rgb(95, 170, 132);
     color: white;
@@ -68,7 +68,7 @@ button:hover {
 /* Distribui os itens de forma uniforme */
 }
 
-.form-container .nome, .email{
+.form-container .nome, .form-container .email, .password-container input{
     width: 60%; /* Todos os inputs terão 30% da largura */
     padding: 8px;
     font-size: 14px;
@@ -87,7 +87,7 @@ button:hover {
   }
 
 .password-container input {
-    width: 300px; 
+    width: 400px; 
 }
 
 
@@ -108,25 +108,26 @@ button:hover {
 }
 .toggle-password:hover{
     background:none;
-    opacity: 0.20;
+    opacity: 0.40;
 }
 
 .form-row label {
     display: flex;
-   align-items: center;
-    scale: 0.7;
-    margin-left: -20px;
-    color: #121212;
+    align-items: center;
+    scale: 1.2;
+    color: #fafafafd;
     font-family: "Lexend";
+    font-weight: 500;
   }
   
 .form-row label .ativo{
-    
-    margin-left: 30px;
+    margin-left: 40px;
+    margin-right: -10px
   }
   .form-row label .adm{
-    position: relative;;
-    margin-left: -50px
+    position: relative;
+    margin-left: -40px;
+    margin-right: -10px
   }
 
 

@@ -101,13 +101,13 @@ const Auth = () => {
         </form>
         <p className="toggle-mode">
           {isLoginMode ? 'Não possui uma conta?' : 'Já possui uma conta?'}
-          <button type="button" onClick={toggleMode}>
+          <button type="button" className="trocar-btn" onClick={toggleMode}>
             {isLoginMode ? 'Cadastrar' : 'Login'}
           </button>
         </p>
         <p className="direitos">
           Todos os direitos reservados <br />
-          <span>© Neotech 2024</span>
+          <span className='span-direitos'>© Neotech 2024</span>
         </p>
       </div>
     </div>

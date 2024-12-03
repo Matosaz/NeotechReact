@@ -3,7 +3,7 @@
     display: grid;
     grid-template-columns: repeat(4,1fr);
     gap: 3.5rem;
-    background: #488042;
+    background: #47854e ;  /*#5f9763 e #47854e */
     align-items: start;
 }
 
