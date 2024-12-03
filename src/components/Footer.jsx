@@ -45,7 +45,7 @@ const Footer = () => {
               <textarea rows={2} cols={25}  placeholder="Deixe uma mensagem" required></textarea>
             </div>
          
-              <button className='botao'type='submit'>Enviar </button>
+              <button className='botaofooter'type='submit'>Enviar </button>
             
 
         </div>

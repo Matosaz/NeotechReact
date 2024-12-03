@@ -37,7 +37,7 @@ position: flex;
   margin-top: -350px;
 }
 .Serviço{
-  height: 1080px;
+  height: 1040px;
   background-color:bisque;
   position: flex;
 }
@@ -168,17 +168,17 @@ position: flex;
 
 .counters{
   padding: 1em 2em;
-  background: #439D4C;
+  background: #73b97a;   /* #439D4C;*/;  /* ##73b97a;*/;
   color: #fafafa;
   text-align: center;
 
 }
 .counters > div{
-  max-width: 900px;
+  max-width: 920px;
   margin: 0 auto;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 4em 2em;
+  gap: 3em 3em;
 }
 
 .counter{

@@ -43,7 +43,7 @@ function App() {
         });
 
         if (!response.ok) {
-          throw new Error('Erro ao adicionar usuário: ' + response.statusText);
+          alert('Erro ao adicionar usuário: ' + response.statusText);
         }
 
         const data = await response.json();
@@ -51,7 +51,7 @@ function App() {
         resetForm();
       } catch (error) {
         setErrorMessage(error.message);
-        console.log('Erro ao adicionar usuário:', error);
+        alert('Erro ao adicionar usuário:', error);
       }
     }
   };
@@ -96,7 +96,7 @@ function App() {
   
     // Verificar se há campos a serem atualizados
     if (Object.keys(updatedFields).length === 0) {
-        setErrorMessage("Nenhuma alteração detectada.");
+        alert("Nenhuma alteração detectada.");
         return;
     }
   
@@ -111,7 +111,7 @@ function App() {
   
         if (!response.ok) {
             const errorText = await response.text();
-            throw new Error(`Erro ao atualizar usuário: ${response.status} - ${errorText}`);
+            alert(`Erro ao atualizar usuário: ${response.status} - ${errorText}`);
         }
   
         const updatedUser = await response.json();
@@ -119,7 +119,7 @@ function App() {
         resetForm();
     } catch (error) {
         setErrorMessage(error.message);
-        console.error('Erro ao atualizar usuário:', error);
+        alert('Erro ao atualizar usuário:', error);
     }
   };
   
@@ -132,7 +132,7 @@ function App() {
       setUsers(users.filter(user => user.id !== id));
     } catch (error) {
       setErrorMessage('Erro ao deletar usuário');
-      console.error('Erro ao deletar usuário:', error);
+      alert('Erro ao deletar usuário:', error);
     }
   };
 
@@ -168,7 +168,6 @@ function App() {
         <button>Pesquisar</button>
       </div>
 
-      {errorMessage && <div className="error-message">{errorMessage}</div>}
 
       <div className="form-container">
         <form 

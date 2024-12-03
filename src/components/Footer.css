@@ -1,21 +1,21 @@
 .Footer{
     padding: 20px 70px 70px;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, auto));
+    grid-template-columns: repeat(4,1fr);
     gap: 3.5rem;
     background: #488042;
-    align-items: center;
+    align-items: start;
 }
 
 .conteudofooter h4{
     color: #fafafa;
-    margin-bottom: 1.5rem;
+
     font-size: 20px;
-    padding-top: 10%;
+    margin-top: 60px;
 }
 
 .conteudofooter li{
-    margin-bottom: 16px;
+    padding: 16px 0px 0px 0px;
     list-style-type: none;
 }
 
@@ -64,7 +64,7 @@ input, textarea{
     width: 70%;
     height: 40px;
     background:#fafafa;
-    font-family: 'Poppins';
+    font-family: 'Lexend';
     text-align: center;
     color:#121212;
     font-size: 15px;
@@ -81,30 +81,28 @@ textarea:hover{
 textarea {
     padding-top: 10px;
 }
-.botao{
+.botaofooter{
     width: 150px;
     height: 40px;
     text-align: center;
     margin-left: 0;
     border-radius: 8px;
-    background: #63c458;
+    background: #38a743;
     border-style: none;
     margin-top: 10px;
     transition: all .40s ease;
 }
 
-.botao:hover{
-    transform: scale(1.03)
-}
-button{
-    display: absolute;
+.botaofooter:hover{
+    transform: scale(1.01);
+    background: #33973d;
 }
 @media (max-width: 1649px){
     .Footer{
         padding: 50px 5% 40px;
     }
 
-    .botao{
+    .botaofooter{
         margin-left: 0;
 }
 

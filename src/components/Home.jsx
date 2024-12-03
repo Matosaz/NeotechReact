@@ -30,7 +30,7 @@ import React, {useEffect, useState} from 'react';
             count++;
 
             counter.innerText = count;
-            setTimeout(updateCount, 10);
+            setTimeout(updateCount, 0);
           } else {
             counter.innerText = target;
           }
@@ -39,7 +39,7 @@ import React, {useEffect, useState} from 'react';
       });
       activated = true;
     } else if (
-      pageYOffset < container.offsetTop - container.offsetHeight - 500 ||
+      pageYOffset < container.offsetTop - container.offsetHeight - 400 ||
       (pageYOffset === 0 && activated === true)
     ) {
       counters.forEach((counter) => {

@@ -12,7 +12,7 @@ const Auth = () => {
     password: '',
     confirmPassword: ''
   });
-  const navigate = useNavigate(); // Hook de navegação
+  const navigate = useNavigate();
 
   const toggleMode = () => {
     setIsLoginMode(!isLoginMode);
@@ -36,9 +36,7 @@ const Auth = () => {
     }
 
     alert(isLoginMode ? 'Acesso bem sucedido!' : 'Cadastrado bem sucedido!');
-    
-    // Redireciona para a tela inicial após o sucesso
-    navigate('/#'); // ou a rota que você definir para a página inicial
+    navigate('/#'); // Redireciona para a página inicial
   };
 
   return (
@@ -46,9 +44,8 @@ const Auth = () => {
       <video autoPlay loop playsInline className="VideoBackground" src={LoginVideo}></video>
       <div className="auth-box">
         <img className="LogoNeotech2" src={LogoNeotech2} alt="Logo da Neotech" />
-        <h2 className='boasvindas'>{isLoginMode ? 'Bem vindo de volta!' : 'Bem vindo!'}</h2>
-        
-        <h2>{isLoginMode ? 'Login' : 'Cadastrar'}</h2>
+        <h2 className='boasvindas'>{isLoginMode ? 'Que bom que você retornou!' : ''}</h2>
+        <h2 className="Criarconta">{isLoginMode ? '' : 'Crie uma conta'}</h2>
         <form onSubmit={handleSubmit}>
           {!isLoginMode && (
             <div className="input-container">
@@ -57,9 +54,10 @@ const Auth = () => {
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
-                placeholder="Nome"
                 required={!isLoginMode}
               />
+              <label className="label">Nome</label>
+              <span className="underline"></span>
             </div>
           )}
           <div className="input-container">
@@ -68,9 +66,10 @@ const Auth = () => {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              placeholder="Email"
               required
             />
+            <label className="label">Email</label>
+            <span className="underline"></span>
           </div>
           <div className="input-container">
             <input
@@ -78,9 +77,10 @@ const Auth = () => {
               name="password"
               value={formData.password}
               onChange={handleChange}
-              placeholder="Senha"
               required
             />
+            <label className="label">Senha</label>
+            <span className="underline"></span>
           </div>
           {!isLoginMode && (
             <div className="input-container">
@@ -89,9 +89,10 @@ const Auth = () => {
                 name="confirmPassword"
                 value={formData.confirmPassword}
                 onChange={handleChange}
-                placeholder="Confirmar senha"
                 required={!isLoginMode}
               />
+              <label className="label">Confirmar senha</label>
+              <span className="underline"></span>
             </div>
           )}
           <button type="submit" className="submit-btn">
@@ -106,7 +107,7 @@ const Auth = () => {
         </p>
         <p className="direitos">
           Todos os direitos reservados <br />
-          <span> © Neotech 2024</span> 
+          <span>© Neotech 2024</span>
         </p>
       </div>
     </div>
