@@ -61,7 +61,7 @@ const Auth = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Se não for no modo de login, verificamos as senhas
@@ -72,8 +72,42 @@ const Auth = () => {
       }
     }
 
-    alert(isLoginMode ? 'Acesso bem-sucedido!' : 'Cadastro bem-sucedido!');
-    navigate('/#');
+    const payload = {
+      email: formData.email,
+      senha: formData.password, // Garantir que o campo é enviado como 'senha'
+    };
+
+    // Se for cadastro, adicionamos o nome
+    if (!isLoginMode) {
+      payload.nome = formData.name; // Garantir que o campo 'nome' é passado corretamente
+    }
+
+    try {
+      const url = isLoginMode ? 'http://localhost:8080/api/v1/users/login' : 'http://localhost:8080/api/v1/users';
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', },
+        body: JSON.stringify(payload),
+    
+      });
+
+      if (!response.ok) {
+        throw new Error(isLoginMode ? 'Erro no login' : 'Erro no cadastro');
+      }
+
+      const data = await response.json();
+
+      if (isLoginMode) {
+        localStorage.setItem('token', data.token); // Salvar token no localStorage
+        alert('Login bem-sucedido!');
+        navigate('/#'); // Redirecionar após login
+      } else {
+        alert('Cadastro realizado com sucesso!');
+        toggleMode(); // Alterna para o modo de login
+      }
+    } catch (error) {
+      alert(`Erro: ${error.message}`);
+    }
   };
 
   return (
@@ -115,9 +149,8 @@ const Auth = () => {
               value={formData.password}
               onChange={handlePasswordChange}
               required
-              // Aplica o pattern apenas se não estiver no modo login
               minLength={isLoginMode ? undefined : 8}
-              pattern={isLoginMode ? undefined : "^(?=.*[a-z])(?=.*[A-Z])(?=.*/d)(?=.*[@$!%*?&])[A-Za-z/d@$!%*?&]{8,}$"}
+              pattern={isLoginMode ? undefined : "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$"}
               onFocus={() => setShowPasswordInfo(true)}
               onBlur={() => setShowPasswordInfo(false)}
             />
