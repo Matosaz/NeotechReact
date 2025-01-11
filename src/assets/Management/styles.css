@@ -31,6 +31,8 @@ body{
     padding: 8px;
     font-size: 14px;
     width: 350px;
+    border-radius: 8px;
+    border-style: none;
     background-color: #ced6d1;
 }
 
@@ -141,6 +143,8 @@ button:hover {
   .form-row .password-container,
   .form-row label {
     flex-basis: 30%; /* Cada elemento ocupa 20% da largura */
+    border-radius: 8px;
+    border-style: none;
   }
 
 .table-container {
