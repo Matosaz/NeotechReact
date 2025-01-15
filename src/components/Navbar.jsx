@@ -90,7 +90,7 @@ const Navbar = () => {
                 </a>
                 <a href="#" className="sub-menu-link" onClick={logout}>
                   <img src={logoutpng} alt="Sair do perfil" />
-                  <p>Sair do perfil</p>
+                  <p>Sair da conta</p>
                 </a>
               </div>
             </div>

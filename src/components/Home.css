@@ -27,7 +27,7 @@ font-size: 4rem;
 position: flex;
 color:#1f5c25 ;
 }
-.TxtHero2{
+.AllTxtHero{
 font-size: 3rem;
 color: #fafafa;
 padding-top: 0px;
@@ -40,7 +40,7 @@ color: #fafafa;
 font-weight: 700;
 position: flex;
 border-right: 5px solid #f3f3f3;
-width: 620px;
+width: 100%;
 white-space: nowrap;
 overflow: hidden;
 letter-spacing: 5px;
@@ -441,7 +441,7 @@ transform: scale(1.03);
   .TxtHero{
     margin-left: 290px;
   }
-  .TxtHero2{
+  .AllTxtHero{
     margin-left: 290px;
   }
   .Phoneimg{
@@ -453,7 +453,7 @@ transform: scale(1.03);
   .TxtHero{
     margin-left: 490px;
   }
-  .TxtHero2{
+  .AllTxtHero{
     margin-left: 490px;
   }
   .Phoneimg{
@@ -465,7 +465,7 @@ transform: scale(1.03);
   .TxtHero{
     margin-left: 690px;
   }
-  .TxtHero2{
+  .AllTxtHero{
     margin-left: 690px;
   }
   .Phoneimg{
@@ -478,7 +478,7 @@ transform: scale(1.03);
   .TxtHero{
     margin-left: 1190px;
   }
-  .TxtHero2{
+  .AllTxtHero{
     margin-left: 1190px;
   }
   .Phoneimg{
@@ -491,7 +491,7 @@ transform: scale(1.03);
   .TxtHero{
     margin-left: 2190px;
   }
-  .TxtHero2{
+  .AllTxtHero{
     margin-left: 2190px;
   }
   .Phoneimg{
@@ -504,7 +504,7 @@ transform: scale(1.03);
   .TxtHero{
     margin-left: 3190px;
   }
-  .TxtHero2{
+  .AllTxtHero{
     margin-left: 3190px;
   }
   .Phoneimg{
@@ -515,27 +515,29 @@ transform: scale(1.03);
 
 @media(max-width: 1604px){
   .Phoneimg{
-      margin-left: 400px;
+      margin-left: 600px;
   }
 }
 
 @media(max-width: 1455px){
   .Phoneimg{
-      margin-left: 310px;
+      margin-left: 600px;
+   width: 1100px;
   }
 }
 
 @media(max-width: 1365px){
   .Phoneimg{
-      margin-left: 330px;
-      width: 1200px;
+      margin-left: 640px;
+      width: 900px;
+      margin-top: -390px;
   }
 }
 
 @media(max-width: 1305px){
   .Phoneimg{
-      margin-left: 380px;
-      width: 1000px;
+      margin-left: 620px;
+      width: 800px;
       margin-top: -330px;
   }
 }
@@ -544,8 +546,9 @@ transform: scale(1.03);
   .Phoneimg{
       opacity: 0;
   }
+  
 
-  .TxtHero,.TxtHero2{
+  .AllTxtHero{
     margin-left: 0;
     display: flex;
     flex-direction: column;
@@ -555,7 +558,11 @@ transform: scale(1.03);
   }
 }
 
-
+@media(max-width: 654px){
+  .TxtHeroBoasVindas{
+    text-wrap: wrap;
+  }
+}
 
 @media(max-width: 1470px){
 .contentTL p{
