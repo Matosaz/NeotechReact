@@ -17,26 +17,27 @@ body{
   margin-top: 34px;
   text-align: left;
 }
+.AllTxtHero{
+margin-left: 220px;
+margin-top: 250px;
+}
 .TxtHero{
 font-size: 4rem;
-margin-left: 185px;
-padding-top: 240px;
+
 position: flex;
 color:#1f5c25 ;
 }
 .TxtHero2{
 font-size: 3rem;
 color: #fafafa;
-margin-left: 185px;
 padding-top: 0px;
 position: flex;
 }
 
 .TxtHeroBoasVindas{
-  font-size: 2.6rem;
+font-size: 2.6rem;
 color: #fafafa;
 font-weight: 700;
-margin-left: 185px;
 position: flex;
 border-right: 5px solid #f3f3f3;
 width: 620px;
@@ -60,8 +61,8 @@ from{width: 0}
 .Phoneimg{
   display: flex ;
   width: 1300px;
-  margin-left: 550px;
-  margin-top: -370px;
+  margin-left: 600px;
+  margin-top: -390px;
 }
 .Serviço{
   height: 1040px;

@@ -115,11 +115,11 @@ import React, {useEffect, useState ,useContext,} from 'react';
     
    <body>
         <section className='Hero'>
-
+        <div className='AllTxtHero'> 
         <h2 className='TxtHero'> NeoTech</h2>
         <h3 className='TxtHero2'> The future is near</h3>
         <h3 className='TxtHeroBoasVindas'>Bem vindo(a), {firstName +"!"|| "Usuário"}</h3>
-
+        </div>
         <img src={Phoneimg} className='Phoneimg'/>
         </section>
 
