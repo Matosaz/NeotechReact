@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import './Auth.css';
+import { UserContext } from '../../UserContext';
 import LoginVideo from './LoginBackground.mp4';
 import LogoNeotech2 from './LogoLogin.png';
 import { useNavigate } from 'react-router-dom';
 
 const Auth = () => {
+  const { setUser } = useContext(UserContext); // Acessa o contexto
   const [isLoginMode, setIsLoginMode] = useState(true);
   const [formData, setFormData] = useState({
     name: '',
@@ -22,6 +24,7 @@ const Auth = () => {
   });
   const navigate = useNavigate();
 
+  // Alterna entre login e cadastro
   const toggleMode = () => {
     setIsLoginMode(!isLoginMode);
     setFormData({
@@ -32,6 +35,7 @@ const Auth = () => {
     });
   };
 
+  // Atualiza o estado dos campos do formulário
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -41,6 +45,7 @@ const Auth = () => {
     }
   };
 
+  // Função para validar a senha
   const handlePasswordChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -51,44 +56,45 @@ const Auth = () => {
     }
   };
 
+  // Validação da senha
   const validatePassword = (password) => {
-    setPasswordValidations({
+    const validations = {
       length: password.length >= 8,
       lowercase: /[a-z]/.test(password),
       uppercase: /[A-Z]/.test(password),
       number: /\d/.test(password),
       specialChar: /[!@#$%^&*(),.?":{}|<>]/.test(password),
-    });
+    };
+    setPasswordValidations(validations);
   };
 
+  // Envia o formulário
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Se não for no modo de login, verificamos as senhas
-    if (!isLoginMode) {
-      if (formData.password !== formData.confirmPassword) {
-        alert('As senhas não coincidem.');
-        return;
-      }
+    // Verifica se as senhas coincidem
+    if (!isLoginMode && formData.password !== formData.confirmPassword) {
+      alert('As senhas não coincidem.');
+      return;
     }
 
     const payload = {
       email: formData.email,
-      senha: formData.password, // Garantir que o campo é enviado como 'senha'
+      senha: formData.password,
     };
 
-    // Se for cadastro, adicionamos o nome
     if (!isLoginMode) {
-      payload.nome = formData.name; // Garantir que o campo 'nome' é passado corretamente
+      payload.nome = formData.name;  // Envia o nome no cadastro
     }
 
     try {
-      const url = isLoginMode ? 'http://localhost:8080/api/v1/users/login' : 'http://localhost:8080/api/v1/users';
+      const url = isLoginMode
+        ? 'http://localhost:8080/api/v1/users/login'
+        : 'http://localhost:8080/api/v1/users';
       const response = await fetch(url, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
-    
       });
 
       if (!response.ok) {
@@ -96,11 +102,16 @@ const Auth = () => {
       }
 
       const data = await response.json();
+      console.log(data); // Verifique a estrutura do retorno do backend
 
+      // Login
       if (isLoginMode) {
-        localStorage.setItem('token', data.token); // Salvar token no localStorage
-        alert('Login bem-sucedido!');
-        navigate('/#'); // Redirecionar após login
+        localStorage.setItem('token', data.token);
+        setUser({ nome: data.nome || 'Usuário', email: data.email }); // Corrigido para passar o nome
+        localStorage.setItem('user', JSON.stringify({ nome: data.nome, email: data.email }));
+        alert(data.message);
+
+        navigate('/#');
       } else {
         alert('Cadastro realizado com sucesso!');
         toggleMode(); // Alterna para o modo de login
@@ -142,6 +153,7 @@ const Auth = () => {
             <label className="label">Email</label>
             <span className="underline"></span>
           </div>
+
           <div className="input-container tooltip-container">
             <input
               type="password"
@@ -149,16 +161,13 @@ const Auth = () => {
               value={formData.password}
               onChange={handlePasswordChange}
               required
-              minLength={isLoginMode ? undefined : 8}
-              pattern={isLoginMode ? undefined : "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$"}
               onFocus={() => setShowPasswordInfo(true)}
               onBlur={() => setShowPasswordInfo(false)}
             />
             <label className="label">Senha</label>
             <span className="underline"></span>
-
-            {/* Tooltip */}
-            {showPasswordInfo && !isLoginMode && (
+             {/* Tooltip */}
+             {showPasswordInfo && !isLoginMode && (
               <div className="tooltip">
                 <p style={{ color: passwordValidations.length ? 'green' : 'red' }}>
                   {passwordValidations.length ? '✔' : '✖'} Pelo menos 8 caracteres
@@ -177,6 +186,7 @@ const Auth = () => {
                 </p>
               </div>
             )}
+            
           </div>
           {!isLoginMode && (
             <div className="input-container">
@@ -195,6 +205,7 @@ const Auth = () => {
             {isLoginMode ? 'Login' : 'Cadastrar'}
           </button>
         </form>
+
         <p className="toggle-mode">
           {isLoginMode ? 'Não possui uma conta?' : 'Já possui uma conta?'}
           <button type="button" className="trocar-btn" onClick={toggleMode}>

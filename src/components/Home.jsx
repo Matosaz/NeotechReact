@@ -5,9 +5,14 @@ import ImgTL1 from '../assets/Teclado.jpg'
 import ImgTL2 from '../assets/Comput.jpg'
 import ImgTL3 from '../assets/Person.jpg'
 import Phoneimg from '../assets/Mockup3.png'
-import React, {useEffect, useState} from 'react';
+import { UserContext } from './UserContext'
+import React, {useEffect, useState ,useContext,} from 'react';
   const Home = () => {
+      const { user, setUser } = useContext(UserContext); // Consome o contexto
+      const firstName = user?.nome.split(' ')[0];
+
     useEffect(() => {
+      
   const counters = document.querySelectorAll(".counters span");
   const container = document.querySelector(".counters");
     
@@ -113,6 +118,8 @@ import React, {useEffect, useState} from 'react';
 
         <h2 className='TxtHero'> NeoTech</h2>
         <h3 className='TxtHero2'> The future is near</h3>
+        <h3 className='TxtHeroBoasVindas'>Bem vindo(a), {firstName +"!"|| "Usuário"}</h3>
+
         <img src={Phoneimg} className='Phoneimg'/>
         </section>
 
@@ -282,7 +289,7 @@ import React, {useEffect, useState} from 'react';
      <section className="Orçamento" id='Orçamento'>
         <div className="coluna" id='orçamento'>
           <div className="video">
-            <video src={RecVideo} className='videocontent' autoPlay loop muted ></video>
+            <video src={RecVideo} className='videocontent' autoPlay loop muted disablePictureInPicture ></video>
           </div>
           <div className="wrapconteudo">
             <div className="conteudo">

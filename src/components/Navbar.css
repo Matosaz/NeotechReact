@@ -87,6 +87,7 @@
     top: 48px;
     right: -80px;
     width: 350px;
+    border-bottom-left-radius: 15px;
     max-height: 0px;
     overflow: hidden;
     transition: max-height 0.5s;
@@ -96,7 +97,7 @@
 }
 .sub-menu{
     background-color: #fafafa;
-    box-shadow: -5px 0 5px rgba( 0, 0, 0, 0.1 );
+    box-shadow: -1px -1px 10px rgba( 12, 12, 12, 0.2 );
     backdrop-filter: blur(20px);
     padding: 20px;
     margin: 10px;
@@ -105,17 +106,18 @@
 
 .user-info{
   display: flex;
-  margin-left: 40px;
-  color: #333;
-  font-weight: 200;
+  text-align: center; 
+ align-items: center;
+ justify-content: center;
+ color: #333;
 }
 
 .sub-menu hr{
-  border: 0;
-  height: 1px;
-  width: 100%;
-  background: #301616;
-  margin: 15px 0 10px;
+ border-radius: 8px;
+  height: 3px;
+  width: 95%;
+  background: #121212;
+  margin: 15px 10px;
 }
 .sub-menu-link{
   display: flex;
@@ -126,9 +128,8 @@
 }
 .sub-menu-link p{
     color: #121212;
-    transition: .3s;
     margin-left: 20px;
-    transition: all 0.2s;
+    transition: all .1s ease-out;
 }
 .sub-menu-link img{
   width: 40px;
@@ -138,8 +139,8 @@
 
 }
 .sub-menu-link:hover p{
-  transform: scale(1.01);
-  font-weight: 600;
+  transform: scale(1.017);
+  font-weight: 700;
 }
 
 @media (max-width:1367px){

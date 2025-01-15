@@ -1,3 +1,4 @@
+
 body::-webkit-scrollbar{
   display: none;
 }
@@ -18,23 +19,49 @@ body{
 }
 .TxtHero{
 font-size: 4rem;
-margin-left: 190px;
-padding-top: 250px;
+margin-left: 185px;
+padding-top: 240px;
 position: flex;
 color:#1f5c25 ;
 }
 .TxtHero2{
 font-size: 3rem;
 color: #fafafa;
-margin-left: 190px;
+margin-left: 185px;
 padding-top: 0px;
 position: flex;
 }
 
+.TxtHeroBoasVindas{
+  font-size: 2.6rem;
+color: #fafafa;
+font-weight: 700;
+margin-left: 185px;
+position: flex;
+border-right: 5px solid #f3f3f3;
+width: 620px;
+white-space: nowrap;
+overflow: hidden;
+letter-spacing: 5px;
+animation:
+  typing 2s steps(30),
+  cursor .6s step-start infinite alternate;
+}
+
+@keyframes cursor{
+  50%{border-color: transparent}
+}
+
+
+@keyframes typing{
+from{width: 0}
+}
+
 .Phoneimg{
+  display: flex ;
   width: 1300px;
   margin-left: 550px;
-  margin-top: -350px;
+  margin-top: -370px;
 }
 .Serviço{
   height: 1040px;
@@ -357,10 +384,11 @@ opacity: 1;
 }
 
 .videocontent{
-width: 700px;
-margin-left: 50px;
+width: 800px;
+margin-left: 0px;
 display: flex;
-border-radius: 8px;
+border-radius: 20px;
+border-bottom-right-radius:215px ;
 }
 
 .coluna{
