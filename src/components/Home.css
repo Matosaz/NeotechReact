@@ -39,14 +39,14 @@ font-size: 2.6rem;
 color: #fafafa;
 font-weight: 700;
 position: flex;
+width: 35%;
 border-right: 5px solid #f3f3f3;
-width: 100%;
 white-space: nowrap;
 overflow: hidden;
 letter-spacing: 5px;
 animation:
-  typing 2s steps(30),
-  cursor .6s step-start infinite alternate;
+  typing 2.5s steps(35) ,
+  cursor .6s step-end infinite alternate ;
 }
 
 @keyframes cursor{
@@ -56,7 +56,11 @@ animation:
 
 @keyframes typing{
 from{width: 0}
+
+
 }
+
+
 
 .Phoneimg{
   display: flex ;
