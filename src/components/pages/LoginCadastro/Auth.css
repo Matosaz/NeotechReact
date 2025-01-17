@@ -168,11 +168,15 @@
   color: #555;
   background-color: #8a8a8a6b;
 }
-
+.AdminLogin{
+  color: #121212;
+  font-size: 0.8rem;
+  margin: 10px;
+}
 .direitos {
   font-family: "Lexend";
   font-size: 12px;
-  margin-top: 20px;
+  margin-top: 10px;
   color: #171817;
 }
 

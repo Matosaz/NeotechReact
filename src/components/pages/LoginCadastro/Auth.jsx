@@ -106,9 +106,11 @@ const Auth = () => {
 
       // Login
       if (isLoginMode) {
+        const isAdminBoolean = data.isAdmin === 'true';  // Converte "true" ou "false" em string para um booleano real
+
         localStorage.setItem('token', data.token);
-        setUser({ nome: data.nome || 'Usuário', email: data.email }); // Corrigido para passar o nome
-        localStorage.setItem('user', JSON.stringify({ nome: data.nome, email: data.email }));
+        setUser({ nome: data.nome || 'Usuário', email: data.email,  isAdmin:isAdminBoolean    }); // Corrigido para passar o nome
+        localStorage.setItem('user', JSON.stringify({ nome: data.nome, email: data.email, isAdmin: isAdminBoolean    }));
         alert(data.message);
 
         navigate('/#');
@@ -208,13 +210,19 @@ const Auth = () => {
 
         <p className="toggle-mode">
           {isLoginMode ? 'Não possui uma conta?' : 'Já possui uma conta?'}
+          
           <button type="button" className="trocar-btn" onClick={toggleMode}>
             {isLoginMode ? 'Cadastrar' : 'Login'}
           </button>
         </p>
+
         <p className="direitos">
+
           Todos os direitos reservados <br />
+        
           <span className="span-direitos">© Neotech 2024</span>
+
+          
         </p>
       </div>
     </div>

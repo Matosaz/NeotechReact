@@ -76,10 +76,12 @@ const Navbar = () => {
                   <h2>{user?.nome || 'Usuário'}</h2>
                 </div>
                 <hr />
-                <a href="/Dashboard" className="sub-menu-link">
-                  <img src={profile} alt="Gerenciamento de usuários" />
-                  <p>Gerenciamento de usuários</p>
-                </a>
+                {user.isAdmin && ( // Exibe apenas se for administrador
+               <a href="/Dashboard" className="sub-menu-link">
+                 <img src={profile} alt="Gerenciamento de usuários" />
+                 <p>Gerenciamento de usuários</p>
+               </a>
+               )}
                 <a href="#" className="sub-menu-link">
                   <img src={setting} alt="Configurações e privacidade" />
                   <p>Configurações e privacidade</p>
