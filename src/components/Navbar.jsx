@@ -82,9 +82,9 @@ const Navbar = () => {
                  <p>Gerenciamento de usuários</p>
                </a>
                )}
-                <a href="#" className="sub-menu-link">
-                  <img src={setting} alt="Configurações e privacidade" />
-                  <p>Configurações e privacidade</p>
+                <a href="/ConfigPerfil" className="sub-menu-link">
+                  <img src={profile} alt="Configuração de perfil" />
+                  <p>Configurações de perfil</p>
                 </a>
                 <a href="#" className="sub-menu-link">
                   <img src={help} alt="Ajuda e suporte" />

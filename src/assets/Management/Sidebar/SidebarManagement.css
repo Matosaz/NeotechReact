@@ -1,8 +1,8 @@
 /* Sidebar */
 .sidebarManagement {
   height: 100vh; /* Fixa a altura da sidebar ao tamanho da janela */
-  width: 60px;
-  background-color: #7ead83;
+  width: 55px;
+  background-color: #90be95ef;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -12,16 +12,17 @@
   left: 0;
 }
 
+
 /* Estilo dos ícones */
 .icon-wrapperManagement {
-  margin: 15px 0;
+  margin: 15px ;
   cursor: pointer;
-  transition: filter 0.3s;
 }
 
 .icon-wrapperManagement img {
-  width: 30px;
-  height: 30px;
+  width: 25px;
+  height: 25px;
+  transition: filter 0.2s;
 }
 
 /* Ícone ativo */
@@ -33,15 +34,12 @@
 .icon-wrapperManagement:hover img {
   filter: invert(100%);
 }
-.icon-Seta{
- padding-top: 10px;
-  cursor: pointer;
-  transition: filter 0.3s;
-}
+
 
 .icon-Seta img {
-  width: 50px;
-  height: 50px;
+  width: 45px;
+  height: 45px;
+  transition: filter 0.2s;
 }
 
 

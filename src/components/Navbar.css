@@ -129,7 +129,8 @@
 .sub-menu-link p{
     color: #121212;
     margin-left: 20px;
-    transition: all .1s ease-out;
+    transition: .2s ease-in-out;
+    text-wrap: nowrap;
 }
 .sub-menu-link img{
   width: 40px;
@@ -139,8 +140,7 @@
 
 }
 .sub-menu-link:hover p{
-  transform: scale(1.017);
-  font-weight: 700;
+  font-weight: 600;
 }
 
 @media (max-width:1367px){
