@@ -109,8 +109,8 @@ const Auth = () => {
         const isAdminBoolean = data.isAdmin === 'true';  // Converte "true" ou "false" em string para um booleano real
 
         localStorage.setItem('token', data.token);
-        setUser({ nome: data.nome || 'Usuário', email: data.email,  isAdmin:isAdminBoolean    }); // Corrigido para passar o nome
-        localStorage.setItem('user', JSON.stringify({ nome: data.nome, email: data.email, isAdmin: isAdminBoolean    }));
+        setUser({ nome: data.nome || 'Usuário', email: data.email,  isAdmin:isAdminBoolean, id: data.id   }); // Corrigido para passar o nome
+        localStorage.setItem('user', JSON.stringify({ nome: data.nome, email: data.email, isAdmin: isAdminBoolean, id: data.id    }));
         alert(data.message);
 
         navigate('/#');

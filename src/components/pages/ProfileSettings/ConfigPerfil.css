@@ -4,8 +4,9 @@
     padding: 20px;
     font-family: "Lexend";
     font-weight: 500;
-    color: #121212;
-    background: linear-gradient(to right, #e0eafc); /* Fundo gradiente */
+    color: #121212;   
+     background: #fafafa; /* Fundo branco do conteúdo principal */
+
     border-radius: 20px; /* Bordas arredondadas */
     
   }
@@ -13,22 +14,17 @@
   .profile-main {
     flex: 1;
     padding: 40px;
-    background: rgb(252, 251, 251); /* Fundo branco do conteúdo principal */
+    background: #fafafa; /* Fundo branco do conteúdo principal */
     border-radius: 15px; /* Bordas arredondadas internas */
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Sombra interna */
+    box-shadow: 1px 1px 20px rgba(0, 0, 0, 0.105); /* Sombra interna */
   }
-  .cameraicon{
-    position: absolute;
-    margin-left: 84px;
-    margin-top: 60px;
-    scale: 1.6;
-    }
+ 
   .profile-card {
     display: flex;
     align-items: center;
     margin-bottom: 20px;
     width: 85%;
-    background: #f0f0f0;
+    background: linear-gradient(to right top, #c7eccd, #bfe4c7,rgba(255, 228, 196, 0.836) 60%,#c1e9ca);
     padding: 20px;
     border-radius: 15px; /* Bordas arredondadas do card */
   }
@@ -39,19 +35,18 @@
     height: 90px;
     border-radius: 50%; /* Avatar circular */
     margin-right: 20px;
-    background-color: transparent; /* Cor de fundo do avatar */
+    background-color: #4d4d4d2c; /* Cor de fundo do avatar */
   }
   
  
   
   .profile-form {
-    background: #ffffff;
+    
     padding: 20px;
     display: grid;
     width: 85%;
     grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
-    margin-bottom: 10px;
+    gap: 25px;
     margin-bottom: 10px;
 
   }
@@ -59,10 +54,10 @@
 
   .profile-form input, select {
     width: 100%;
-    margin-top: 10px;
+    margin-top: 15px;
     border-style: none;
     padding: 12px;
-    background-color: #dad7d72a;
+    background-color: #dad7d736;
     border-radius: 8px; /* Bordas arredondadas dos inputs */
   }
   .profile-form-group{
@@ -70,5 +65,21 @@
     flex-direction: column;
   }
 
+.profile-email-section{
+    padding-left: 20px;
+    padding-top: 10px;
+}
 
-  
+.profile-email-section h3{
+    margin-bottom: 15px;
+}
+
+
+.profile-email-age, .profile-email-address{
+    display: flex;
+    padding-bottom: 5px;
+}
+
+.profile-add-email-button{
+    margin-top: 25px;
+}
