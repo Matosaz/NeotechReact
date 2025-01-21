@@ -6,7 +6,7 @@ import { Input, InputTel, InputCep } from "./MaskedInput";
 import { UserContext } from "../../UserContext"; // Importando o UserContext
 
 const ConfigPerfil = () => {
-  const { user, setUser } = useContext(UserContext); // Usando o contexto para pegar o usuário logado
+  const {user, setUser } = useContext(UserContext); // Usando o contexto para pegar o usuário logado
   const [Cpf, setCpf] = useState(user?.cpf || ""); // Preenchendo com dados existentes, caso haja
   const [telefone, settelefone] = useState(user?.telefone || "");
   const [Cep, setCep] = useState(user?.cep || "");
@@ -19,14 +19,7 @@ const ConfigPerfil = () => {
   const [states, setStates] = useState([]); // Definindo o estado para armazenar os estados
 
   const handleSaveChanges = async () => {
-    if (!user || !user?.id) {
-      alert("Usuário ou ID não encontrado.");
-      console.log("Id do usuário:"+user?.id)
-      return;
-    }
-    if (!user) {
-      return <p>Carregando dados do usuário...</p>;
-    }
+    
 
     const updatedUser = {
       cpf: Cpf,
@@ -41,8 +34,9 @@ const ConfigPerfil = () => {
 
     try {
    
-    
-      const response = await fetch(`http://localhost:8080/api/v1/users/${user?.id}`, {
+   // Convertendo para número inteiro no frontend
+
+      const response = await fetch(`http://localhost:8080/api/v1/users/${user.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -125,6 +119,15 @@ const ConfigPerfil = () => {
     }
   };
 
+  const handleCpfChange = (value) => {
+    // Remove a máscara, apenas números
+    const cleanedCpf = value.replace(/\D/g, "");
+    setCpf(cleanedCpf); // Agora o CPF é limpo de caracteres não numéricos
+    if (cleanedCpf.length === 11) {
+      fetchCepData(cleanedCpf);
+    }
+  };
+
   return (
     <div className="profile-container">
       <div className="profile-content">
@@ -170,7 +173,7 @@ const ConfigPerfil = () => {
                 <label>CPF</label>
                 <Input
                   value={Cpf}
-                  onChange={(event) => setCpf(event.target.value)}
+                  onChange={(event) => handleCpfChange(event.target.value)}
                 />
               </div>
               <div className="profile-form-group">

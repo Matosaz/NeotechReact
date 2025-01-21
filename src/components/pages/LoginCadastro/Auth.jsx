@@ -107,10 +107,11 @@ const Auth = () => {
       // Login
       if (isLoginMode) {
         const isAdminBoolean = data.isAdmin === 'true';  // Converte "true" ou "false" em string para um booleano real
+        const userId = parseInt(data.id, 10);  // Convertendo o id para número inteiro
 
         localStorage.setItem('token', data.token);
-        setUser({ nome: data.nome || 'Usuário', email: data.email,  isAdmin:isAdminBoolean, id: data.id   }); // Corrigido para passar o nome
-        localStorage.setItem('user', JSON.stringify({ nome: data.nome, email: data.email, isAdmin: isAdminBoolean, id: data.id    }));
+        setUser({ id: userId, nome: data.nome || 'Usuário', email: data.email,  isAdmin:isAdminBoolean   }); // Corrigido para passar o nome
+        localStorage.setItem('user', JSON.stringify({  id: userId,nome: data.nome, email: data.email, isAdmin: isAdminBoolean,   }));
         alert(data.message);
 
         navigate('/#');
