@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import "./ConfigPerfil.css";
 import Sidebar2 from "../../../assets/Management/Sidebar/SidebarManagement";
 import ProfileAvatar from "../../../assets/camerausericon.png";
@@ -17,9 +17,12 @@ const ConfigPerfil = () => {
   const [birthDate, setBirthDate] = useState(user?.data_nascimento || "");
 
   const [states, setStates] = useState([]); // Definindo o estado para armazenar os estados
+  const [avatar, setAvatar] = useState(user?.avatar || null); // Imagem armazenada no backend
+  const [previewAvatar, setPreviewAvatar] = useState(null); // Pré-visualização local
+
+
 
   const handleSaveChanges = async () => {
-    
 
     const updatedUser = {
       cpf: Cpf,
@@ -32,28 +35,33 @@ const ConfigPerfil = () => {
       data_nascimento: birthDate,
     };
 
-    try {
-   
-   // Convertendo para número inteiro no frontend
 
+    try {
+
+      const formData = new FormData();
+    formData.append("data", JSON.stringify(updatedUser));
+    if (previewAvatar) {
+        formData.append("avatar", avatar);
+    }
+   // Convertendo para número inteiro no frontend
       const response = await fetch(`http://localhost:8080/api/v1/users/${user.id}`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(updatedUser),
-
+        body: formData,
       });
 
       if (!response.ok) {
-        throw new Error('Falha ao atualizar perfil');
+        const errorData = await response.json(); // Captura o erro detalhado
+        throw new Error(`Falha ao atualizar perfil: ${errorData.message || 'Erro desconhecido'}`);
       }
-
-      const updatedData = await response.json();
-      setUser(updatedData); // Atualizando o estado do contexto com os novos dados
-      alert('Perfil atualizado com sucesso');
+      if (response.ok) {
+        const updatedData = await response.json();
+        setUser(updatedData);
+        localStorage.removeItem("previewAvatar"); // Limpa o localStorage
+        alert("Perfil atualizado com sucesso!");
+      } 
     } catch (error) {
-      alert(error.message);
+      console.error(error);
+      alert("Ocorreu um erro ao salvar as alterações.");
     }
   };
 
@@ -88,6 +96,12 @@ const ConfigPerfil = () => {
     };
 
     fetchStates();
+    const savedPreviewAvatar = localStorage.getItem("previewAvatar");
+    if (savedPreviewAvatar) {
+      URL.revokeObjectURL(savedPreviewAvatar);
+      localStorage.removeItem("previewAvatar");
+    }
+
   }, []); // Carrega os estados apenas uma vez
 
   // Função para buscar dados pelo CEP
@@ -108,6 +122,38 @@ const ConfigPerfil = () => {
       console.error("Erro ao buscar informações do CEP:", error);
     }
   };
+
+
+
+
+  const fileInputRef = useRef(null); // Referência para o input
+
+const handleImageClick = () => {
+  fileInputRef.current.click(); // Simula o clique no input
+};
+
+
+
+const handleAvatarChange = (event) => {
+  const file = event.target.files[0];
+  if (file) { const allowedTypes = ["image/png", "image/jpeg", "image/jpg"]; // Formatos permitidos
+    if (!allowedTypes.includes(file.type)) {
+      alert("Por favor, selecione uma imagem nos formatos PNG, JPEG ou JPG.");
+      return;
+    }
+    
+    const objectURL = URL.createObjectURL(file);
+    console.log("URL gerada:", objectURL); // Verifique se a URL está sendo gerada corretamente
+    setPreviewAvatar(objectURL); // Atualiza a pré-visualização local
+    setAvatar(file); // Armazena o arquivo para upload posterior
+
+    // Salva a URL temporária da imagem no localStorage
+    localStorage.setItem('previewAvatar', objectURL);
+  } else {
+    alert('Por favor, selecione uma imagem válida.');
+  }
+};
+
 
   // Função chamada ao alterar o valor do CEP
   const handleCepChange = (value) => {
@@ -137,10 +183,18 @@ const ConfigPerfil = () => {
         <main className="profile-main">
           <section className="profile-info">
             <div className="profile-card">
-              <img src={ProfileAvatar} alt="User" className="profile-avatar" />
+            <input className="AvatarInput" type="file" accept="image/*"  ref={fileInputRef} onChange={handleAvatarChange}/>
+              <img  src={
+                previewAvatar ||
+               (avatar ? `data:image/png;base64,${avatar}` : ProfileAvatar) 
+                }
+
+              alt="User" className="profile-avatar" onClick={handleImageClick} />
+              <img className="EditAvatarPic"alt="svgImg" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIj8+PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciICB2aWV3Qm94PSIwIDAgMjQgMjQiIHdpZHRoPSIzODRweCIgaGVpZ2h0PSIzODRweCI+ICAgIDxwYXRoIGQ9Ik0gMTggMiBMIDE1LjU4NTkzOCA0LjQxNDA2MjUgTCAxOS41ODU5MzggOC40MTQwNjI1IEwgMjIgNiBMIDE4IDIgeiBNIDE0LjA3NjE3MiA1LjkyMzgyODEgTCAzIDE3IEwgMyAyMSBMIDcgMjEgTCAxOC4wNzYxNzIgOS45MjM4MjgxIEwgMTQuMDc2MTcyIDUuOTIzODI4MSB6Ii8+PC9zdmc+"/>
               <div className="profile-details">
                 <h2>{user?.nome || "Nome do Usuário"}</h2>
                 <p>{user?.email || "Email do Usuário"}</p>
+                
               </div>
             </div>
             <form className="profile-form">

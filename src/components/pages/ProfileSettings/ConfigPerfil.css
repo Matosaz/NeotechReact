@@ -18,7 +18,11 @@
     border-radius: 15px; /* Bordas arredondadas internas */
     box-shadow: 1px 1px 20px rgba(0, 0, 0, 0.105); /* Sombra interna */
   }
- 
+
+  .AvatarInput{
+  display: none;
+ }
+
   .profile-card {
     display: flex;
     align-items: center;
@@ -30,16 +34,25 @@
   }
   
  
-  .profile-avatar {
+  .profile-avatar  {
     width: 90px;
     height: 90px;
+    cursor: pointer;
     border-radius: 50%; /* Avatar circular */
     margin-right: 20px;
-    background-color: #4d4d4d2c; /* Cor de fundo do avatar */
+    background-color: #5a555528; /* Cor de fundo do avatar */
+    object-fit:cover; /* Ajusta a imagem para preencher completamente o círculo */
+    object-position: center; /* Centraliza a imagem dentro do círculo */
   }
-  
- 
-  
+
+  .EditAvatarPic{
+    scale: 0.06;
+    margin-left: -115px;
+    margin-top: 67px;
+    background-color: #c7eccd;
+    border-radius: 50%;
+    position: absolute;
+  }
   .profile-form {
     
     padding: 20px;
