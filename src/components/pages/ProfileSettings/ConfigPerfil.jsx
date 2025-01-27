@@ -95,15 +95,15 @@ const ConfigPerfil = () => {
       }
     };
 
-    fetchStates();
-    const savedPreviewAvatar = localStorage.getItem("previewAvatar");
-    if (savedPreviewAvatar) {
-      URL.revokeObjectURL(savedPreviewAvatar);
-      localStorage.removeItem("previewAvatar");
-    }
-
+   
   }, []); // Carrega os estados apenas uma vez
-
+  useEffect(() => {
+    // Ao carregar o componente, verifique se o usuário tem um avatar no banco
+    if (user?.avatar) {
+      setAvatar(user.avatar); // Carrega a URL ou base64 do backend
+    }
+  }, [user]);
+  
   // Função para buscar dados pelo CEP
   const fetchCepData = async (cep) => {
     try {
