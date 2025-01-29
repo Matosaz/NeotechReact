@@ -151,34 +151,22 @@ button:hover {
     overflow-x: auto;
 }
 
-table {
-    width: 100%;
-    border-collapse: collapse;
-    border-radius: 18px;
-    margin-top: 20px;
-}
+
 
 td {
-    padding: 12px;
-    border: 1px solid rgb(214, 214, 190);
-    text-align: left;
+    
+    border: 1px solid rgba(255, 228, 196, 0.534);
     font-weight: 500;
-    color: #121212;
 }
 
 th {
-    background-color: #83c491;
-    padding: 12px;
-    border: 1px solid rgb(214, 214, 190);
-    text-align: left;
-    font-weight: 500;
-    color: #fafafa;
+    border: 1px solid rgba(255, 228, 196, 0.534);
 }
 
 .action-buttons {
     display: flex;
-    gap: 10px;
-    padding-left: 32px;
+    gap: 15px;
+   justify-content: center;
 }
 
 .ADD_button {
