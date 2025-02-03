@@ -51,6 +51,28 @@ z-index: 1;
     padding: 0px 150px;
 }
 
+.voltar-FAQ {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    position: absolute; /* Torna a posição independente do layout principal */
+    top: 20px; /* Ajusta a posição do botão em relação ao topo */
+    left: 20px; /* Ajusta a posição do botão em relação à esquerda */
+    background-color: transparent;
+    color: #2f7c37;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 200ms ease-in-out;
+}
+
+.voltar-FAQ:hover {
+    background-color: #2f7c37;
+    color: #fff;
+}
+
 .MuiStack-root{
     color: #555555e0;
     font-weight: 500;
@@ -84,7 +106,7 @@ z-index: 1;
   
   .Accordion .MuiCollapse-root {
     color: #555;
-    font-size: 15px;
+    font-size: 16px;
   }
   
   .Accordion .MuiAccordionSummary-root:hover {

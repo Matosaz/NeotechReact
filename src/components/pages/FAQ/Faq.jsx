@@ -8,10 +8,13 @@ import {
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { Button } from "@mui/material";
-
-
+import { ArrowBack } from '@mui/icons-material';
 import "./Faq.css";
 
+
+const VoltarFAQ =() =>{
+  window.history.back();
+}
 const faqs = [
   { id: "1", 
     title: "O que é reciclagem de eletroeletrônicos e por que ela é importante?",
@@ -81,6 +84,7 @@ function Faq() {
 
   return (
     <div className="ContentFaq">
+      <button onClick={VoltarFAQ} className='voltar-FAQ'> <ArrowBack fontSize="small" className="icon" />Retornar</button>
     
       {/* Fundo animado */}
       <div className="BackgroundAnimation"></div>
