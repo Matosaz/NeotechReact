@@ -148,24 +148,28 @@ textarea{
   transition: background-color 0.1s ease;
 }
 
-.voltar-orcamento{
-   width: 100px;
-   position: absolute;
-    border: #2f7c37 solid;
-    border-radius: 8px;
-    color: #fafafa;
-    font-size: 1.2rem;
-    height: 40px;
-    padding-top: 5px;
-    margin-right: 1950px;
-    margin-top: -850px;
-    background-color: #2f7c37;
-    padding-left: 5px;
-    text-align: center;
-    transition: all 200ms;
-    font-weight: 600;
-    margin-left: 200px;
+.voltar-orcamento {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: absolute; /* Torna a posição independente do layout principal */
+  top: 20px; /* Ajusta a posição do botão em relação ao topo */
+  left: 20px; /* Ajusta a posição do botão em relação à esquerda */
+  background-color: transparent;
+  color: #fafafa;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 200ms ease-in-out;
 }
+
+.voltar-orcamento:hover {
+  background-color: #2f7c37;
+  color: #e0e0e0;
+}
+
 
 .legend-orcamento{
   font-size: 24px;

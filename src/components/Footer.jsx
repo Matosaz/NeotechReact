@@ -28,7 +28,7 @@ const Footer = () => {
       <h4>Ajuda</h4>
       <li><a href='#'>Formas de pagamento</a></li>
       <li><a href='#'>Orientações</a></li>
-      <li><a href='#'>Perguntas frequentes</a></li>
+      <li><a href='/FAQ'>Perguntas frequentes</a></li>
       <li><a href='#'>Atendimento ao cliente</a></li>
     </div>
 

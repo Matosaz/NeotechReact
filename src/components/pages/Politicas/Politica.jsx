@@ -1,5 +1,6 @@
 import React from 'react';
 import './Politica.css';
+import { ArrowBack } from '@mui/icons-material';
 
 const PrivacyPolicy = () => {
 
@@ -11,7 +12,7 @@ const PrivacyPolicy = () => {
     <div className="privacy-page">
       <div className="privacy-container">
         <div className="policy-content">
-          <button onClick={Voltarpolitica} className="voltarpolitica">Retornar</button>
+          <button onClick={Voltarpolitica} className="voltarpolitica"> <ArrowBack fontSize="small" className="icon" />Retornar</button>
           <h1>Política de Privacidade</h1>
           <p className="ultimaatualizacao">Última atualização: 14 de setembro de 2024</p>
           <p>

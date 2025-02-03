@@ -12,6 +12,7 @@ import Calculadora from './components/pages/Calculadora/Calculadora'
 import ConfigPerfil from './components/pages/ProfileSettings/ConfigPerfil'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { UserProvider } from './components/UserContext'
+import Faq from './components/pages/FAQ/Faq'
 
 const Layout = () =>{
   return(  
@@ -44,6 +45,7 @@ function App ()  {
           <Route path='/ConfigPerfil' element={<ConfigPerfil/>}/>
           <Route path='/Calculadora' element={<Calculadora/>}/>
           <Route path='/Politica' element={<Politica/>}/>
+          <Route path='/FAQ' element={<Faq/>}/>
           <Route path='/Dashboard' element={<Dashboard/>}/>
           <Route path='/Management' element={<Management/>}/>
           <Route path='/Mapa' element={<Mapa1/>}/>

@@ -1,43 +1,48 @@
-
-.Errorh1{
-    padding-top: 200px;
-    margin-left: 200px;
+.Errorh1 {
     font-size: 4rem;
     color: #2f7c37;
     font-weight: 800;
+    padding-top: 300px;
+
 }
-.Errorh3{
+
+.Errorh3 {
     padding-top: 20px;
-    margin-left: 200px;
     max-width: 600px;
     font-size: 1.8rem;
     color: #2f7c37; 
     font-weight: 700;
-}
-.Error{
-    background: linear-gradient(#000000,#121212,  #252424);
-    height: 960px;
+    text-align: center; /* Centraliza o texto */
 }
 
-.voltar{
-    width: 100px;
-    border: #2f7c37 solid;
-    border-radius: 8px;
-    color: #fafafa;
-    font-size: 1.2rem;
-    height: 40px;
-    padding-top: 2.5px;
-    margin-top: 30px;
-    background-color: #2f7c37;
-    padding-left: 5px;
-    text-align: center;
-    transition: all 200ms;
-    font-weight: 600;
-    margin-left: 200px;
+.ErrorNotFound {
+    background: linear-gradient(#000000, #121212, #252424);
+    height: 100vh; /* Garante que o contêiner ocupe toda a altura da janela */
+    display: flex; /* Centraliza o conteúdo */
+    flex-direction: column; /* Alinha os elementos verticalmente */
+    align-items: center; /* Centraliza os itens horizontalmente */
+    padding: 0 20px; /* Adiciona espaço lateral */
+    text-align: center; /* Centraliza o conteúdo de texto */
 }
 
-.voltar:hover{
-    background-color:#fafafa ;
+.voltar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    position: absolute; /* Torna a posição independente do layout principal */
+    top: 20px; /* Ajusta a posição do botão em relação ao topo */
+    left: 20px; /* Ajusta a posição do botão em relação à esquerda */
+    background-color: transparent;
     color: #2f7c37;
-    scale: 1.05;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 200ms ease-in-out;
+}
+
+.voltar:hover {
+    background-color: #2f7c37;
+    color: #fff;
 }

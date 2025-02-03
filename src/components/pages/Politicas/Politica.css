@@ -5,7 +5,7 @@
     background: rgb(215,244,207);
     background: radial-gradient(circle, rgba(215,244,207,1) 0%, rgba(240,241,244,1) 100%);
     color: #333;
-    line-height: 1.6;
+    line-height: 1.5;
   }
   
   .policy-content li{
@@ -15,28 +15,29 @@
 .policy-content h1{
   font-size: 98rem;
 }
-  .voltarpolitica {
-    width: 100px;
-    border: #2f7c37 solid;
-    border-radius: 8px;
-    color: #fafafa;
-    font-size: 1.2rem;
-    height: 40px;
-    padding-top: 2.5px;
-    margin-bottom: 25px;
-    background-color: #2f7c37;
-    padding-left: 5px;
-    text-align: center;
-    transition: all 200ms;
-    font-weight: 600;
-  }
-  
-  .voltarpolitica:hover {
-    background-color: #fafafa;
-    color: #2f7c37;
-    scale: 1.05;
-  }
-  
+ 
+.voltarpolitica {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: absolute; /* Torna a posição independente do layout principal */
+  top: 35px; /* Ajusta a posição do botão em relação ao topo */
+  left: 35px; /* Ajusta a posição do botão em relação à esquerda */
+  background-color: transparent;
+  color: #2f7c37;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 200ms ease-in-out;
+}
+
+.voltarpolitica:hover {
+  background-color: #2f7c37;
+  color: #fff;
+}
+
   .ultimaatualizacao {
     font-weight: 700;
     text-decoration: underline;
@@ -47,7 +48,7 @@
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    padding: 2rem;
+    padding: 1.5rem;
   }
   
   .policy-content {

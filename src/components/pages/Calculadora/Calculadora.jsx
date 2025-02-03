@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './Calculadora.css';
 import { Radio, RadioGroup, FormControlLabel, Checkbox } from '@mui/material';
+import { ArrowBack } from '@mui/icons-material';
 
 const Calculadora = () => {
   const [countries, setCountries] = useState([]);
@@ -132,7 +133,7 @@ const Calculadora = () => {
   };
   return (
     <section className='body-orcamento'>
-  <button onClick={Voltarorcamento} className='voltar-orcamento'>Retornar</button>
+  <button onClick={Voltarorcamento} className='voltar-orcamento'> <ArrowBack fontSize="small" className="icon" />Retornar</button>
       <div className='upper-orcamento'>
         
         <h2 className='title-orcamento'>{getStepTitle()}</h2>
