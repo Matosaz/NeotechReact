@@ -46,7 +46,7 @@ const SidebarManagement = () => {
       <div
         className={`icon-wrapperManagement ${getActiveIcon('addUser') ? 'active' : ''}`}
       >
-        <Link to="/Management">
+        <Link to="/UserManagement">
           <img src={AddUSer} alt="Adicionar Usuário" />
         </Link>
       </div>

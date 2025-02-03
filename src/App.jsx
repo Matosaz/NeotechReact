@@ -5,7 +5,7 @@ import Footer from './components/Footer'
 import NaoEncontrada from './components/pages/404/NaoEncontrada'
 import Mapa from './components/pages/mapa/Mapa'
 import Auth from './components/pages/LoginCadastro/Auth'
-import Management from './assets/Management'
+import UserManagement from './assets/Management/UserManagement'
 import Dashboard from './assets/Management/Dashboard/Dashboard'
 import Politica from './components/pages/Politicas/Politica'
 import Calculadora from './components/pages/Calculadora/Calculadora'
@@ -47,7 +47,7 @@ function App ()  {
           <Route path='/Politica' element={<Politica/>}/>
           <Route path='/FAQ' element={<Faq/>}/>
           <Route path='/Dashboard' element={<Dashboard/>}/>
-          <Route path='/Management' element={<Management/>}/>
+          <Route path='/UserManagement' element={<UserManagement/>}/>
           <Route path='/Mapa' element={<Mapa1/>}/>
           <Route path='/Auth' element={<Auth />}/>
           <Route path='/' element={<Layout/>}/>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { MaterialReactTable } from 'material-react-table';
-import './styles.css';
+import './UserManagement.css';
 import show from './olho.png';
 import hide from './visivel.png';
 import Sidebar1 from './Sidebar/SidebarManagement';
@@ -8,8 +8,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
-
-function App() {
+function UserManagement() {
   const [users, setUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [newUser, setNewUser] = useState({ nome: '', ativo: false, administrador: false, email: '', senha: '' });
@@ -179,7 +178,10 @@ function App() {
   ];
 
   return (
-    <div className="container"> 
+    <body className='bodyManagement'>
+      
+    
+    <div className="container-management"> 
       <Sidebar1 />
       
       <h1>Usuários</h1>
@@ -226,7 +228,8 @@ function App() {
         <MaterialReactTable columns={columns} data={filteredUsers} />
       </div>
     </div>
+    </body>
   );
 }
 
-export default App;
+export default UserManagement;

@@ -1,9 +1,10 @@
-@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap');
 
-body{
-    background-color: #fafafa;
+.bodyManagement{
+    height: 100vh;
+    background: url(/src/assets/teste4.png) no-repeat;
+    /* background-color: #fafafaf; */
 }
-.container {
+.container-management {
     max-width: 1280px;
     margin: 0 auto;
     padding: 20px;
@@ -11,14 +12,10 @@ body{
     align-items: center;
     align-content: center;
     color: #121212;
-    margin-top: 20px;
+    padding-top: 40px;
     margin-left: 100px;
 }
 
- h1 {
-    font-size: 36px;
-    margin-bottom: 20px;
-}
 
 .search-container {
     display: flex;
@@ -149,6 +146,7 @@ button:hover {
 
 .table-container {
     overflow-x: auto;
+    border-radius: 10px;
 }
 
 

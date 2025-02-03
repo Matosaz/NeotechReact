@@ -1,10 +1,14 @@
 .dashboard-container {
     display: flex;
-    margin-top: 20px;
+    padding-top: 20px;
+    background: url(/src/assets/teste5.png) no-repeat;
+    height: 100vh;
+
   }
   
   .dashboard-content {
     padding: 20px;
+    font-size: 18px;
     margin-left: 200px;
   }
   
