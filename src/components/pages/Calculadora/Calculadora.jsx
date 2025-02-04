@@ -1,9 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import './Calculadora.css';
 import { Radio, RadioGroup, FormControlLabel, Checkbox } from '@mui/material';
 import { ArrowBack } from '@mui/icons-material';
+import { InputTel } from '../ProfileSettings/MaskedInput';
+import { UserContext } from "../../UserContext"; // Importando o UserContext
 
 const Calculadora = () => {
+    const {user, setUser } = useContext(UserContext); // Usando o contexto para pegar o usuário logado
+  
   const [countries, setCountries] = useState([]);
   const [formData, setFormData] = useState({
     name: '',
@@ -27,6 +31,8 @@ const Calculadora = () => {
     otherItem: '' // Campo para o outro item
   });
   const [currentStep, setCurrentStep] = useState(1);
+
+  const [telefone, settelefone] = useState(user?.telefone || "");
 
   const Voltarorcamento =() =>{
     window.history.back();
@@ -52,6 +58,7 @@ const Calculadora = () => {
         return 'Vamos começar!';
     }
   };
+  
 
   const getCountries = async () => {
     const response = await fetch('https://restcountries.com/v3.1/all');
@@ -62,24 +69,34 @@ const Calculadora = () => {
     }));
   };
 
+  
+
   useEffect(() => {
     getCountries().then(setCountries);
   }, []);
 
   const handleChange = (e) => {
+    const { name, value } = e.target;
+  
+    if (name === "itemQuantity") {
+      // Permitir apenas números
+      if (!/^\d*$/.test(value)) return;
+    }
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-
+ 
   const handleSubmit = (e) => {
     e.preventDefault();
     alert('Form submitted');
   };
 
   const nextStep = () => {
-    if (currentStep < 4){
+    const form = document.querySelector('form');
+    if (currentStep < 4 && form.checkValidity()){
     setCurrentStep(currentStep + 1);
     console.log('currentStep incrementado para', currentStep + 1);
-
+    } else{
+      form.reportValidity()
     }
   };
 
@@ -124,7 +141,7 @@ const Calculadora = () => {
     let priceMultiplier = stateMultipliers[itemClassification] || 1;
   
     // Calcula o preço total
-    let estimatedPrice = basePrice * priceMultiplier * itemQuantity;
+    let estimatedPrice = basePrice * priceMultiplier * parseInt(itemQuantity);
   
     console.log('Estimativa calculada:', estimatedPrice);
 
@@ -150,7 +167,7 @@ const Calculadora = () => {
             </div>
 
             {/* Formulário Multi-step */}
-            <form className="form-orcamento" onSubmit={handleSubmit}>
+            <form className="form-orcamento" onSubmit={handleSubmit} noValidate>
               {/* Passo 1: Account information */}
               {currentStep === 1 && (
                 <fieldset className='fieldset-orcamento'>
@@ -189,18 +206,17 @@ const Calculadora = () => {
                       type="password"
                       className="form-control-orcamento"
                       onChange={handleChange}
+                      required
                     />
                   </div>
                   <div className="form-group-orcamento">
                     <label>Telefone</label>
-                    <input
-                      placeholder="(99) 9999-9999"
-                      id="Numero-orcamento"
-                      name="Telefone"
-                      type="tel"
-                      className="form-control-orcamento"
-                      onChange={handleChange}
-                    />
+                   <InputTel
+                  pattern="\d{10,11}"  
+                  required
+                  value={telefone}
+                  onChange={(event) => settelefone(event.target.value)}
+                />
                   </div>
                 </fieldset>
               )}
@@ -282,13 +298,17 @@ const Calculadora = () => {
                   <div className="form-group-orcamento">
                     <label htmlFor="itemQuantity">Quantidade</label>
                     <input
-                      id="itemQuantity-orcamento"
-                      name="itemQuantity"
-                      type="number"
-                      className="form-control-orcamento"
-                      value={formData.itemQuantity}
-                      onChange={handleChange}
-                      required
+                     type="text" 
+                     name="itemQuantity" 
+                     value={formData.itemQuantity} 
+                     onChange={handleChange} 
+                     required 
+                     maxLength={4}
+                     minLength={1}
+                     pattern="\d+"  
+                     title="Digite apenas números"
+                     inputMode="numeric"
+                     placeholder="Quantidade"
                     />
                   </div>
                   
@@ -363,13 +383,14 @@ const Calculadora = () => {
 <div className="form-group-orcamento">
   <div className='estimatedPrice'>
   <label htmlFor="a">Preço de reciclagem estimado:</label>
-  <input
+  <input 
+  required
     id="estimatedPrice-orcamento"
     name="estimatedPrice"
     type="text"
     disabled
     className="form-control-orcamento"
-    value={formData.estimatedPrice ? `R$ ${formData.estimatedPrice.toFixed(2)}` : 'R$ 0,00'} // Exibe 'R$ 0,00' caso a estimativa seja indefinida
+    value={formData.estimatedPrice ? `R$ ${formData.estimatedPrice.toFixed(2)}` : 'R$ 0,00'}
     
   />
    </div>
@@ -459,7 +480,7 @@ const Calculadora = () => {
                     Voltar
                   </button>
                 )}
-                {currentStep <= 4 ? (
+                {currentStep <=4 ? (
                   <button type="button" onClick={nextStep}>
                     Próximo
                   </button>

@@ -84,8 +84,9 @@ font-weight: 700;
   width: 100%;
 }
 
-.form-control-orcamento {
+.form-control-orcamento, input {
   width: 100%;
+  display: flex;
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 4px;

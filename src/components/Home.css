@@ -39,14 +39,14 @@ font-size: 2.6rem;
 color: #fafafa;
 font-weight: 700;
 position: flex;
-width: 35%;
+width: 0;
 border-right: 5px solid #f3f3f3;
 white-space: nowrap;
 overflow: hidden;
 letter-spacing: 5px;
 animation:
-  typing 2.5s steps(35) ,
-  cursor .6s step-end infinite alternate ;
+  typing 2.52s steps(36, end) forwards ,
+  cursor .6s step-end infinite alternate-reverse ;
 }
 
 @keyframes cursor{
@@ -55,8 +55,10 @@ animation:
 
 
 @keyframes typing{
-from{width: 0}
-
+from{width: 0%}
+to{
+  width: 36%;
+}
 
 }
 

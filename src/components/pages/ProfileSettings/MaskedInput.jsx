@@ -6,7 +6,7 @@ import InputMask from "react-input-mask";
 
 
  const InputTel = ({ value, onChange }) => {
-  return <InputMask placeholder="(__) ____-____" mask="(99)9999-9999" value={value} onChange={onChange}  />;
+  return <InputMask placeholder="(__) ____-____" mask="(99) 99999-9999" value={value} onChange={onChange}  />;
 }
 
 
