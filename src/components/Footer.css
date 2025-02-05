@@ -1,10 +1,10 @@
 .Footer{
-    padding: 20px 70px 70px;
+    padding: 0px 70px 70px;
     display: grid;
     grid-template-columns: repeat(4,1fr);
     gap: 3.5rem;
-    background: #47854e ;  /*#5f9763 e #47854e */
-    align-items: start;
+    background: #4c8653 ;  /*#5f9763 e #47854e */
+    align-items: center;
 }
 
 .conteudofooter h4{
@@ -61,17 +61,7 @@
 }
 
 
-.botaofooter{
-    width: 150px;
-    height: 40px;
-    text-align: center;
-    margin-left: 0;
-    border-radius: 8px;
-    background: #38a743;
-    border-style: none;
-    margin-top: 10px;
-    transition: all .40s ease;
-}
+
 /* Estilo dos campos */
 .input-containerfooter {
     position: relative;
@@ -134,9 +124,9 @@
     width: 150px;
     height: 40px;
     text-align: center;
-    margin-left: 0;
+    margin-top: 10px;
     border-radius: 8px;
-    background: #38a743;
+    background: #5ea767;
     border-style: none;
     color: #fff;
     font-family: 'Lexend', sans-serif;
@@ -151,7 +141,17 @@
   
 .botaofooter:hover{
     transform: scale(1.01);
-    background: #33973d;
+    background: #579b5f;
+}
+
+@media(min-width:1920px){
+    .Footer{
+    align-items: center;
+    justify-content: center;
+    align-content: center;
+    width: 100%;
+    margin: 0 auto;
+    }
 }
 @media (max-width: 1649px){
     .Footer{

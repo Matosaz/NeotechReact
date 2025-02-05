@@ -36,6 +36,17 @@ const Mapa1 = () =>{
 }
 
 
+
+const FAQ1 = () =>{
+  return(
+  <div>
+    <Faq/>
+    <Footer/>
+  </div>
+  )
+}
+
+
  
 function App ()  {
   return (
@@ -45,7 +56,7 @@ function App ()  {
           <Route path='/ConfigPerfil' element={<ConfigPerfil/>}/>
           <Route path='/Calculadora' element={<Calculadora/>}/>
           <Route path='/Politica' element={<Politica/>}/>
-          <Route path='/FAQ' element={<Faq/>}/>
+          <Route path='/FAQ' element={<FAQ1/>}/>
           <Route path='/Dashboard' element={<Dashboard/>}/>
           <Route path='/UserManagement' element={<UserManagement/>}/>
           <Route path='/Mapa' element={<Mapa1/>}/>

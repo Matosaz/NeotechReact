@@ -5,22 +5,26 @@
     justify-items: center;
 }
 .botaotestediv {
-    background: #f1f8ee;
-    height: 980px;
-
+    background: url(/src/assets/fundomapa.png) no-repeat center / cover;
+    height: 1000px;
 }
 
 .mapaview{
-    width: 1200px;
+    width: 1200px; /* Garante que ocupe 100% da largura disponível */
     height: 600px;
+    padding: 0; /* Remove qualquer padding */
+    margin: 0; /* Remove qualquer margem */
     border-radius: 10px;
+    border-top-right-radius: 10px;
+    border-top-left-radius: 10px;
     padding-top: 20px;
-    box-shadow: rgba(17, 12, 46, 0.15) 0px 88px 100px 10px;
+    box-shadow: rgba(17, 12, 46, 0.105) 0px 5px 5px ;
     align-items: center;
     justify-content: center;
     align-items: center;
     justify-items: center;
-    scale:auto;
+    border: none; /* Remove qualquer borda */
+     display: block; /* Garante que seja tratado como um bloco */
 }
 
 .encontre{
@@ -52,3 +56,42 @@ color:#1f5c25 ;
     color: #fff;
 }
 
+@media(max-width: 1215px){
+.mapaview{
+    width: 1000px;
+}
+}
+
+
+@media(max-width: 1010px){
+    .mapaview{
+        width: 900px;
+    }
+    }
+
+    
+
+@media(max-width: 905px){
+    .mapaview{
+        width: 700px;
+    }
+    }
+
+    
+@media(max-width: 715px){
+    .mapaview{
+        width: 500px;
+    }
+    }
+
+    
+@media(max-width: 520px){
+    .mapaview{
+        width: 430px;
+        height: 650px;
+    }
+    .botaotestediv{
+        height: 1100px;
+
+    }
+    }

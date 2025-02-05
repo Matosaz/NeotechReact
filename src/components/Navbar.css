@@ -143,6 +143,14 @@
   font-weight: 600;
 }
 
+@media(min-width:1920px){
+    .header{
+    align-items: center;
+    justify-content: center;
+      margin: 0 auto;
+    }
+}
+
 @media (max-width:1367px){
     .FecharMenu{
         display: none;
