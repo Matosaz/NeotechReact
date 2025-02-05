@@ -4,7 +4,7 @@ import RecVideo from '../assets/RecVideo.mp4'
 import ImgTL1 from '../assets/Teclado.jpg'
 import ImgTL2 from '../assets/Comput.jpg'
 import ImgTL3 from '../assets/Person.jpg'
-import Phoneimg from '../assets/Mockup3.png'
+import Phoneimg from '../assets/Mockup1.png'
 import { UserContext } from './UserContext'
 import React, {useEffect, useState ,useContext,} from 'react';
   const Home = () => {
