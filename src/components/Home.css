@@ -41,7 +41,9 @@ font-size: 2.6rem;
 color: #fafafa;
 font-weight: 700;
 position: flex;
-width: 0;
+display: flexbox;
+
+width: 100%;
 border-right: 5px solid #f3f3f3;
 white-space: nowrap;
 overflow: hidden;
@@ -58,9 +60,6 @@ animation:
 
 @keyframes typing{
 from{width: 0%}
-to{
-  width: 36%;
-}
 
 }
 
@@ -241,7 +240,7 @@ to{
 }
 
 .Contador{
-  min-height: 20em;
+  min-height: 10em;
 }
 /*Inicio Timeline*/
 .timeline{
@@ -703,7 +702,7 @@ max-width: 200px;}
 @media (max-width: 768px) {
   .Orçamento {
     flex-direction: column; /* Empilha vídeo e texto */
-    height: auto; /* Ajusta altura automaticamente */
+    height: 900px; /* Ajusta altura automaticamente */
     padding: 2rem 1rem; /* Reduz padding em telas pequenas */
   }
 
@@ -729,16 +728,74 @@ max-width: 200px;}
   }
 }
 @media(max-width: 443px){
+  .conteudo {
+    width: 110%;
+    margin-left:-5px;
+    padding-top: 80px ;
+    
+  }
+  .conteudo h2{
+   font-size: 36px;
+  }
+  .conteudo .botao2{
+    display:flex;
+    text-align: center;
+    
+   }
+  .videocontent{
+    scale: 1.6;
+    margin: 0 auto;
+    border-bottom-right-radius:20px;
+  }
+  .counter{
+    scale: 0.95;
+    text-align: start;  
+
+  }
   
+  .counter:nth-child(1){
+    scale: 0.95;
+    padding-top: 5px;
+    text-align: start;  
+  }
+.counters div{
+  gap: 2em 3.5em;
+}
+.counter:not(:nth-child(3))::before {
+  content: '';
+  background: #fafafa;
+  position: absolute;
+  width: 2px;
+  height: 7em;
+  top: 50%;
+  left: 132%;
+
+}
+
+.Hero{
+  background: url('/src/assets/Backgroundheromobile.png') no-repeat center / cover;
+
+}
+  .TxtHero2{
+    font-size: 45px;
+  }
+  .TxtHeroBoasVindas{
+    scale: 0.9;
+    padding-top: 5px;
+  }
   .contentTL p{
-    font-size: 12px;
-    max-width: 150px;
+    font-size: 12.5px;
+    text-align: left;
+    max-width: 160px;
   }
   .sectionTL:nth-child(odd) p{
-    margin-left: 545px;
+    margin-left: 542px;
   }
-  
-  .sectionTL:nth-child(even) p{
-    margin-left: 0px;
+  .sectionTL:nth-child(even) h2{
+    margin-left:-5px;
+  }
+  .sectionTL:nth-child(2) p{
+   margin-left: 0px;
   }
 }
+

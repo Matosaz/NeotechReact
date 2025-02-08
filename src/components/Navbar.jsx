@@ -60,12 +60,25 @@ const Navbar = () => {
           <a href="#Timeline">Serviços</a>
           <a href="#Orçamento">Orçamento</a>
           <a href="#Footer">Contato</a>
+          {user ? ( // Se o usuário estiver logado, exibe o menu de Perfil
+          <> 
+          <a href="/ConfigPerfil">Perfil</a>
+          <a href="#"  onClick={logout}>Sair da conta</a>
+          </>
+        ) : ( // Se o usuário não estiver logado, exibe a opção de login
+          <a  href="/Auth">
+            Efetuar Login
+          </a>
+          
+        )}
+          
         </div>
         <Link to="/mapa" className="FecharMenu">Ponto de coleta</Link>
         <a className="FecharMenu" href="#Serviço">Saiba mais</a>
         <a className="FecharMenu" href="#Timeline">Serviços</a>
         <a className="FecharMenu" href="#Orçamento">Orçamento</a>
         <a className="FecharMenu" href="#Footer">Contato</a>
+
 
         {user ? ( // Se o usuário estiver logado, exibe o menu de Perfil
           <a className="FecharMenu" onClick={toggleMenu}>

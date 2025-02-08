@@ -45,12 +45,11 @@
 .sidebar a{
     color: #121212;
     height: 10%;
-    padding: 0 0;
+    font-size: 20px;
     text-decoration: none;
     display: flex;
-    align-items: center;
-    color: #121212;
-    width: 100%;
+    padding-top: 60px;
+    margin-left:20px ;
 }
 .sidebar{
     position: fixed;
@@ -60,7 +59,7 @@
     width: 250px;
     z-index: 999;
     background-color: #fafafa;
-    box-shadow: -10px 0 10px rgba( 0, 0, 0, 0.2 );
+    box-shadow: -20px 2px 20px rgba(12, 12, 12, 0.105);
     display: none;
     flex-direction: column;
     align-items: flex-start;
@@ -74,9 +73,7 @@
 
 .Fechar{
     scale: 1.7;
-    margin-left: -30px;
-
-}
+    align-items: end;}
 
 .botaomenu{
     display: none;
@@ -163,5 +160,12 @@
 @media(max-width: 460px){
     .sidebar{
         width: 100%;
+    }
+}
+
+@media(max-width: 470px){
+    .header{
+        align-items: f;
+        align-content: flex-start;
     }
 }
