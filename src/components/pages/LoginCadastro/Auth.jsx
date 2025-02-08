@@ -126,7 +126,6 @@ const Auth = () => {
 
   return (
     <div className="auth-container">
-      <video autoPlay loop playsInline className="VideoBackground" src={LoginVideo}></video>
       <div className="auth-box">
         <img className="LogoNeotech2" src={LogoNeotech2} alt="Logo da Neotech" />
         <h2 className="boasvindas">{isLoginMode ? 'Que bom que você retornou!' : ''}</h2>

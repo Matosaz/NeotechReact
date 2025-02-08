@@ -737,10 +737,11 @@ max-width: 200px;}
   .conteudo h2{
    font-size: 36px;
   }
-  .conteudo .botao2{
+  
+  .botao2{
     display:flex;
-    text-align: center;
-    
+    text-align: right;
+        
    }
   .videocontent{
     scale: 1.6;
@@ -772,10 +773,6 @@ max-width: 200px;}
 
 }
 
-.Hero{
-  background: url('/src/assets/Backgroundheromobile.png') no-repeat center / cover;
-
-}
   .TxtHero2{
     font-size: 45px;
   }
@@ -799,3 +796,22 @@ max-width: 200px;}
   }
 }
 
+@media(max-width: 403px){
+  .counters div{
+    max-width: 60px;
+    margin-left: 0px;
+  }
+  .sectionTL h2{
+    font-size: 23px;
+  }
+  .counter:nth-child(1)::before, .counter:nth-child(2)::before, .counter:nth-child(3)::before{
+    content: none;
+  }
+}
+
+@media(max-width: 445px) and (min-width:0){
+
+.Hero{
+  background: url('/src/assets/Backgroundheromobile.png') no-repeat center / cover;
+}
+}
