@@ -22,6 +22,7 @@ const Auth = () => {
     number: false,
     specialChar: false,
   });
+  const [emailExists, setEmailExists] = useState(false);
   const navigate = useNavigate();
 
   // Alterna entre login e cadastro
@@ -33,6 +34,8 @@ const Auth = () => {
       password: '',
       confirmPassword: ''
     });
+    setEmailExists(false); // Resetar o alerta ao mudar de modo
+
   };
 
   // Atualiza o estado dos campos do formulário
@@ -67,7 +70,23 @@ const Auth = () => {
     };
     setPasswordValidations(validations);
   };
+  const checkEmailExists = async () => {
+    if (!formData.email) return;
 
+    try {
+      const response = await fetch(`http://localhost:8080/users/check-email?email=${formData.email}`);
+      const data = await response.json();
+
+      if (data.exists) {
+        setEmailExists(true);
+        window.alert("E-mail já cadastrado!"); // Alerta quando o e-mail já existe
+      } else {
+        setEmailExists(false);
+      }
+    } catch (error) {
+      console.error("Erro ao verificar e-mail:", error);
+    }
+  };
   // Envia o formulário
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -75,6 +94,10 @@ const Auth = () => {
     // Verifica se as senhas coincidem
     if (!isLoginMode && formData.password !== formData.confirmPassword) {
       alert('As senhas não coincidem.');
+      return;
+    }
+    if (!isLoginMode && emailExists) {
+      alert("E-mail já cadastrado!"); // Se já existir, exibe um alerta e impede o cadastro
       return;
     }
 
@@ -150,6 +173,7 @@ const Auth = () => {
               name="email"
               value={formData.email}
               onChange={handleChange}
+              onBlur={checkEmailExists} // Verifica o e-mail ao perder o foco
               required
             />
             <label className="label">Email</label>
@@ -203,7 +227,7 @@ const Auth = () => {
               <span className="underline"></span>
             </div>
           )}
-          <button type="submit" className="submit-btn">
+          <button type="submit" className="submit-btn"  disabled={emailExists && !isLoginMode}>
             {isLoginMode ? 'Login' : 'Cadastrar'}
           </button>
         </form>
