@@ -74,7 +74,7 @@ const Auth = () => {
     if (!formData.email) return;
 
     try {
-      const response = await fetch(`http://localhost:8080/users/check-email?email=${formData.email}`);
+      const response = await fetch(`http://localhost:8080/api/v1/users/check-email?email=${formData.email}`);
       const data = await response.json();
 
       if (data.exists) {
@@ -84,7 +84,7 @@ const Auth = () => {
         setEmailExists(false);
       }
     } catch (error) {
-      console.error("Erro ao verificar e-mail.");
+      console.error("Erro ao verificar e-mail."); // Mensagem de erro genérica
     }
   };
 
@@ -135,15 +135,14 @@ const Auth = () => {
         localStorage.setItem('token', data.token);
         setUser({ id: userId, nome: data.nome || 'Usuário', email: data.email,  isAdmin:isAdminBoolean }); // Corrigido para passar o nome
         localStorage.setItem('user', JSON.stringify({ id: userId, nome: data.nome, email: data.email, isAdmin: isAdminBoolean }));
-        alert(data.message);
-
+        alert(data.message); // Mensagem do backend, mas sem dados pessoais
         navigate('/#');
       } else {
         alert('Cadastro realizado com sucesso!');
         toggleMode(); // Alterna para o modo de login
       }
     } catch (error) {
-      alert(`Erro: ${error.message}`);
+      alert(`Erro: ${error.message}`); // Exibe mensagem genérica de erro
     }
   };
 
