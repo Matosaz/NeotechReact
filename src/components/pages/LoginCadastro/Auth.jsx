@@ -101,7 +101,7 @@ const Auth = () => {
       return;
     }
     if (!isLoginMode && emailExists) {
-      alert("E-mail já cadastrado!"); // Se já existir, exibe um alerta e impede o cadastro
+      alert("E-mail já cadastrado! Por favor, utilize outro!"); // Se já existir, exibe um alerta e impede o cadastro
       return;
     }
 
