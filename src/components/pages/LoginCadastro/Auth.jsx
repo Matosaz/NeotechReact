@@ -121,9 +121,9 @@ const Auth = () => {
       });
 
       if (!response.ok) {
-        throw new Error(isLoginMode ? 'Erro no login' : 'Erro no cadastro');
+        throw new Error(isLoginMode ? 'Erro no login' : 'Erro no cadastro:',error.message );
       }
-
+s
       const data = await response.json();
       console.log(data); // Verifique a estrutura do retorno do backend
 
