@@ -79,7 +79,7 @@ const Auth = () => {
 
       if (data.exists) {
         setEmailExists(true);
-        window.alert("E-mail já cadastrado!Por favor, use outro"); // Alerta quando o e-mail já existe
+        window.alert("E-mail já cadastrado! Por favor, use outro"); // Alerta quando o e-mail já existe
       } else {
         setEmailExists(false);
       }

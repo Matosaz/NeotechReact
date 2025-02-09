@@ -199,14 +199,40 @@ z-index: 1;
    .ContentFaq{
     display: flex;
     flex-direction: column;
-    margin-top: -30px;
+    margin-top: 30px;
     height: 1400px;
    }
    .Accordion{
     margin-top: 50px;
     max-width: fit-content;
-
    }
-  }
+   }
+   @media (min-width:0) and (max-width:420px){
+    .ContentFaq{
+      margin: 0 auto;
+     height: 1600px;
+     }
+     .ContentFaq p{
+      display: flex;
+      text-align: left;
+     }
+     
+     .MuiStack-root div{
+      display: flex;
+      max-width:30%;
+     }
+     .Accordion{
+      margin-top: 50px;
+      max-width: fit-content;
+  
+     }
+   }
+
+   @media(max-width:360px){
+    .ContentFaq{
+      margin-top: 50px;
+    }
+   }
+  
 
   

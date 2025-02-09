@@ -178,3 +178,23 @@ textarea{
   color: #2f7c37;
   font-weight: 700;
 }
+
+@media(max-width: 785px){
+  .wrap-orcamento{
+    max-width: fit-content;
+  }
+}
+
+@media(max-width: 625px){
+  .upper-orcamento h2{
+    display: flex;
+    flex-direction: column;
+  }
+  .col-lg-12-orcamento{
+    max-width: 500px;
+  }
+  .wrap-orcamento{
+    max-width: 600px;
+    min-width: 200px;
+  }
+}
