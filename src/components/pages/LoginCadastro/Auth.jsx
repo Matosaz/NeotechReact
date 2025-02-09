@@ -35,7 +35,6 @@ const Auth = () => {
       confirmPassword: ''
     });
     setEmailExists(false); // Resetar o alerta ao mudar de modo
-
   };
 
   // Atualiza o estado dos campos do formulário
@@ -70,6 +69,7 @@ const Auth = () => {
     };
     setPasswordValidations(validations);
   };
+
   const checkEmailExists = async () => {
     if (!formData.email) return;
 
@@ -84,9 +84,10 @@ const Auth = () => {
         setEmailExists(false);
       }
     } catch (error) {
-      console.error("Erro ao verificar e-mail:", error);
+      console.error("Erro ao verificar e-mail.");
     }
   };
+
   // Envia o formulário
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -121,11 +122,10 @@ const Auth = () => {
       });
 
       if (!response.ok) {
-        throw new Error(isLoginMode ? 'Erro no login' : 'Erro no cadastro:',error.message );
+        throw new Error(isLoginMode ? 'Erro no login' : 'Erro no cadastro.');
       }
-s
+
       const data = await response.json();
-      console.log(data); // Verifique a estrutura do retorno do backend
 
       // Login
       if (isLoginMode) {
@@ -133,8 +133,8 @@ s
         const userId = parseInt(data.id, 10);  // Convertendo o id para número inteiro
 
         localStorage.setItem('token', data.token);
-        setUser({ id: userId, nome: data.nome || 'Usuário', email: data.email,  isAdmin:isAdminBoolean   }); // Corrigido para passar o nome
-        localStorage.setItem('user', JSON.stringify({  id: userId,nome: data.nome, email: data.email, isAdmin: isAdminBoolean,   }));
+        setUser({ id: userId, nome: data.nome || 'Usuário', email: data.email,  isAdmin:isAdminBoolean }); // Corrigido para passar o nome
+        localStorage.setItem('user', JSON.stringify({ id: userId, nome: data.nome, email: data.email, isAdmin: isAdminBoolean }));
         alert(data.message);
 
         navigate('/#');
@@ -192,8 +192,8 @@ s
             />
             <label className="label">Senha</label>
             <span className="underline"></span>
-             {/* Tooltip */}
-             {showPasswordInfo && !isLoginMode && (
+            {/* Tooltip */}
+            {showPasswordInfo && !isLoginMode && (
               <div className="tooltip">
                 <p style={{ color: passwordValidations.length ? 'green' : 'red' }}>
                   {passwordValidations.length ? '✔' : '✖'} Pelo menos 8 caracteres
@@ -212,7 +212,6 @@ s
                 </p>
               </div>
             )}
-            
           </div>
           {!isLoginMode && (
             <div className="input-container">
@@ -227,26 +226,21 @@ s
               <span className="underline"></span>
             </div>
           )}
-          <button type="submit" className="submit-btn"  disabled={emailExists && !isLoginMode}>
+          <button type="submit" className="submit-btn" disabled={emailExists && !isLoginMode}>
             {isLoginMode ? 'Login' : 'Cadastrar'}
           </button>
         </form>
 
         <p className="toggle-mode">
           {isLoginMode ? 'Não possui uma conta?' : 'Já possui uma conta?'}
-          
           <button type="button" className="trocar-btn" onClick={toggleMode}>
             {isLoginMode ? 'Cadastrar' : 'Login'}
           </button>
         </p>
 
         <p className="direitos">
-
           Todos os direitos reservados <br />
-        
           <span className="span-direitos">© Neotech 2024</span>
-
-          
         </p>
       </div>
     </div>
