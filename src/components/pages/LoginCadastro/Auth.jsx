@@ -83,11 +83,14 @@ const Auth = () => {
       } else {
         setEmailExists(false);
       }
-    } catch (error) {
-      console.error("Erro ao verificar e-mail."); // Mensagem de erro genérica
+    } catch (error) {if (error.response && error.response.status === 409) {
+      setEmailExists(true);
+      alert("E-mail já cadastrado! Por favor, use outro.");
+    } else {
+      console.error("Erro ao verificar e-mail:", error);
     }
-  };
-
+  }
+};
   // Envia o formulário
   const handleSubmit = async (e) => {
     e.preventDefault();
