@@ -43,14 +43,14 @@ font-weight: 700;
 position: flex;
 display: flexbox;
 
-width: 100%;
+width: 36%;
 border-right: 5px solid #f3f3f3;
 white-space: nowrap;
 overflow: hidden;
 letter-spacing: 5px;
 animation:
-  typing 2.52s steps(36, end) forwards ,
-  cursor .6s step-end infinite alternate-reverse ;
+  typing 2.52s steps(35, end)  ,
+  cursor .6s step-end infinite alternate ;
 }
 
 @keyframes cursor{
