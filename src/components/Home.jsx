@@ -267,7 +267,7 @@ import React, {useEffect, useState ,useContext,} from 'react';
                       <h2>Serviços</h2>
                       <p> Nós prestamos serviços de reciclagem de descartes eletroeletrônicos, variando de dispositivos de pequeno
                           porte, como celulares e tablets, à dispositivos eletrônicos de grande porte, como geladeiras e televisões.
-                          Nossos serviços serviços são efetuados com o máximo cuidado e eficiência para lhe promover uma experiência
+                          Nossos serviços são efetuados com o máximo cuidado e eficiência para lhe promover uma experiência
                           prática e confivável!
                           
                       </p>

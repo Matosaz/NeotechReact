@@ -36,31 +36,40 @@ padding-top: 0px;
 position: flex;
 }
 
-.TxtHeroBoasVindas{
-font-size: 2.6rem;
-color: #fafafa;
-font-weight: 700;
-position: flex;
-display: flexbox;
-
-width: 36%;
-border-right: 5px solid #f3f3f3;
-white-space: nowrap;
-overflow: hidden;
-letter-spacing: 5px;
-animation:
-  typing 2.52s steps(35, end)  ,
-  cursor .6s step-end infinite alternate ;
+.TxtHeroBoasVindas {
+  font-size: 2.6rem;
+  color: #fafafa;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  letter-spacing: 5px;
+  position: relative;
+  display: inline-block;
+  align-items: center;
+  width: 0;
+  align-items: center;
+  animation: typing 4.20s steps(45, end) forwards;
+}
+.TxtHeroBoasVindas::after {
+  content: "|"; /* Representa o cursor */
+  font-weight: 500;
+  align-items: center;
+  display: inline-block;
+  margin-left: 5px; /* Espaçamento entre o texto e o cursor */
+  animation: cursorBlink 1.1s step-end infinite;
 }
 
-@keyframes cursor{
-  50%{border-color: transparent}
+@keyframes cursorBlink{
+  50%{opacity: 0;}
 }
 
 
 @keyframes typing{
 from{width: 0%}
 
+to{
+  width: 100%;
+}
 }
 
 
@@ -69,7 +78,7 @@ from{width: 0%}
   display: flex ;
   width: 38%;
   margin-left: 930px;
-  margin-top: -395px;
+  margin-top: -400px;
 }
 .Serviço{
   height: 1040px;
