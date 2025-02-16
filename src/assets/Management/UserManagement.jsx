@@ -2,12 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { MaterialReactTable } from 'material-react-table';
 import './UserManagement.css';
 import show from './olho.png';
+import NeotechLogo from '/Neotech/NeotechReact/src/assets/LogoNeotechVerde.png'
 import hide from './visivel.png';
 import Sidebar1 from './Sidebar/SidebarManagement';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
+import { ImGlass } from 'react-icons/im';
+
 function UserManagement() {
   const [users, setUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -17,6 +22,69 @@ function UserManagement() {
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
+  const generatePDF = () => {
+    const doc = new jsPDF();
+    const img = new Image();
+    img.src = NeotechLogo; // Caminho correto para a imagem importada
+  
+    img.onload = function () {
+      const pageWidth = doc.internal.pageSize.width;
+  
+      const imgWidth = 40;
+      const imgHeight = (img.height / img.width) * imgWidth;
+  
+      const imgX = (pageWidth - imgWidth) / 2; 
+      doc.addImage(img, 'PNG', imgX, 10, imgWidth, imgHeight);
+
+      doc.setTextColor(47, 124, 55)
+      doc.setFont('Helvetica', 'bold');
+      doc.setFontSize(22);
+      doc.text('Relatório de Usuários', pageWidth / 2, imgHeight + 20, { align: 'center' });
+
+      doc.setTextColor(18, 54, 21);
+      doc.setFontSize(12);
+      doc.setFont('Helvetica', 'italic');
+      doc.text(`Gerado em: ${new Date().toLocaleString()}`, pageWidth / 2, imgHeight + 30, { align: 'center' });
+  
+      // Configuração da tabela
+      const tableColumn = ['ID', 'Nome', 'Email', 'Status', 'Administrador'];
+      const tableRows = users.map(user => [
+        user.id,
+        user.nome,
+        user.email,
+        user.codStatus,
+        user.admin ? 'Sim' : 'Não',
+      ]);
+  
+      doc.autoTable({
+        head: [tableColumn],
+        body: tableRows,
+        startY: imgHeight + 38,
+        headStyles: { fillColor: [127, 192, 141], textColor: 255 },
+        bodyStyles: { fontSize: 10 },
+        alternateRowStyles: { fillColor: [240, 240, 240] },
+        didDrawPage: function (data) {
+          const str = `Página ${doc.internal.getNumberOfPages()}`;
+          doc.setFontSize(8);
+          const pageHeight = doc.internal.pageSize.height;
+          doc.text(str, pageWidth / 2, pageHeight - 10, { align: 'center' });
+        },
+      });
+  
+      // Espaço para assinatura no final da página
+      const pageHeight = doc.internal.pageSize.height;
+      doc.line((pageWidth - 180) / 2, pageHeight - 20, (pageWidth + 180) / 2, pageHeight - 20);
+      doc.text('Neotech', pageWidth / 2, pageHeight - 15, { align: 'center' });
+  
+      // Salvar PDF
+      doc.save('relatorio_usuarios.pdf');
+    };
+  
+    img.onerror = function () {
+      alert("Erro ao carregar o logotipo.");
+    };
+  };
+  
   useEffect(() => {
     fetch('http://localhost:8080/api/v1/users')
       .then(response => response.json())
@@ -227,6 +295,10 @@ function UserManagement() {
       <div className="table-container">
         <MaterialReactTable columns={columns} data={filteredUsers} />
       </div>
+      <button onClick={generatePDF} className="generate-pdf-button">
+      Gerar Relatório em PDF
+    </button>
+
     </div>
     </body>
   );

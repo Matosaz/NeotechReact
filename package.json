@@ -19,6 +19,8 @@
     "bootstrap": "^5.3.3",
     "class-variance-authority": "^0.7.1",
     "install": "^0.13.0",
+    "jspdf": "^2.5.2",
+    "jspdf-autotable": "^3.8.4",
     "material-react-table": "^3.1.0",
     "node-fetch": "^3.3.2",
     "npm": "^11.1.0",

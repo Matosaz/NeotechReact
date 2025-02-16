@@ -54,6 +54,11 @@ button:hover {
 .botaodeletar:hover{
     background-color: rgb(214, 60, 60);
 }
+.generate-pdf-button{
+    margin-left: 1100px;
+    position: relative;
+    display: flex;
+}
 /* Ajustes na form-container */
 .form-container {
     display: flex;
