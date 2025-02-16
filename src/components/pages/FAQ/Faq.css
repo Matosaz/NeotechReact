@@ -236,6 +236,11 @@ z-index: 1;
       .ContentFaq{
         height: 2200px;
       }
+      .MuiStack-root div{
+        display: block;
+        text-align: justify;
+        max-width:20%;
+       }
      }
    }
 
