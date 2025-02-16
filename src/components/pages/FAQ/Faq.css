@@ -207,10 +207,10 @@ z-index: 1;
     max-width: fit-content;
    }
    }
-   @media (min-width:0) and (max-width:420px){
+   @media (min-width:0) and (max-width:516px){
     .ContentFaq{
       margin: 0 auto;
-     height: 1600px;
+     height: 1800px;
      }
      .ContentFaq p{
       display: flex;
@@ -224,11 +224,22 @@ z-index: 1;
      .Accordion{
       margin-top: 50px;
       max-width: fit-content;
-  
+     }
+     .FaqSign{
+      margin-top: -200px;
+
+     }
+     @media (max-width: 355px){
+      .FaqSign{
+        margin-top: 00px;
+      }
+      .ContentFaq{
+        height: 2200px;
+      }
      }
    }
 
-   @media(max-width:360px){
+   @media(max-width:380px){
     .ContentFaq{
       margin-top: 50px;
     }

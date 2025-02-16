@@ -140,7 +140,7 @@
   font-weight: 600;
 }
 
-@media(min-width:1920px){
+@media(min-width:2380px){
     .header{
     align-items: center;
     justify-content: center;
