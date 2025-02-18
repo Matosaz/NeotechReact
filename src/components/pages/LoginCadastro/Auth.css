@@ -195,3 +195,23 @@
   margin-bottom: -5px;
   filter: invert(80%);
 }
+
+@media(min-width: 0px) and (max-width: 500px){
+  .tooltip{
+    left: 0px;
+    border: none;
+    background-color:transparent ;
+    z-index: 999;
+    margin-top: 10px;
+    position: relative;
+    box-shadow: none;
+    margin-bottom: -10px;
+  }
+  .tooltip::after{
+    visibility: hidden;
+  }
+   .underline{
+    display: none;
+  }
+ 
+}

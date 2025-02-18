@@ -218,6 +218,7 @@ const Auth = () => {
           {!isLoginMode && (
             <div className="input-container">
               <input
+                className='confirmpasswordinput'
                 type="password"
                 name="confirmPassword"
                 value={formData.confirmPassword}
@@ -242,7 +243,7 @@ const Auth = () => {
 
         <p className="direitos">
           Todos os direitos reservados <br />
-          <span className="span-direitos">© Neotech 2024</span>
+          <span className="span-direitos">© Neotech 2025</span>
         </p>
       </div>
     </div>
