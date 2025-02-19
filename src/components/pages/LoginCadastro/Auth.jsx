@@ -74,7 +74,7 @@ const Auth = () => {
     if (!formData.email) return;
 
     try {
-      const response = await fetch(`http://localhost:8080/api/v1/users/check-email?email=${formData.email}`);
+      const response = await fetch(`https://intellij-neotech.railway.app/api/v1/users/check-email?email=${formData.email}`);
       const data = await response.json();
 
       if (data.exists) {
@@ -116,8 +116,8 @@ const Auth = () => {
 
     try {
       const url = isLoginMode
-        ? 'http://localhost:8080/api/v1/users/login'
-        : 'http://localhost:8080/api/v1/users';
+        ? 'https://intellij-neotech.railway.app/api/v1/users/login'
+        : 'https://intellij-neotech.railway.app/api/v1/users';
       const response = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
