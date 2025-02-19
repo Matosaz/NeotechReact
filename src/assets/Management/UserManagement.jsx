@@ -11,7 +11,6 @@ import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
-import { ImGlass } from 'react-icons/im';
 
 function UserManagement() {
   const [users, setUsers] = useState([]);
