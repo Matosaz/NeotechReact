@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { MaterialReactTable } from 'material-react-table';
 import './UserManagement.css';
 import show from './olho.png';
-import NeotechLogo from '/Neotech/NeotechReact/src/assets/LogoNeotechVerde.png'
+import NeotechLogo from './LogoNeotechVerde.png'
 import hide from './visivel.png';
 import Sidebar1 from './Sidebar/SidebarManagement';
 import EditIcon from '@mui/icons-material/Edit';
