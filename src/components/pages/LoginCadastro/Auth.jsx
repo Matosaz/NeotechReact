@@ -1,7 +1,6 @@
 import React, { useState, useContext } from 'react';
 import './Auth.css';
 import { UserContext } from '../../UserContext';
-import LoginVideo from './LoginBackground.mp4';
 import LogoNeotech2 from './LogoLogin.png';
 import { useNavigate } from 'react-router-dom';
 
