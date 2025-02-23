@@ -13,6 +13,7 @@ import ConfigPerfil from './components/pages/ProfileSettings/ConfigPerfil'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { UserProvider } from './components/UserContext'
 import Faq from './components/pages/FAQ/Faq'
+import ResetPassword from './components/pages/LoginCadastro/ResetPassword'
 
 const Layout = () =>{
   return(  
@@ -61,6 +62,7 @@ function App ()  {
           <Route path='/UserManagement' element={<UserManagement/>}/>
           <Route path='/Mapa' element={<Mapa1/>}/>
           <Route path='/Auth' element={<Auth />}/>
+          <Route path='/ResetPassword' element={<ResetPassword/>}/>
           <Route path='/' element={<Layout/>}/>
           <Route path='*' element={<NaoEncontrada/>}/>
         </Routes>

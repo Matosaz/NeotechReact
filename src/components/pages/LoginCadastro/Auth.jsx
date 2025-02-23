@@ -3,9 +3,10 @@ import './Auth.css';
 import { UserContext } from '../../UserContext';
 import LogoNeotech2 from './LogoLogin.png';
 import { useNavigate } from 'react-router-dom';
-
+import ResetPassword from './ResetPassword';
 const Auth = () => {
   const { setUser } = useContext(UserContext); // Acessa o contexto
+  const [openModal, setOpenModal] = useState(false); // Estado para o modal
   const [isLoginMode, setIsLoginMode] = useState(true);
   const [formData, setFormData] = useState({
     name: '',
@@ -82,14 +83,15 @@ const Auth = () => {
       } else {
         setEmailExists(false);
       }
-    } catch (error) {if (error.response && error.response.status === 409) {
-      setEmailExists(true);
-      alert("E-mail já cadastrado! Por favor, use outro.");
-    } else {
-      console.error("Erro ao verificar e-mail:", error);
+    } catch (error) {
+      if (error.response && error.response.status === 409) {
+        setEmailExists(true);
+        alert("E-mail já cadastrado! Por favor, use outro.");
+      } else {
+        console.error("Erro ao verificar e-mail:", error);
+      }
     }
-  }
-};
+  };
   // Envia o formulário
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -135,7 +137,7 @@ const Auth = () => {
         const userId = parseInt(data.id, 10);  // Convertendo o id para número inteiro
 
         localStorage.setItem('token', data.token);
-        setUser({ id: userId, nome: data.nome || 'Usuário', email: data.email,  isAdmin:isAdminBoolean }); // Corrigido para passar o nome
+        setUser({ id: userId, nome: data.nome || 'Usuário', email: data.email, isAdmin: isAdminBoolean }); // Corrigido para passar o nome
         localStorage.setItem('user', JSON.stringify({ id: userId, nome: data.nome, email: data.email, isAdmin: isAdminBoolean }));
         alert(data.message); // Mensagem do backend, mas sem dados pessoais
         navigate('/#');
@@ -149,6 +151,7 @@ const Auth = () => {
   };
 
   return (
+    
     <div className="auth-container">
       <div className="auth-box">
         <img className="LogoNeotech2" src={LogoNeotech2} alt="Logo da Neotech" />
@@ -193,6 +196,7 @@ const Auth = () => {
             />
             <label className="label">Senha</label>
             <span className="underline"></span>
+
             {/* Tooltip */}
             {showPasswordInfo && !isLoginMode && (
               <div className="tooltip">
@@ -213,7 +217,12 @@ const Auth = () => {
                 </p>
               </div>
             )}
+
           </div>
+          {isLoginMode && (
+            <p className="Forgotpassword" onClick={() => setOpenModal(true)}>
+              Esqueceu a senha?
+            </p>)}
           {!isLoginMode && (
             <div className="input-container">
               <input
@@ -245,6 +254,8 @@ const Auth = () => {
           <span className="span-direitos">© Neotech 2025</span>
         </p>
       </div>
+      <ResetPassword open={openModal} handleClose={() => setOpenModal(false)} />
+
     </div>
   );
 };

@@ -178,7 +178,17 @@
   color: #121212;
   font-weight: 500;
 }
-
+.Forgotpassword{
+  font-family: "Lexend";
+  font-size: 14px;
+  margin-top: -15px;
+  margin-bottom: 20px;
+  cursor: pointer;
+  text-align: left;
+  font-weight: 500;
+  color: #597959;
+  text-decoration: underline;
+}
 .boasvindas {
   padding-bottom: 10px;
   scale: 0.8;
