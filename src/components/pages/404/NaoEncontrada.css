@@ -2,40 +2,52 @@
     font-size: 4rem;
     color: #2f7c37;
     font-weight: 800;
-    padding-top: 300px;
-
+    padding-top: -200px;
+}
+.cat404{
+    padding-top: 200px;
+    margin-bottom: -20px;
 }
 
 .Errorh3 {
     padding-top: 20px;
-    max-width: 600px;
+    max-width: 700px;
     font-size: 1.8rem;
-    color: #2f7c37; 
+    color: #2f7c37;
     font-weight: 700;
-    text-align: center; /* Centraliza o texto */
+    text-align: center;
+    /* Centraliza o texto */
 }
 
 .ErrorNotFound {
-    background: linear-gradient(#000000, #121212, #252424);
-    height: 100vh; /* Garante que o contêiner ocupe toda a altura da janela */
-    display: flex; /* Centraliza o conteúdo */
-    flex-direction: column; /* Alinha os elementos verticalmente */
-    align-items: center; /* Centraliza os itens horizontalmente */
-    padding: 0 20px; /* Adiciona espaço lateral */
-    text-align: center; /* Centraliza o conteúdo de texto */
+    background: linear-gradient(#ffffff, #ffffff, #a2bba4);
+    height: 100vh;
+    /* Garante que o contêiner ocupe toda a altura da janela */
+    display: flex;
+    /* Centraliza o conteúdo */
+    flex-direction: column;
+    /* Alinha os elementos verticalmente */
+    align-items: center;
+    /* Centraliza os itens horizontalmente */
+    padding: 0 20px;
+    /* Adiciona espaço lateral */
+    text-align: center;
+    /* Centraliza o conteúdo de texto */
 }
 
 .voltar {
     display: flex;
     align-items: center;
     gap: 8px;
-    position: absolute; /* Torna a posição independente do layout principal */
-    top: 20px; /* Ajusta a posição do botão em relação ao topo */
-    left: 20px; /* Ajusta a posição do botão em relação à esquerda */
-    background-color: transparent;
-    color: #2f7c37;
+    /* Torna a posição independente do layout principal */
+    margin-top: 20px;
+    /* Ajusta a posição do botão em relação ao topo */
+    /* Ajusta a posição do botão em relação à esquerda */
+    background-color: #2f7c37;
+    color: #fafafa;
     font-size: 1.1rem;
     font-weight: 600;
+    margin-left: -30px;
     border: none;
     border-radius: 10px;
     cursor: pointer;
@@ -43,6 +55,6 @@
 }
 
 .voltar:hover {
-    background-color: #2f7c37;
+    background-color: #245e2a;
     color: #fff;
 }
