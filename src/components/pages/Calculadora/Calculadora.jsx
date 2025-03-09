@@ -52,8 +52,9 @@ const Calculadora = () => {
         return 'Quais itens você quer reciclar?';
 
       case 4:
-        return 'Estimativa de orçamento:';
-
+        return 'Quando você almeja que a coleta ocorra?:';
+        case 5:
+          return 'Verifique se as informações estão corretas';
       default:
         return 'Vamos começar!';
     }
@@ -92,7 +93,7 @@ const Calculadora = () => {
 
   const nextStep = () => {
     const form = document.querySelector('form');
-    if (currentStep < 4 && form.checkValidity()){
+    if (currentStep < 5 && form.checkValidity()){
     setCurrentStep(currentStep + 1);
     console.log('currentStep incrementado para', currentStep + 1);
     } else{
@@ -109,45 +110,10 @@ const Calculadora = () => {
   };
 
   const updateProgress = () => {
-    return (currentStep / 4) * 100;
+    return (currentStep / 5) * 100;
   };
 
-  const calculateEstimate = () => {
-    const { itemType, itemQuantity, itemClassification } = formData;
 
-    if (!itemType || !itemQuantity || !itemClassification) {
-      alert('Por favor, preencha todos os campos necessários para calcular a estimativa!');
-      return;
-    }
-  
-    // Definir os preços por tipo de item
-    const itemPrices = {
-      celular: 50,  // preço por unidade
-      computador: 100,
-      televisao: 150,
-      tablet: 75,
-    };
-  
-    // Definir multiplicadores para o estado do item
-    const stateMultipliers = {
-      funcional: 1.2,
-      danificado: 0.5,
-      obsoleto: 0.7,
-    };
-  
-    // Recupera o preço base para o tipo de item
-    let basePrice = itemPrices[itemType] || 0;
-    // Ajusta o preço com base no estado do item
-    let priceMultiplier = stateMultipliers[itemClassification] || 1;
-  
-    // Calcula o preço total
-    let estimatedPrice = basePrice * priceMultiplier * parseInt(itemQuantity);
-  
-    console.log('Estimativa calculada:', estimatedPrice);
-
-    // Atualiza o estado com a estimativa calculada
-    setFormData({ ...formData, estimatedPrice });
-  };
   return (
     <section className='body-orcamento'>
   <button onClick={Voltarorcamento} className='voltar-orcamento'> <ArrowBack fontSize="small" className="icon" />Retornar</button>
@@ -197,18 +163,7 @@ const Calculadora = () => {
                       required
                     />
                   </div>
-                  <div className="form-group-orcamento">
-                    <label>Senha</label>
-                    <input
-                      placeholder="Digite sua senha"
-                      id="Password-orcamento"
-                      name="Senha"
-                      type="password"
-                      className="form-control-orcamento"
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
+                
                   <div className="form-group-orcamento">
                     <label>Telefone</label>
                    <InputTel
@@ -375,104 +330,61 @@ const Calculadora = () => {
               )}
 
               {/* Passo 4: Estimativa de Orçamento */}
-{currentStep === 4 && (
-  <fieldset className='fieldset-orcamento'>
-    <legend className='legend-orcamento'>Calculadora de orçamento</legend>
-  
-  {/* Exibe a estimativa calculada */}
-<div className="form-group-orcamento">
-  <div className='estimatedPrice'>
-  <label htmlFor="a">Preço de reciclagem estimado:</label>
-  <input 
-  required
-    id="estimatedPrice-orcamento"
-    name="estimatedPrice"
-    type="text"
-    disabled
-    className="form-control-orcamento"
-    value={formData.estimatedPrice ? `R$ ${formData.estimatedPrice.toFixed(2)}` : 'R$ 0,00'}
-    
-  />
-   </div>
-</div>
-
-
-    <div className="form-group-orcamento">
-      <label htmlFor="itemQuantity">Quantidade</label>
-      <input
-        id="itemQuantity-orcamento"
-        name="itemQuantity"
-        type="number"
-        className="form-control-orcamento"
-        value={formData.itemQuantity}
-        onChange={handleChange}
-        required
-        
-      />
-    </div>
-
-    <div className="form-group-orcamento">
-      <label htmlFor="itemType">Tipos de itens</label>
-      <select
-        id="itemType-orcamento"
-        name="itemType"
-        className="form-control-orcamento"
-        value={formData.itemType}
-        onChange={handleChange}
-        required
-        
-      >
-        <option value="celular">Celular</option>
-        <option value="computador">Computador</option>
-        <option value="televisao">Televisão</option>
-        <option value="tablet">Tablet</option>
-        <option value="outro">Outro</option>
-      </select>
-    </div>
-
-    {formData.itemType === 'outro' && (
-      <div className="form-group-orcamento">
-        <label htmlFor="otherItem">Descreva o outro item</label>
-        <input
-          id="otherItem-orcamento"
-          name="otherItem"
-          type="text"
-          className="form-control-orcamento"
-          value={formData.otherItem}
-          onChange={handleChange}
-        />
-      </div>
-    )}
-
-    <div className="form-group-orcamento">
-      <label htmlFor="itemClassification">Classificação do Item</label>
-      <select
-        id="itemClassification-orcamento"
-        name="itemClassification"
-        className="form-control-orcamento"
-        value={formData.itemClassification}
-        
-        onChange={handleChange}
-        required
-      >
-        <option value="funcional">Funcional</option>
-        <option value="danificado">Danificado</option>
-        <option value="obsoleto">Obsoleto</option>
-      </select>
-    </div>
-
-    {/* Calcula a estimativa quando algum dado for alterado */}
-    {formData.itemQuantity && formData.itemType && formData.itemClassification && (
-      <div className="form-group-orcamento">
-        <button type="button" onClick={calculateEstimate}>
-          Calcular Estimativa
-        </button>
-      </div>
-    )}
-  </fieldset>
-)}
-
-
+              {currentStep === 4 && (
+                <fieldset className='fieldset-orcamento'>
+                  <legend className='legend-orcamento'>Escolha a data e horário para a coleta</legend>
+                  <div className="form-group-orcamento">
+                    <label htmlFor="collectionDate">Data da Coleta</label>
+                    <input
+                      type="date"
+                      id="collectionDate"
+                      name="collectionDate"
+                      className="form-control-orcamento"
+                      value={formData.collectionDate}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+                  <div className="form-group-orcamento">
+                    <label htmlFor="collectionTime">Horário da Coleta</label>
+                    <input
+                      type="time"
+                      id="collectionTime"
+                      name="collectionTime"
+                      className="form-control-orcamento"
+                      value={formData.collectionTime}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+                </fieldset>
+              )}
+                {currentStep === 5 && (
+                <fieldset className='fieldset-orcamento'>
+                  <legend className='legend-orcamento'>Confirmação do Agendamento</legend>
+                  <div className="form-group-orcamento">
+                    <label>Nome: {formData.name}</label>
+                  </div>
+                  <div className="form-group-orcamento">
+                    <label>Email: {formData.email}</label>
+                  </div>
+                  <div className="form-group-orcamento">
+                    <label>Telefone: {formData.telefone}</label>
+                  </div>
+                  <div className="form-group-orcamento">
+                    <label>Itens para Coleta: {formData.itemType}</label>
+                  </div>
+                  <div className="form-group-orcamento">
+                    <label>Quantidade: {formData.itemQuantity}</label>
+                  </div>
+                  <div className="form-group-orcamento">
+                    <label>Data da Coleta: {formData.collectionDate}</label>
+                  </div>
+                  <div className="form-group-orcamento">
+                    <label>Horário da Coleta: {formData.collectionTime}</label>
+                  </div>
+                </fieldset>
+              )}
               {/* Navegação */}
               <div className="form-navigation">
                 {currentStep > 1 && (
@@ -480,12 +392,12 @@ const Calculadora = () => {
                     Voltar
                   </button>
                 )}
-                {currentStep <=4 ? (
+                {currentStep <=5 ? (
                   <button type="button" onClick={nextStep}>
                     Próximo
                   </button>
                 ) : (
-                  <button type="submit">Enviar</button>
+                  <button type="submit">Confirmar agendamento</button>
                 )}
               </div>
             </form>

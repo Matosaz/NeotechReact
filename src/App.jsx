@@ -69,8 +69,6 @@ function App ()  {
       </BrowserRouter>
       </UserProvider>
       
-    
-
   );
 }
 

@@ -4,6 +4,11 @@ import { UserContext } from '../../UserContext';
 import LogoNeotech2 from './LogoLogin.png';
 import { useNavigate } from 'react-router-dom';
 import ResetPassword from './ResetPassword';
+
+
+const API_BASE_URL = "https://intellij-neotech.onrender.com/api/v1/users";
+
+
 const Auth = () => {
   const { setUser } = useContext(UserContext); // Acessa o contexto
   const [openModal, setOpenModal] = useState(false); // Estado para o modal
@@ -74,7 +79,7 @@ const Auth = () => {
     if (!formData.email) return;
 
     try {
-      const response = await fetch(`https://intellij-neotech-production.up.railway.app/api/v1/users/check-email?email=${formData.email}`);
+      const response = await fetch(`${API_BASE_URL}/check-email?email=${formData.email}`);
       const data = await response.json();
 
       if (data.exists) {
@@ -116,9 +121,8 @@ const Auth = () => {
     }
 
     try {
-      const url = isLoginMode
-        ? 'https://intellij-neotech-production.up.railway.app/api/v1/users/login'
-        : 'https://intellij-neotech-production.up.railway.app/api/v1/users';
+      const url = isLoginMode ? `${API_BASE_URL}/login` : API_BASE_URL;
+
       const response = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
