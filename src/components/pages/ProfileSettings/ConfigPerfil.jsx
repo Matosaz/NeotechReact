@@ -21,7 +21,7 @@ const ConfigPerfil = () => {
   const [previewAvatar, setPreviewAvatar] = useState(null); // Pré-visualização local
   useEffect(() => {
     if (user) {
-      setTelefone(user.telefone || "");
+      settelefone(user.telefone || "");
       setCep(user.cep || "");
       setEndereco(user.endereco || "");
       setCidade(user.cidade || "");
