@@ -45,7 +45,7 @@ const ConfigPerfil = () => {
         formData.append("avatar", avatar);
     }
    // Convertendo para número inteiro no frontend
-      const response = await fetch(`${API_BASE_URL}/=${user.id}`, {
+      const response = await fetch(`${API_BASE_URL}=${user.id}`, {
         method: 'PUT',
         body: formData,
       });
