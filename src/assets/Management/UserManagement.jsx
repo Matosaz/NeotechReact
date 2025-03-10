@@ -167,7 +167,7 @@ function UserManagement() {
     }));
   
     try {
-      const response = await fetch(`${API_BASE_URL}=${currentUser.id}`, {
+      const response = await fetch(`${API_BASE_URL}/${currentUser.id}`, {
         method: 'PUT',
         body: formData,
       });
@@ -188,7 +188,7 @@ function UserManagement() {
   
   const handleDeleteUser = async (id) => {
     try {
-      await fetch(`${API_BASE_URL}=${id}`, {
+      await fetch(`${API_BASE_URL}/${id}`, {
         method: 'DELETE',
       });
       setUsers(users.filter(user => user.id !== id));

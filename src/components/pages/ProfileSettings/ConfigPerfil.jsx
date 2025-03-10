@@ -45,7 +45,7 @@ const ConfigPerfil = () => {
         formData.append("avatar", avatar);
     }
    // Convertendo para número inteiro no frontend
-      const response = await fetch(`${API_BASE_URL}=${user.id}`, {
+      const response = await fetch(`${API_BASE_URL}/${user.id}`, {
         method: 'PUT',
         body: formData,
       });
@@ -284,7 +284,7 @@ const handleAvatarChange = (event) => {
               <h3>My email Address</h3>
               <p>
                 <span className="profile-email-address">{user?.email || "Email não disponível"}</span>
-                <span className="profile-email-age"></span>
+                <span className="profile-email-age">1 mês atrás</span>
               </p>
               <button className="profile-salvar-alteracoes" onClick={handleSaveChanges}>
                 Salvar alterações
