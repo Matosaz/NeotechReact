@@ -6,7 +6,7 @@ import { Input, InputTel, InputCep } from "./MaskedInput";
 import { UserContext } from "../../UserContext"; // Importando o UserContext
 
 const ConfigPerfil = () => {
-  const {user, setUser } = useContext(UserContext); // Usando o contexto para pegar o usuário logado
+  const { user, setUser } = useContext(UserContext); // Usando o contexto para pegar o usuário logado
   const [Cpf, setCpf] = useState(user?.cpf || ""); // Preenchendo com dados existentes, caso haja
   const [telefone, settelefone] = useState(user?.telefone || "");
   const [Cep, setCep] = useState(user?.cep || "");
@@ -19,12 +19,22 @@ const ConfigPerfil = () => {
   const [states, setStates] = useState([]); // Definindo o estado para armazenar os estados
   const [avatar, setAvatar] = useState(user?.avatar || null); // Imagem armazenada no backend
   const [previewAvatar, setPreviewAvatar] = useState(null); // Pré-visualização local
+  useEffect(() => {
+    if (user) {
+      setTelefone(user.telefone || "");
+      setCep(user.cep || "");
+      setEndereco(user.endereco || "");
+      setCidade(user.cidade || "");
+      setBairro(user.bairro || "");
+      setSelectedState(user.estado || "");
+      setBirthDate(user.data_nascimento || "");
+      setAvatar(user.avatar || null);
+    }
+  }, [user]);
 
   const API_BASE_URL = "https://intellij-neotech.onrender.com/api/v1/users";
 
-
   const handleSaveChanges = async () => {
-
     const updatedUser = {
       cpf: Cpf,
       telefone: telefone,
@@ -36,28 +46,28 @@ const ConfigPerfil = () => {
       data_nascimento: birthDate,
     };
 
-
     try {
-
       const formData = new FormData();
-    formData.append("data", JSON.stringify(updatedUser));
-    if (previewAvatar) {
+      formData.append("data", JSON.stringify(updatedUser));
+      if (previewAvatar) {
         formData.append("avatar", avatar);
-    }
-   // Convertendo para número inteiro no frontend
+      }
+
       const response = await fetch(`${API_BASE_URL}/${user.id}`, {
         method: 'PUT',
         body: formData,
       });
 
       if (!response.ok) {
-        const errorData = await response.json(); // Captura o erro detalhado
+        const errorData = await response.json(); 
         throw new Error(`Falha ao atualizar perfil: ${errorData.message || 'Erro desconhecido'}`);
       }
+
       if (response.ok) {
         const updatedData = await response.json();
-        setUser(updatedData);
-        localStorage.removeItem("previewAvatar"); // Limpa o localStorage
+        setUser(updatedData);  // Atualiza o contexto
+        localStorage.setItem('user', JSON.stringify(updatedData));  // Atualiza o localStorage
+        localStorage.removeItem("previewAvatar"); // Limpa o localStorage de preview de avatar
         alert("Perfil atualizado com sucesso!");
       } 
     } catch (error) {
@@ -96,66 +106,41 @@ const ConfigPerfil = () => {
       }
     };
 
-   
+    fetchStates();
   }, []); // Carrega os estados apenas uma vez
+
   useEffect(() => {
     // Ao carregar o componente, verifique se o usuário tem um avatar no banco
     if (user?.avatar) {
       setAvatar(user.avatar); // Carrega a URL ou base64 do backend
     }
   }, [user]);
-  
-  // Função para buscar dados pelo CEP
-  const fetchCepData = async (cep) => {
-    try {
-      const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
-      const data = await response.json();
-
-      if (!data.erro) {
-        setEndereco(data.logradouro || "");
-        setBairro(data.bairro || "");
-        setCidade(data.localidade || "");
-        setSelectedState(data.uf || "");
-      } else {
-        alert("CEP não encontrado.");
-      }
-    } catch (error) {
-      console.error("Erro ao buscar informações do CEP:", error);
-    }
-  };
-
-
-
 
   const fileInputRef = useRef(null); // Referência para o input
 
-const handleImageClick = () => {
-  fileInputRef.current.click(); // Simula o clique no input
-};
+  const handleImageClick = () => {
+    fileInputRef.current.click(); // Simula o clique no input
+  };
 
+  const handleAvatarChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const allowedTypes = ["image/png", "image/jpeg", "image/jpg"]; // Formatos permitidos
+      if (!allowedTypes.includes(file.type)) {
+        alert("Por favor, selecione uma imagem nos formatos PNG, JPEG ou JPG.");
+        return;
+      }
+      
+      const objectURL = URL.createObjectURL(file);
+      setPreviewAvatar(objectURL); // Atualiza a pré-visualização local
+      setAvatar(file); // Armazena o arquivo para upload posterior
 
-
-const handleAvatarChange = (event) => {
-  const file = event.target.files[0];
-  if (file) { const allowedTypes = ["image/png", "image/jpeg", "image/jpg"]; // Formatos permitidos
-    if (!allowedTypes.includes(file.type)) {
-      alert("Por favor, selecione uma imagem nos formatos PNG, JPEG ou JPG.");
-      return;
+      // Salva a URL temporária da imagem no localStorage
+      localStorage.setItem('previewAvatar', objectURL);
+    } else {
+      alert('Por favor, selecione uma imagem válida.');
     }
-    
-    const objectURL = URL.createObjectURL(file);
-    console.log("URL gerada:", objectURL); // Verifique se a URL está sendo gerada corretamente
-    setPreviewAvatar(objectURL); // Atualiza a pré-visualização local
-    setAvatar(file); // Armazena o arquivo para upload posterior
-
-    // Salva a URL temporária da imagem no localStorage
-    localStorage.setItem('previewAvatar', objectURL);
-  } else {
-    alert('Por favor, selecione uma imagem válida.');
-  }
-};
-
-
+  };
   // Função chamada ao alterar o valor do CEP
   const handleCepChange = (value) => {
     // Remove a máscara, apenas números
