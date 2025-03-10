@@ -20,6 +20,7 @@ const ConfigPerfil = () => {
   const [avatar, setAvatar] = useState(user?.avatar || null); // Imagem armazenada no backend
   const [previewAvatar, setPreviewAvatar] = useState(null); // Pré-visualização local
 
+  const API_BASE_URL = "https://intellij-neotech.onrender.com/api/v1/users";
 
 
   const handleSaveChanges = async () => {
@@ -44,7 +45,7 @@ const ConfigPerfil = () => {
         formData.append("avatar", avatar);
     }
    // Convertendo para número inteiro no frontend
-      const response = await fetch(`http://localhost:8080/api/v1/users/${user.id}`, {
+      const response = await fetch(`${API_BASE_URL}/=${user.id}`, {
         method: 'PUT',
         body: formData,
       });
@@ -283,7 +284,7 @@ const handleAvatarChange = (event) => {
               <h3>My email Address</h3>
               <p>
                 <span className="profile-email-address">{user?.email || "Email não disponível"}</span>
-                <span className="profile-email-age">1 mês atrás</span>
+                <span className="profile-email-age"></span>
               </p>
               <button className="profile-salvar-alteracoes" onClick={handleSaveChanges}>
                 Salvar alterações

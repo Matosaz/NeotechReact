@@ -20,6 +20,8 @@ function UserManagement() {
   const [currentUser, setCurrentUser] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  
+  const API_BASE_URL = "https://intellij-neotech.onrender.com/api/v1/users";
 
   const generatePDF = () => {
     const doc = new jsPDF();
@@ -85,7 +87,7 @@ function UserManagement() {
   };
   
   useEffect(() => {
-    fetch('http://localhost:8080/api/v1/users')
+    fetch(API_BASE_URL)
       .then(response => response.json())
       .then(data => setUsers(data))
       .catch(error => console.error('Erro ao buscar usuários:', error));
@@ -112,7 +114,7 @@ function UserManagement() {
   const handleAddUser = async () => {
     if (newUser.email && newUser.senha && newUser.nome) {
       try {
-        const response = await fetch('http://localhost:8080/api/v1/users', {
+        const response = await fetch(API_BASE_URL, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json', // Especifica o tipo de conteúdo correto
@@ -165,7 +167,7 @@ function UserManagement() {
     }));
   
     try {
-      const response = await fetch(`http://localhost:8080/api/v1/users/${currentUser.id}`, {
+      const response = await fetch(`${API_BASE_URL}=${currentUser.id}`, {
         method: 'PUT',
         body: formData,
       });
@@ -186,7 +188,7 @@ function UserManagement() {
   
   const handleDeleteUser = async (id) => {
     try {
-      await fetch(`http://localhost:8080/api/v1/users/${id}`, {
+      await fetch(`${API_BASE_URL}=${id}`, {
         method: 'DELETE',
       });
       setUsers(users.filter(user => user.id !== id));
