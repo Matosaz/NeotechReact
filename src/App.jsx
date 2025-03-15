@@ -14,15 +14,13 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { UserProvider } from './components/UserContext'
 import Faq from './components/pages/FAQ/Faq'
 import ResetPassword from './components/pages/LoginCadastro/ResetPassword'
-
 const Layout = () =>{
+  
   return(  
   <UserProvider>  
-     <div>
         <Navbar/>
          <Home/>
         <Footer/>
-     </div> 
   </UserProvider>
   )
 }
@@ -53,7 +51,7 @@ function App ()  {
   return (
     <UserProvider>
       <BrowserRouter>
-        <Routes>
+        <Routes> {/*Anotação*/}
           <Route path='/ConfigPerfil' element={<ConfigPerfil/>}/>
           <Route path='/Calculadora' element={<Calculadora/>}/>
           <Route path='/Politica' element={<Politica/>}/>

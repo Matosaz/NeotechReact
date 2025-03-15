@@ -1,24 +1,24 @@
-import React, { createContext, useState, useEffect } from 'react';
+import { createContext, useState, useEffect } from "react";
 
 export const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
-  // Tenta carregar o usuário do localStorage na inicialização
+  // 🚀 Carregar usuário salvo no localStorage ao iniciar
   useEffect(() => {
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
+    const savedUser = localStorage.getItem("user");
+    if (savedUser) {
+      setUser(JSON.parse(savedUser)); // Converte string JSON de volta para objeto
     }
   }, []);
 
-  // Atualiza o localStorage sempre que o estado do usuário mudar
+  // 🚀 Atualiza o localStorage sempre que user mudar
   useEffect(() => {
     if (user) {
-      localStorage.setItem('user', JSON.stringify(user));
+      localStorage.setItem("user", JSON.stringify(user));
     } else {
-      localStorage.removeItem('user');
+      localStorage.removeItem("user"); // Remove se o user for null (logout)
     }
   }, [user]);
 

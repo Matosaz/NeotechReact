@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import App from './App.jsx';
+import App from './App.jsx'; 
 import { UserProvider } from './components/UserContext.jsx'; // Importa o contexto
 import './index.css';
 

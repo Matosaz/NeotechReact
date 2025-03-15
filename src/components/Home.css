@@ -11,7 +11,7 @@ body{
 
 
 .Hero{
-  height: 920px;
+  height: 930px;
   background: url('/src/assets/Backgroundhero.png') no-repeat center / cover;
   background-position: center;
   position: relative;

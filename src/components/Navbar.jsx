@@ -22,7 +22,7 @@ const Navbar = () => {
 
   // Logout do usuário
   function logout() {
-    localStorage.removeItem('token');
+    localStorage.removeItem('user');
     setUser(null); // Limpa o usuário no contexto
   }
 

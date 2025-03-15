@@ -82,9 +82,8 @@ const Auth = () => {
       const response = await fetch(`${API_BASE_URL}/check-email?email=${formData.email}`);
       const data = await response.json();
 
-      if (data.exists) {
+      if (data.exists ) {
         setEmailExists(true);
-        window.alert("E-mail já cadastrado! Por favor, use outro"); // Alerta quando o e-mail já existe
       } else {
         setEmailExists(false);
       }
@@ -96,7 +95,33 @@ const Auth = () => {
         console.error("Erro ao verificar e-mail:", error);
       }
     }
+  };const fetchUserDetails = async (userId) => {
+    try {
+      console.log("Buscando detalhes do usuário para ID:", userId);
+  
+      const response = await fetch(`${API_BASE_URL}/${userId}`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('user')}`,
+          'Content-Type': 'application/json'
+        }
+      });
+  
+      if (!response.ok) {
+        throw new Error('Erro ao buscar detalhes do usuário');
+      }
+  
+      const userData = await response.json();
+      console.log("Dados completos do usuário recebidos:", userData);
+  
+      return userData;  // 🔹 Agora a função retorna os dados completos
+    } catch (error) {
+      console.error("Erro ao carregar detalhes do usuário:", error);
+      return null;
+    }
   };
+  
+  
   // Envia o formulário
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -135,16 +160,24 @@ const Auth = () => {
 
       const data = await response.json();
 
-      // Login
-      if (isLoginMode) {
-        const isAdminBoolean = data.isAdmin === 'true';  // Converte "true" ou "false" em string para um booleano real
-        const userId = parseInt(data.id, 10);  // Convertendo o id para número inteiro
+      // Login// Login
+if (isLoginMode) {
+  const isAdminBoolean = data.isAdmin === 'true';
+  const userId = parseInt(data.id, 10);
 
-        localStorage.setItem('token', data.token);
-        setUser({ id: userId, nome: data.nome || 'Usuário', email: data.email, isAdmin: isAdminBoolean }); // Corrigido para passar o nome
-        localStorage.setItem('user', JSON.stringify({ id: userId, nome: data.nome, email: data.email, isAdmin: isAdminBoolean }));
-        alert(data.message); // Mensagem do backend, mas sem dados pessoais
-        navigate('/#');
+  localStorage.setItem('token', data.token);
+
+  // Buscar detalhes completos do usuário antes de salvar no contexto/localStorage
+  const userData = await fetchUserDetails(userId);
+
+  if (userData) {
+    setUser(userData);
+    localStorage.setItem('user', JSON.stringify(userData));
+  }
+
+  alert(data.message); // Mensagem do backend, mas sem dados pessoais
+  navigate('/#');
+
       } else {
         alert('Cadastro realizado com sucesso!');
         toggleMode(); // Alterna para o modo de login

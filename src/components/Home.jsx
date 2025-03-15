@@ -5,8 +5,14 @@ import Phoneimg from '../assets/Mockup1.png'
 import { UserContext } from './UserContext'
 import React, {useEffect, useState ,useContext,} from 'react';
   const Home = () => {
-      const { user, setUser } = useContext(UserContext); // Consome o contexto
-      const firstName = user?.nome.split(' ')[0];
+    const { user } = useContext(UserContext);
+const [firstName, setFirstName] = useState("Usuário");
+
+useEffect(() => {
+  if (user?.nome) {
+    setFirstName(user.nome.split(' ')[0]);
+  }
+}, [user]); 
 
     useEffect(() => {
       
@@ -116,7 +122,7 @@ import React, {useEffect, useState ,useContext,} from 'react';
         <div className='AllTxtHero'> 
         <h2 className='TxtHero'> NeoTech</h2>
         <h3 className='TxtHero2'> The future is near</h3>
-        <h3 className='TxtHeroBoasVindas'>Bem vindo(a), {firstName || "Usuário"+"!" }</h3>
+        <h3 className='TxtHeroBoasVindas'>Bem vindo(a), {firstName || +"!" }</h3>
         </div>
         <img src={Phoneimg} className='Phoneimg'/>
         </div>

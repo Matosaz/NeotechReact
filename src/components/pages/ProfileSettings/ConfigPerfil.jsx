@@ -1,9 +1,15 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
 import "./ConfigPerfil.css";
-import Sidebar2 from "../../../assets/Management/Sidebar/SidebarManagement";
+import Sidebar2 from "../../../assets/Management/Sidebar/SidebarUser";
 import ProfileAvatar from "../../../assets/camerausericon.png";
 import { Input, InputTel, InputCep } from "./MaskedInput";
 import { UserContext } from "../../UserContext"; // Importando o UserContext
+import { DesktopDatePicker } from '@mui/x-date-pickers';
+import { TextField } from '@mui/material';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs from 'dayjs';
+import 'dayjs/locale/pt-br';
 
 const ConfigPerfil = () => {
   const { user, setUser } = useContext(UserContext); // Usando o contexto para pegar o usuário logado
@@ -15,7 +21,7 @@ const ConfigPerfil = () => {
   const [Bairro, setBairro] = useState(user?.bairro || "");
   const [selectedState, setSelectedState] = useState(user?.estado || "");
   const [birthDate, setBirthDate] = useState(user?.data_nascimento || "");
-
+  const [dateError, setDateError] = useState('');
   const [states, setStates] = useState([]); // Definindo o estado para armazenar os estados
   const [avatar, setAvatar] = useState(user?.avatar || null); // Imagem armazenada no backend
   const [previewAvatar, setPreviewAvatar] = useState(null); // Pré-visualização local
@@ -29,10 +35,35 @@ const ConfigPerfil = () => {
       setSelectedState(user.estado || "");
       setBirthDate(user.data_nascimento || "");
       setAvatar(user.avatar || null);
+      setCpf(user.cpf || "");
+
     }
   }, [user]);
 
   const API_BASE_URL = "https://intellij-neotech.onrender.com/api/v1/users";
+
+  const fetchCepData = async (cep) => {
+    try {
+      const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+      const data = await response.json();
+      if (!data.erro) {
+        setEndereco(data.logradouro || "");
+        setCidade(data.localidade || "");
+        setBairro(data.bairro || "");
+        setSelectedState(data.uf || "");
+      } else {
+        alert("CEP não encontrado.");
+      }
+    } catch (error) {
+      console.error("Erro ao buscar CEP:", error);
+    }
+  };
+  
+
+  // Função para desabilitar datas anteriores
+  const shouldDisableDate = (date) => {
+    return date.isAfter(dayjs(), 'day');
+  };
 
   const handleSaveChanges = async () => {
     const updatedUser = {
@@ -45,48 +76,43 @@ const ConfigPerfil = () => {
       estado: selectedState,
       data_nascimento: birthDate,
     };
-
+  
     try {
       const formData = new FormData();
       formData.append("data", JSON.stringify(updatedUser));
-      if (previewAvatar) {
+  
+      if (previewAvatar && avatar instanceof File) {
         formData.append("avatar", avatar);
       }
-
+  
       const response = await fetch(`${API_BASE_URL}/${user.id}`, {
-        method: 'PUT',
+        method: "PUT",
         body: formData,
       });
-
+  
       if (!response.ok) {
-        const errorData = await response.json(); 
-        throw new Error(`Falha ao atualizar perfil: ${errorData.message || 'Erro desconhecido'}`);
+        const errorData = await response.json();
+        throw new Error(`Falha ao atualizar perfil: ${errorData.message || "Erro desconhecido"}`);
       }
-
-      if (response.ok) {
-        const updatedData = await response.json();
-        setUser(updatedData);  // Atualiza o contexto
-        localStorage.setItem('user', JSON.stringify(updatedData));  // Atualiza o localStorage
-        localStorage.removeItem("previewAvatar"); // Limpa o localStorage de preview de avatar
-        alert("Perfil atualizado com sucesso!");
-      } 
+  
+      const newUserData = await response.json(); // 🔹 Pegamos os novos dados do usuário
+  
+      // 🔹 Atualiza o contexto e o localStorage corretamente
+      setUser((prevUser) => {
+        const updatedUser = { ...prevUser, ...newUserData };
+        localStorage.setItem("user", JSON.stringify(updatedUser)); // Atualiza localStorage
+        return updatedUser;
+      });
+  
+      alert("Perfil atualizado com sucesso!");
     } catch (error) {
-      console.error(error);
+      console.error("Erro ao salvar alterações:", error);
       alert("Ocorreu um erro ao salvar as alterações.");
     }
   };
-
-  const currentDate = new Date().toISOString().split("T")[0]; // Pega a data atual no formato yyyy-mm-dd
-
+  
   // Função para validar a data de nascimento
-  const handleBirthDateChange = (event) => {
-    const value = event.target.value;
-    if (value > currentDate) {
-      setBirthDate(currentDate);
-    } else {
-      setBirthDate(value);
-    }
-  };
+
 
   useEffect(() => {
     const fetchStates = async () => {
@@ -130,7 +156,7 @@ const ConfigPerfil = () => {
         alert("Por favor, selecione uma imagem nos formatos PNG, JPEG ou JPG.");
         return;
       }
-      
+
       const objectURL = URL.createObjectURL(file);
       setPreviewAvatar(objectURL); // Atualiza a pré-visualização local
       setAvatar(file); // Armazena o arquivo para upload posterior
@@ -151,14 +177,13 @@ const ConfigPerfil = () => {
     }
   };
 
+  // Função chamada ao alterar o valor do CPF
   const handleCpfChange = (value) => {
     // Remove a máscara, apenas números
     const cleanedCpf = value.replace(/\D/g, "");
     setCpf(cleanedCpf); // Agora o CPF é limpo de caracteres não numéricos
-    if (cleanedCpf.length === 11) {
-      fetchCepData(cleanedCpf);
-    }
   };
+
 
   return (
     <div className="profile-container">
@@ -169,25 +194,25 @@ const ConfigPerfil = () => {
         <main className="profile-main">
           <section className="profile-info">
             <div className="profile-card">
-            <input className="AvatarInput" type="file" accept="image/*"  ref={fileInputRef} onChange={handleAvatarChange}/>
-              <img  src={
+              <input className="AvatarInput" type="file" accept="image/*" ref={fileInputRef} onChange={handleAvatarChange} />
+              <img src={
                 previewAvatar ||
-               (avatar ? `data:image/png;base64,${avatar}` : ProfileAvatar) 
-                }
+                (avatar ? `data:image/png;base64,${avatar}` : ProfileAvatar)
+              }
 
-              alt="User" className="profile-avatar" onClick={handleImageClick} />
-              <img className="EditAvatarPic"alt="svgImg" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIj8+PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciICB2aWV3Qm94PSIwIDAgMjQgMjQiIHdpZHRoPSIzODRweCIgaGVpZ2h0PSIzODRweCI+ICAgIDxwYXRoIGQ9Ik0gMTggMiBMIDE1LjU4NTkzOCA0LjQxNDA2MjUgTCAxOS41ODU5MzggOC40MTQwNjI1IEwgMjIgNiBMIDE4IDIgeiBNIDE0LjA3NjE3MiA1LjkyMzgyODEgTCAzIDE3IEwgMyAyMSBMIDcgMjEgTCAxOC4wNzYxNzIgOS45MjM4MjgxIEwgMTQuMDc2MTcyIDUuOTIzODI4MSB6Ii8+PC9zdmc+"/>
+                alt="User" className="profile-avatar" onClick={handleImageClick} />
+              <img className="EditAvatarPic" alt="svgImg" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIj8+PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciICB2aWV3Qm94PSIwIDAgMjQgMjQiIHdpZHRoPSIzODRweCIgaGVpZ2h0PSIzODRweCI+ICAgIDxwYXRoIGQ9Ik0gMTggMiBMIDE1LjU4NTkzOCA0LjQxNDA2MjUgTCAxOS41ODU5MzggOC40MTQwNjI1IEwgMjIgNiBMIDE4IDIgeiBNIDE0LjA3NjE3MiA1LjkyMzgyODEgTCAzIDE3IEwgMyAyMSBMIDcgMjEgTCAxOC4wNzYxNzIgOS45MjM4MjgxIEwgMTQuMDc2MTcyIDUuOTIzODI4MSB6Ii8+PC9zdmc+" />
               <div className="profile-details">
                 <h2>{user?.nome || "Nome do Usuário"}</h2>
                 <p>{user?.email || "Email do Usuário"}</p>
-                
+
               </div>
             </div>
             <form className="profile-form">
               {/* Campos do formulário */}
               <div className="profile-form-group">
                 <label>Nome completo</label>
-                <input type="text" value={user?.nome} readOnly />
+                <input type="text" value={user?.nome}  />
               </div>
               <div className="profile-form-group">
                 <label>Telefone</label>
@@ -205,10 +230,26 @@ const ConfigPerfil = () => {
                   <option>Prefiro não informar</option>
                 </select>
               </div>
-              <div className="profile-form-group">
-                <label>Data de nascimento</label>
-                <input type="date" value={birthDate} onChange={handleBirthDateChange} max={currentDate} />
-              </div>
+              <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="pt-br">
+                <div className="profile-form-group">
+                  <label>Data de Nascimento</label>
+                  <DesktopDatePicker
+                    value={birthDate ? dayjs(birthDate) : null}
+                    onChange={(newValue) => setBirthDate(newValue ? newValue.format('YYYY-MM-DD') : '')}
+                    shouldDisableDate={shouldDisableDate}
+                    slotProps={{ textField: { fullWidth: true } }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        error={!!dateError}
+                        helperText={dateError}
+
+                      />
+
+                    )}
+                  />
+                </div>
+              </LocalizationProvider>
               <div className="profile-form-group">
                 <label>CPF</label>
                 <Input

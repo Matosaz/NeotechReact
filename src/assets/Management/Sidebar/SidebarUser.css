@@ -1,0 +1,50 @@
+/* Sidebar */
+.sidebarUser {
+  height: 100vh; /* Fixa a altura da sidebar ao tamanho da janela */
+  width: 55px;
+  background-color: #90be95ef;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 20px;
+  position: fixed; /* Faz a barra lateral ficar fixa na tela */
+  top: 0;
+  left: 0;
+}
+
+
+/* Estilo dos ícones */
+.icon-wrapperManagement {
+  margin: 15px ;
+  cursor: pointer;
+}
+
+.icon-wrapperManagement img {
+  width: 25px;
+  height: 25px;
+  transition: filter 0.2s;
+}
+
+/* Ícone ativo */
+.icon-wrapperManagement.active img {
+  filter: invert(100%); /* Altera a cor do ícone ativo para branco */
+}
+
+/* Efeito hover nos ícones */
+.icon-wrapperManagement:hover img {
+  filter: invert(100%);
+}
+
+
+.icon-Seta img {
+  width: 45px;
+  height: 45px;
+  transition: filter 0.2s;
+}
+
+
+
+/* Efeito hover nos ícones */
+.icon-Seta:hover img {
+  filter: invert(100%);
+}

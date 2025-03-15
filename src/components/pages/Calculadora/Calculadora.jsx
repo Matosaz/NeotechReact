@@ -4,37 +4,49 @@ import { Radio, RadioGroup, FormControlLabel, Checkbox } from '@mui/material';
 import { ArrowBack } from '@mui/icons-material';
 import { InputTel } from '../ProfileSettings/MaskedInput';
 import { UserContext } from "../../UserContext"; // Importando o UserContext
+import { InputCep } from '../ProfileSettings/MaskedInput';
+import { DesktopDatePicker, DesktopTimePicker } from '@mui/x-date-pickers';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs from 'dayjs';
+import 'dayjs/locale/pt-br';
 
 const Calculadora = () => {
-    const {user, setUser } = useContext(UserContext); // Usando o contexto para pegar o usuário logado
-  
+  const { user, setUser } = useContext(UserContext); // Usando o contexto para pegar o usuário logado
   const [countries, setCountries] = useState([]);
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
-    companyName: '',
-    website: '',
-    companyEmail: '',
-    nameOnCard: '',
-    cardNumber: '',
-    expirationMonth: '',
-    expirationYear: '',
-    address1: '',
-    address2: '',
-    zip: '',
-    country: '',
-    itemType: '',
-    itemQuantity: '',
-    itemClassification: '',
-    itemDetails: '',
-    otherItem: '' // Campo para o outro item
+    nome: user?.nome || '',
+    email: user?.email || '',
+    telefone: user?.telefone || '',
+    cep: user?.cep || '',
+    endereco: user?.endereco || '',
+    numero: user?.numero || '',
+    complemento: user?.complemento || '',
+    bairro: user?.bairro || '',
+    cidade: user?.cidade || '',
+    estado: user?.estado || '',
+    collectionDate: '',
+    collectionTime: '',
   });
   const [currentStep, setCurrentStep] = useState(1);
-
+  const [dateError, setDateError] = useState('');
+  const [timeError, setTimeError] = useState('');
   const [telefone, settelefone] = useState(user?.telefone || "");
+  const [disableNextButton, setDisableNextButton] = useState(false); // Estado para desabilitar o botão de próximo
 
-  const Voltarorcamento =() =>{
+  useEffect(() => {
+    if (user) {
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        nome: user.nome || '',
+        email: user.email || '',
+        telefone: user.telefone || '',
+      }));
+    }
+  }, [user]);
+
+
+  const Voltarorcamento = () => {
     window.history.back();
   }
   const getStepTitle = () => {
@@ -49,17 +61,17 @@ const Calculadora = () => {
           </>
         );
       case 3:
-        return 'Quais itens você quer reciclar?';
+        return 'Onde a coleta será realizada?';
 
       case 4:
         return 'Quando você almeja que a coleta ocorra?:';
-        case 5:
-          return 'Verifique se as informações estão corretas';
+      case 5:
+        return 'Verifique se as informações estão corretas';
       default:
         return 'Vamos começar!';
     }
   };
-  
+
 
   const getCountries = async () => {
     const response = await fetch('https://restcountries.com/v3.1/all');
@@ -70,57 +82,163 @@ const Calculadora = () => {
     }));
   };
 
-  
-
   useEffect(() => {
     getCountries().then(setCountries);
   }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-  
-    if (name === "itemQuantity") {
-      // Permitir apenas números
-      if (!/^\d*$/.test(value)) return;
-    }
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setFormData({ ...formData, [name]: value });
   };
- 
+
+  const handleCepChange = (value) => {
+    const cleanedCep = value.replace(/\D/g, "");
+    setFormData({ ...formData, cep: value });
+    if (cleanedCep.length === 8) {
+      fetchCepData(cleanedCep);
+    }
+  };
+
+  const fetchCepData = async (cep) => {
+    try {
+      const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+      const data = await response.json();
+      if (!data.erro) {
+        setFormData((prev) => ({
+          ...prev,
+          endereco: data.logradouro || '',
+          bairro: data.bairro || '',
+          cidade: data.localidade || '',
+          estado: data.uf || '',
+        }));
+      }
+    } catch (error) {
+      console.error("Erro ao buscar CEP", error);
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     alert('Form submitted');
-  };
-
-  const nextStep = () => {
+  };const nextStep = () => {
     const form = document.querySelector('form');
-    if (currentStep < 5 && form.checkValidity()){
-    setCurrentStep(currentStep + 1);
-    console.log('currentStep incrementado para', currentStep + 1);
-    } else{
-      form.reportValidity()
+  
+    // Validação do passo atual
+    if (currentStep < 5 && form.checkValidity()) {
+      if (currentStep === 4) {
+        const selectedDate = dayjs(formData.collectionDate);
+        const selectedTime = dayjs(formData.collectionTime, 'HH:mm');
+        const now = dayjs();
+  
+        if (!selectedDate.isValid()) {
+          setDateError('Por favor, selecione uma data válida.');
+          setTimeError(''); // Limpar erro de horário
+          setDisableNextButton(true); // Desabilitar o botão
+          return; // Não avança para a próxima etapa
+        }
+  
+        if (!selectedTime.isValid()) {
+          setTimeError('Por favor, selecione um horário válido.');
+          setDateError(''); // Limpar erro de data
+          setDisableNextButton(true); // Desabilitar o botão
+          return; // Não avança para a próxima etapa
+        }
+  
+        // Verifica se a data e o horário são anteriores às atuais
+        if (selectedDate.isBefore(now, 'day') || (selectedDate.isSame(now, 'day') && selectedTime.isBefore(now, 'minute'))) {
+          setDateError('A data e/ou o horário selecionado é anterior ao horário atual.');
+          setTimeError('A data e/ou o horário selecionado é anterior ao horário atual.');
+          setDisableNextButton(true); // Desabilitar o botão
+          alert('Erro: A data e/ou o horário selecionado não pode ser anterior ao horário atual.');
+          return; // Não avança para a próxima etapa
+        }
+  
+        // Se passou nas validações, limpa os erros e habilita o botão
+        setDateError('');
+        setTimeError('');
+        setDisableNextButton(false);
+        setCurrentStep(currentStep + 1);
+      } else {
+        setCurrentStep(currentStep + 1); // Avança para a próxima etapa se não for o passo 4
+      }
+    } else {
+      form.reportValidity(); // Exibe a mensagem de erro de campos obrigatórios
     }
   };
-
+  
   const prevStep = () => {
-    if (currentStep > 1){
-    setCurrentStep(currentStep - 1);
-    console.log('currentStep decrementado para', currentStep - 1);
+    if (currentStep > 1) {
+      setCurrentStep(currentStep - 1);
+      console.log('currentStep decrementado para', currentStep - 1);
 
-  }
+    }
   };
 
   const updateProgress = () => {
     return (currentStep / 5) * 100;
   };
 
+const handleDateChange = (newValue) => {
+  if (newValue) {
+    const selectedDate = dayjs(newValue);
+    const now = dayjs();
+    
+    // Verifica se a data selecionada é anterior à data atual
+    if (selectedDate.isBefore(now, 'day')) {
+      setDateError('A data deve ser posterior à data atual.');
+      setDisableNextButton(true); // Desabilita o botão
+    } else {
+      setDateError('');
+      setDisableNextButton(false); // Habilita o botão
+    }
+
+    setFormData({ ...formData, collectionDate: newValue.format('YYYY-MM-DD') });
+  }
+};
+
+const handleTimeChange = (newValue) => {
+  if (newValue) {
+    const selectedTime = dayjs(newValue, 'HH:mm');
+    const now = dayjs();
+    const selectedDate = dayjs(formData.collectionDate);
+
+    // Verifica se a data selecionada é hoje e o horário é anterior ao horário atual
+    if (selectedDate.isSame(now, 'day') && selectedTime.isBefore(now, 'minute')) {
+      setTimeError('O horário deve ser posterior ao horário atual.');
+      setDisableNextButton(true); // Desabilita o botão
+    } else {
+      setTimeError('');
+      setDisableNextButton(false); // Habilita o botão
+    }
+
+    setFormData({ ...formData, collectionTime: newValue.format('HH:mm') });
+  }
+};
+
+// Função para desabilitar datas anteriores à data de hoje
+const shouldDisableDate = (date) => {
+  return date.isBefore(dayjs(), 'day');
+};
+console.log('DisableNextButton:', disableNextButton);
+
+// Função para desabilitar horários passados para o dia de hoje
+const shouldDisableTime = (time) => {
+  const now = dayjs();
+  const selectedDate = dayjs(formData.collectionDate);
+  
+  if (selectedDate.isSame(now, 'day')) {
+    return time.isBefore(now, 'minute');
+  }
+  return false;
+};
 
   return (
     <section className='body-orcamento'>
-  <button onClick={Voltarorcamento} className='voltar-orcamento'> <ArrowBack fontSize="small" className="icon" />Retornar</button>
+      <button onClick={Voltarorcamento} className='voltar-orcamento'> <ArrowBack fontSize="small" className="icon" />Retornar</button>
       <div className='upper-orcamento'>
-        
+
         <h2 className='title-orcamento'>{getStepTitle()}</h2>
-                   
+
 
         <div className="wrap-orcamento">
           <div className="col-lg-12-orcamento">
@@ -143,9 +261,10 @@ const Calculadora = () => {
                     <input
                       placeholder='Digite seu nome'
                       id="Name-orcamento"
-                      name="Nome"
+                      name="nome"
                       type="text"
                       className="form-control-orcamento"
+                      value={formData.nome}
                       onChange={handleChange}
                       required
                     />
@@ -163,15 +282,16 @@ const Calculadora = () => {
                       required
                     />
                   </div>
-                
+
+
                   <div className="form-group-orcamento">
                     <label>Telefone</label>
-                   <InputTel
-                  pattern="\d{10,11}"  
-                  required
-                  value={telefone}
-                  onChange={(event) => settelefone(event.target.value)}
-                />
+                    <InputTel
+                      pattern="\d{10,11}"
+                      required
+                      value={formData.telefone}
+                      onChange={(event) => settelefone(event.target.value)}
+                    />
                   </div>
                 </fieldset>
               )}
@@ -248,140 +368,169 @@ const Calculadora = () => {
               {/* Passo 3: Item Recycling Information */}
               {currentStep === 3 && (
                 <fieldset className='fieldset-orcamento'>
-                  <legend className='legend-orcamento'>Classificação e quantificação</legend>
-                  
+                  <legend className='legend-orcamento'>Endereço</legend>
                   <div className="form-group-orcamento">
-                    <label htmlFor="itemQuantity">Quantidade</label>
+                    <label>CEP</label>
+                    <InputCep value={formData.cep} onChange={(e) => handleCepChange(e.target.value)} />
+
+                  </div>
+                  <div className="form-group-orcamento">
+                    <label>Endereço</label>
                     <input
-                     type="text" 
-                     name="itemQuantity" 
-                     value={formData.itemQuantity} 
-                     onChange={handleChange} 
-                     required 
-                     maxLength={4}
-                     minLength={1}
-                     pattern="\d+"  
-                     title="Digite apenas números"
-                     inputMode="numeric"
-                     placeholder="Quantidade"
+                      type="text"
+                      name="endereco"
+                      value={formData.endereco}
+                      onChange={handleChange}
+                      required
+                      placeholder="Digite seu endereço"
                     />
                   </div>
-                  
                   <div className="form-group-orcamento">
-                    <label htmlFor="itemType">Tipos de itens</label>
-                    <select
-                      id="itemType-orcamento"
-                      name="itemType"
-                      className="form-control-orcamento"
-                      value={formData.itemType}
+                    <label>Número</label>
+                    <input
+                      type="text"
+                      name="numero"
+                      value={formData.numero}
                       onChange={handleChange}
                       required
-                    >
-                      <option value="celular">Celular</option>
-                      <option value="computador">Computador</option>
-                      <option value="televisao">Televisão</option>
-                      <option value="tablet">Tablet</option>
-                      <option value="outro">Outro</option>
-                    </select>
+                      placeholder="Número da residência"
+                    />
                   </div>
-
-                  {formData.itemType === 'outro' && (
-                    <div className="form-group-orcamento">
-                      <label htmlFor="otherItem">Descreva o outro item</label>
-                      <input
-                        id="otherItem-orcamento"
-                        name="otherItem"
-                        type="text"
-                        className="form-control-orcamento"
-                        value={formData.otherItem}
-                        onChange={handleChange}
-                      />
-                    </div>
-                  )}
-
                   <div className="form-group-orcamento">
-                    <label htmlFor="itemClassification">Classificação do Item</label>
-                    <select
-                      id="itemClassification-orcamento"
-                      name="itemClassification"
-                      className="form-control-orcamento"
-                      value={formData.itemClassification}
+                    <label>Bairro</label>
+                    <input
+                      type="text"
+                      name="bairro"
+                      value={formData.bairro}
                       onChange={handleChange}
                       required
-                    >
-                      <option value="funcional">Funcional</option>
-                      <option value="danificado">Danificado</option>
-                      <option value="obsoleto">Obsoleto</option>
-                    </select>
+                      placeholder="Digite seu bairro"
+                    />
                   </div>
-
                   <div className="form-group-orcamento">
-                    <label htmlFor="itemDetails">Detalhes adicionais sobre o item (opcional)</label>
-                    <textarea
-                    
-                      id="itemDetails-orcamento"
-                      name="itemDetails"
-                      className="form-control-orcamento"
-                      value={formData.itemDetails}
+                    <label>Cidade</label>
+                    <input
+                      type="text"
+                      name="cidade"
+                      value={formData.cidade}
                       onChange={handleChange}
+                      required
+                      placeholder="Digite sua cidade"
+                    />
+                  </div>
+                  <div className="form-group-orcamento">
+                    <label>Estado</label>
+                    <input
+                      type="text"
+                      name="estado"
+                      value={formData.estado}
+                      onChange={handleChange}
+                      required
+                      placeholder="Digite seu estado"
                     />
                   </div>
                 </fieldset>
               )}
+
 
               {/* Passo 4: Estimativa de Orçamento */}
               {currentStep === 4 && (
                 <fieldset className='fieldset-orcamento'>
                   <legend className='legend-orcamento'>Escolha a data e horário para a coleta</legend>
-                  <div className="form-group-orcamento">
-                    <label htmlFor="collectionDate">Data da Coleta</label>
-                    <input
-                      type="date"
-                      id="collectionDate"
-                      name="collectionDate"
-                      className="form-control-orcamento"
-                      value={formData.collectionDate}
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
-                  <div className="form-group-orcamento">
-                    <label htmlFor="collectionTime">Horário da Coleta</label>
-                    <input
-                      type="time"
-                      id="collectionTime"
-                      name="collectionTime"
-                      className="form-control-orcamento"
-                      value={formData.collectionTime}
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
+                  <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="pt-br">
+                    <div className="form-group-orcamento">
+                      <label>Data da Coleta</label>
+                      <DesktopDatePicker
+                        value={formData.collectionDate ? dayjs(formData.collectionDate) : null}
+                        onChange={handleDateChange}
+                        shouldDisableDate={shouldDisableDate}// Bloqueia datas anteriores
+                        slotProps={{ textField: { fullWidth: true } }}
+
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            className="form-control-orcamento"
+                            error={!!dateError}
+                            helperText={dateError}
+                            sx={{
+                              backgroundColor: '#dad7d75d',
+                              borderRadius: '8px',
+                              '& .MuiOutlinedInput-root': {
+                                '& fieldset': { border: 'none' },
+                                '&:hover fieldset': { border: 'none' },
+                                '&.Mui-focused fieldset': { border: 'none' }
+                              }
+                            }}
+                          />
+                        )}
+                      />
+                    </div>
+                    <div className="form-group-orcamento">
+                      <label>Horário da Coleta</label>
+                      <DesktopTimePicker
+                        value={formData.collectionTime ? dayjs(formData.collectionTime, 'HH:mm') : null}
+                        onChange={handleTimeChange}
+                        shouldDisableTime={shouldDisableTime}
+                        slotProps={{ textField: { fullWidth: true } }}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            className="form-control-orcamento"
+                            error={!!timeError}
+                            helperText={timeError}
+                            sx={{
+                              backgroundColor: '#dad7d75d',
+                              borderRadius: '8px',
+                              '& .MuiOutlinedInput-root': {
+                                '& fieldset': { border: 'none' },
+                                '&:hover fieldset': { border: 'none' },
+                                '&.Mui-focused fieldset': { border: 'none' },
+                              },
+                            }}
+                          />
+                        )}
+                      />
+                    </div>
+                  </LocalizationProvider>
                 </fieldset>
               )}
-                {currentStep === 5 && (
+              {currentStep === 5 && (
                 <fieldset className='fieldset-orcamento'>
                   <legend className='legend-orcamento'>Confirmação do Agendamento</legend>
-                  <div className="form-group-orcamento">
-                    <label>Nome: {formData.name}</label>
-                  </div>
-                  <div className="form-group-orcamento">
-                    <label>Email: {formData.email}</label>
-                  </div>
-                  <div className="form-group-orcamento">
-                    <label>Telefone: {formData.telefone}</label>
-                  </div>
-                  <div className="form-group-orcamento">
-                    <label>Itens para Coleta: {formData.itemType}</label>
-                  </div>
-                  <div className="form-group-orcamento">
-                    <label>Quantidade: {formData.itemQuantity}</label>
-                  </div>
-                  <div className="form-group-orcamento">
-                    <label>Data da Coleta: {formData.collectionDate}</label>
-                  </div>
-                  <div className="form-group-orcamento">
-                    <label>Horário da Coleta: {formData.collectionTime}</label>
+                  <div className="ConfirmDesign">
+                    <div className="form-group-orcamento">
+                      <label>Nome: {formData.nome}</label>
+                    </div>
+                    <div className="form-group-orcamento">
+                      <label>Email: {formData.email}</label>
+                    </div>
+                    <div className="form-group-orcamento">
+                      <label>Telefone: {formData.telefone}</label>
+                    </div>
+
+                    <div className="form-group-orcamento">
+                      <label>Bairro: {formData.bairro}</label>
+                    </div>
+
+                    <div className="form-group-orcamento">
+                      <label>CEP: {formData.cep}</label>
+                    </div>
+
+                    <div className="form-group-orcamento">
+                      <label>Cidade: {formData.cidade}</label>
+                    </div>
+                    <div className="form-group-orcamento">
+                      <label>Número: {formData.numero}</label>
+                    </div>
+                    <div className="form-group-orcamento">
+                      <label>Endereço: {formData.endereco}</label>
+                    </div>
+                    <div className="form-group-orcamento">
+                      <label>Data da Coleta: {formData.collectionDate}</label>
+                    </div>
+                    <div className="form-group-orcamento">
+                      <label>Horário da Coleta: {formData.collectionTime}</label>
+                    </div>
                   </div>
                 </fieldset>
               )}
@@ -392,8 +541,8 @@ const Calculadora = () => {
                     Voltar
                   </button>
                 )}
-                {currentStep <=5 ? (
-                  <button type="button" onClick={nextStep}>
+                {currentStep <= 5 ? (
+                  <button type="button" onClick={nextStep} disabled={disableNextButton}>
                     Próximo
                   </button>
                 ) : (

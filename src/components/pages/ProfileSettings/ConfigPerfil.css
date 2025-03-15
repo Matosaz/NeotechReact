@@ -96,3 +96,24 @@
 .profile-add-email-button{
     margin-top: 25px;
 }
+
+.MuiOutlinedInput-notchedOutline {
+  border: none !important;
+  width: 100%;
+}
+
+.MuiButtonBase-root  {
+  color: #555; /* Ajusta a cor do ícone */
+  position: absolute;
+  display: flex;
+ margin-left: 200px;
+}
+ .MuiInputAdornment-root{
+  position: absolute;
+ align-items: center ;
+ align-content: center;
+ justify-content: center;
+ justify-items: center;
+left: 500px;
+bottom: 10px;
+}
