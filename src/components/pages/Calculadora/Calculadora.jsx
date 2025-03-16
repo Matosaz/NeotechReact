@@ -33,6 +33,7 @@ const Calculadora = () => {
   const [timeError, setTimeError] = useState('');
   const [telefone, settelefone] = useState(user?.telefone || "");
   const [disableNextButton, setDisableNextButton] = useState(false); // Estado para desabilitar o botão de próximo
+  const API_BASE_URL = "https://intellij-neotech.onrender.com/api/v1/orcamentos";
 
   useEffect(() => {
     if (user) {
@@ -116,11 +117,46 @@ const Calculadora = () => {
       console.error("Erro ao buscar CEP", error);
     }
   };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    alert('Form submitted');
-  };const nextStep = () => {
+
+    // Prepare os dados do formulário
+    const requestData = {
+        nome: formData.nome,
+        email: formData.email,
+        telefone: formData.telefone,
+        endereco: formData.endereco,
+        numero: formData.numero,
+        bairro: formData.bairro,
+        cidade: formData.cidade,
+        estado: formData.estado,
+        cep: formData.cep,
+        collectionDate: formData.collectionDate,
+        collectionTime: formData.collectionTime,
+    };
+
+    try {
+        const response = await fetch(API_BASE_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestData),
+        });
+
+        if (response.ok) {
+            alert('Agendamento confirmado com sucesso!');
+        } else {
+            alert('Erro ao confirmar o agendamento.');
+        }
+    } catch (error) {
+        console.error('Erro ao enviar os dados:', error);
+        alert('Erro ao enviar os dados para o servidor.');
+    }
+};
+
+  
+  const nextStep = () => {
     const form = document.querySelector('form');
   
     // Validação do passo atual
