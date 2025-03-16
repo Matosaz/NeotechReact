@@ -1,5 +1,5 @@
 .body-orcamento {
-  background: url(C:\Neotech\NeotechReact\src\assets\TesteCalculadora.png);
+  background: url(/src/assets/TesteCalculadora.png);
   background-size: cover; /* Para garantir que o fundo cubra toda a página */
   min-height: 100vh; /* Para expandir o fundo até o limite da altura da viewport */
   display: flex; /* Alinha os elementos ao centro */
