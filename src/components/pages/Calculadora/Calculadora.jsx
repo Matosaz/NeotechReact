@@ -116,92 +116,96 @@ const Calculadora = () => {
     } catch (error) {
       console.error("Erro ao buscar CEP", error);
     }
-  };
-  const handleSubmit = async (e) => {
+  };const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     // Prepare os dados do formulário
     const requestData = {
-        nome: formData.nome,
-        email: formData.email,
-        telefone: formData.telefone,
-        endereco: formData.endereco,
-        numero: formData.numero,
-        bairro: formData.bairro,
-        cidade: formData.cidade,
-        estado: formData.estado,
-        cep: formData.cep,
-        collectionDate: formData.collectionDate,
-        collectionTime: formData.collectionTime,
+      nome: formData.nome,
+      email: formData.email,
+      telefone: formData.telefone,
+      endereco: formData.endereco,
+      numero: formData.numero,
+      bairro: formData.bairro,
+      cidade: formData.cidade,
+      estado: formData.estado,
+      cep: formData.cep,
+      collectionDate: formData.collectionDate,
+      collectionTime: formData.collectionTime,
     };
-
-    try {
-        const response = await fetch(API_BASE_URL, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(requestData),
-        });
-
-        if (response.ok) {
-            alert('Agendamento confirmado com sucesso!');
-        } else {
-            alert('Erro ao confirmar o agendamento.');
-        }
-    } catch (error) {
-        console.error('Erro ao enviar os dados:', error);
-        alert('Erro ao enviar os dados para o servidor.');
+  
+    // Verifica se todos os campos obrigatórios estão preenchidos
+    if (!requestData.nome || !requestData.email || !requestData.telefone || !requestData.endereco || !requestData.numero || !requestData.bairro || !requestData.cidade || !requestData.estado || !requestData.cep || !requestData.collectionDate || !requestData.collectionTime) {
+      alert('Por favor, preencha todos os campos obrigatórios.');
+      return;
     }
-};
-
   
-  const nextStep = () => {
-    const form = document.querySelector('form');
+    try {
+      const response = await fetch(API_BASE_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestData),
+      });
   
-    // Validação do passo atual
-    if (currentStep < 5 && form.checkValidity()) {
-      if (currentStep === 4) {
-        const selectedDate = dayjs(formData.collectionDate);
-        const selectedTime = dayjs(formData.collectionTime, 'HH:mm');
-        const now = dayjs();
-  
-        if (!selectedDate.isValid()) {
-          setDateError('Por favor, selecione uma data válida.');
-          setTimeError(''); // Limpar erro de horário
-          setDisableNextButton(true); // Desabilitar o botão
-          return; // Não avança para a próxima etapa
-        }
-  
-        if (!selectedTime.isValid()) {
-          setTimeError('Por favor, selecione um horário válido.');
-          setDateError(''); // Limpar erro de data
-          setDisableNextButton(true); // Desabilitar o botão
-          return; // Não avança para a próxima etapa
-        }
-  
-        // Verifica se a data e o horário são anteriores às atuais
-        if (selectedDate.isBefore(now, 'day') || (selectedDate.isSame(now, 'day') && selectedTime.isBefore(now, 'minute'))) {
-          setDateError('A data e/ou o horário selecionado é anterior ao horário atual.');
-          setTimeError('A data e/ou o horário selecionado é anterior ao horário atual.');
-          setDisableNextButton(true); // Desabilitar o botão
-          alert('Erro: A data e/ou o horário selecionado não pode ser anterior ao horário atual.');
-          return; // Não avança para a próxima etapa
-        }
-  
-        // Se passou nas validações, limpa os erros e habilita o botão
-        setDateError('');
-        setTimeError('');
-        setDisableNextButton(false);
-        setCurrentStep(currentStep + 1);
+      if (response.ok) {
+        alert('Agendamento confirmado com sucesso!');
       } else {
-        setCurrentStep(currentStep + 1); // Avança para a próxima etapa se não for o passo 4
+        alert('Erro ao confirmar o agendamento.');
       }
-    } else {
-      form.reportValidity(); // Exibe a mensagem de erro de campos obrigatórios
+    } catch (error) {
+      console.error('Erro ao enviar os dados:', error);
+      alert('Erro ao enviar os dados para o servidor.');
     }
   };
   
+  
+const nextStep = () => {
+  const form = document.querySelector('form');
+
+  // Validação do passo atual
+  if (currentStep < 5 && form.checkValidity()) {
+    if (currentStep === 4) {
+      const selectedDate = dayjs(formData.collectionDate);
+      const selectedTime = dayjs(formData.collectionTime, 'HH:mm');
+      const now = dayjs();
+
+      if (!selectedDate.isValid()) {
+        setDateError('Por favor, selecione uma data válida.');
+        setTimeError('');
+        setDisableNextButton(true);
+        return;
+      }
+
+      if (!selectedTime.isValid()) {
+        setTimeError('Por favor, selecione um horário válido.');
+        setDateError('');
+        setDisableNextButton(true);
+        return;
+      }
+
+      // Verifica se a data e o horário são anteriores às atuais
+      if (selectedDate.isBefore(now, 'day') || (selectedDate.isSame(now, 'day') && selectedTime.isBefore(now, 'minute'))) {
+        setDateError('A data e/ou o horário selecionado é anterior ao horário atual.');
+        setTimeError('A data e/ou o horário selecionado é anterior ao horário atual.');
+        setDisableNextButton(true);
+        return;
+      }
+
+      // Se passou nas validações, limpa os erros e habilita o botão
+      setDateError('');
+      setTimeError('');
+      setDisableNextButton(false);
+      setCurrentStep(currentStep + 1);
+    } else {
+      setCurrentStep(currentStep + 1);
+    }
+  } else {
+    form.reportValidity();
+  }
+};
+
   const prevStep = () => {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
@@ -213,49 +217,46 @@ const Calculadora = () => {
   const updateProgress = () => {
     return (currentStep / 5) * 100;
   };
-
-const handleDateChange = (newValue) => {
-  if (newValue) {
-    const selectedDate = dayjs(newValue);
-    const now = dayjs();
-    
-    // Verifica se a data selecionada é anterior à data atual
-    if (selectedDate.isBefore(now, 'day')) {
-      setDateError('A data deve ser posterior à data atual.');
-      setDisableNextButton(true); // Desabilita o botão
-    } else {
-      setDateError('');
-      setDisableNextButton(false); // Habilita o botão
+  const handleDateChange = (newValue) => {
+    if (newValue) {
+      const selectedDate = dayjs(newValue);
+      const now = dayjs();
+  
+      if (selectedDate.isBefore(now, 'day')) {
+        setDateError('A data deve ser posterior à data atual.');
+        setDisableNextButton(true); // Desabilita o botão
+      } else {
+        setDateError('');
+        setDisableNextButton(false); // Habilita o botão
+      }
+  
+      setFormData({ ...formData, collectionDate: newValue.format('YYYY-MM-DD') });
     }
-
-    setFormData({ ...formData, collectionDate: newValue.format('YYYY-MM-DD') });
-  }
-};
-
-const handleTimeChange = (newValue) => {
-  if (newValue) {
-    const selectedTime = dayjs(newValue, 'HH:mm');
-    const now = dayjs();
-    const selectedDate = dayjs(formData.collectionDate);
-
-    // Verifica se a data selecionada é hoje e o horário é anterior ao horário atual
-    if (selectedDate.isSame(now, 'day') && selectedTime.isBefore(now, 'minute')) {
-      setTimeError('O horário deve ser posterior ao horário atual.');
-      setDisableNextButton(true); // Desabilita o botão
-    } else {
-      setTimeError('');
-      setDisableNextButton(false); // Habilita o botão
+  };
+  
+  const handleTimeChange = (newValue) => {
+    if (newValue) {
+      const selectedTime = dayjs(newValue, 'HH:mm');
+      const now = dayjs();
+      const selectedDate = dayjs(formData.collectionDate);
+  
+      if (selectedDate.isSame(now, 'day') && selectedTime.isBefore(now, 'minute')) {
+        setTimeError('O horário deve ser posterior ao horário atual.');
+        setDisableNextButton(true); // Desabilita o botão
+      } else {
+        setTimeError('');
+        setDisableNextButton(false); // Habilita o botão
+      }
+  
+      setFormData({ ...formData, collectionTime: newValue.format('HH:mm') });
     }
-
-    setFormData({ ...formData, collectionTime: newValue.format('HH:mm') });
-  }
-};
+  };
+  
 
 // Função para desabilitar datas anteriores à data de hoje
 const shouldDisableDate = (date) => {
   return date.isBefore(dayjs(), 'day');
 };
-console.log('DisableNextButton:', disableNextButton);
 
 // Função para desabilitar horários passados para o dia de hoje
 const shouldDisableTime = (time) => {
@@ -323,9 +324,8 @@ const shouldDisableTime = (time) => {
                   <div className="form-group-orcamento">
                     <label>Telefone</label>
                     <InputTel
-                      pattern="\d{10,11}"
                       required
-                      value={formData.telefone}
+                      value={telefone}
                       onChange={(event) => settelefone(event.target.value)}
                     />
                   </div>
