@@ -20,10 +20,12 @@ const Calculadora = () => {
     telefone: user?.telefone || '',
     cep: user?.cep || '',
     endereco: user?.endereco || '',
+    
     numero: user?.numero || '',
     complemento: user?.complemento || '',
     bairro: user?.bairro || '',
     cidade: user?.cidade || '',
+    
     estado: user?.estado || '',
     collectionDate: '',
     collectionTime: '',
@@ -33,7 +35,7 @@ const Calculadora = () => {
   const [timeError, setTimeError] = useState('');
   const [telefone, settelefone] = useState(user?.telefone || "");
   const [disableNextButton, setDisableNextButton] = useState(false); // Estado para desabilitar o botão de próximo
-  const API_BASE_URL = "https://intellij-neotech.onrender.com/api/v1/orcamentos";
+  const [contactMethod, setContactMethod] = useState('');
 
   useEffect(() => {
     if (user) {
@@ -129,11 +131,13 @@ const Calculadora = () => {
       bairro: formData.bairro,
       cidade: formData.cidade,
       estado: formData.estado,
+      
       cep: formData.cep,
       collectionDate: formData.collectionDate,
       collectionTime: formData.collectionTime,
     };
-  
+    console.log('Dados enviados:', requestData);
+
     // Verifica se todos os campos obrigatórios estão preenchidos
     if (!requestData.nome || !requestData.email || !requestData.telefone || !requestData.endereco || !requestData.numero || !requestData.bairro || !requestData.cidade || !requestData.estado || !requestData.cep || !requestData.collectionDate || !requestData.collectionTime) {
       alert('Por favor, preencha todos os campos obrigatórios.');
@@ -141,7 +145,7 @@ const Calculadora = () => {
     }
   
     try {
-      const response = await fetch(API_BASE_URL, {
+      const response = await fetch( "https://intellij-neotech.onrender.com/api/v1/orcamentos", {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -151,9 +155,18 @@ const Calculadora = () => {
   
       if (response.ok) {
         alert('Agendamento confirmado com sucesso!');
+      } if (!response.ok) {
+        // Tente obter o corpo da resposta como texto
+        const errorText = await response.text();
+        console.error('Erro na requisição:', errorText);
+        alert(`Erro: ${errorText}`);
       } else {
-        alert('Erro ao confirmar o agendamento.');
+        // Caso a resposta seja válida, converta para JSON
+        const data = await response.json();
+        console.log('Dados recebidos:', data);
+        alert('Agendamento confirmado com sucesso!');
       }
+      
     } catch (error) {
       console.error('Erro ao enviar os dados:', error);
       alert('Erro ao enviar os dados para o servidor.');
@@ -577,7 +590,7 @@ const shouldDisableTime = (time) => {
                     Voltar
                   </button>
                 )}
-                {currentStep <= 5 ? (
+                {currentStep <= 4 ? (
                   <button type="button" onClick={nextStep} disabled={disableNextButton}>
                     Próximo
                   </button>

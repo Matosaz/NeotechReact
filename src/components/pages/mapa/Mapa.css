@@ -3,20 +3,21 @@
     justify-content: center;
     align-items: center;
     justify-items: center;
+    
 }
 .botaotestediv {
     background: url(/src/assets/fundomapa.png) no-repeat center / cover;
     height: 1000px;
 }
 
+
+
 .mapaview{
-    width: 1200px; /* Garante que ocupe 100% da largura disponível */
-    height: 600px;
+    width: 1300px; /* Garante que ocupe 100% da largura disponível */
+    height: 680px;
+    
     padding: 0; /* Remove qualquer padding */
-    margin: 0; /* Remove qualquer margem */
-    border-radius: 10px;
-    border-top-right-radius: 10px;
-    border-top-left-radius: 10px;
+     border: none !important;
     padding-top: 20px;
     box-shadow: rgba(17, 12, 46, 0.105) 0px 5px 5px ;
     align-items: center;
