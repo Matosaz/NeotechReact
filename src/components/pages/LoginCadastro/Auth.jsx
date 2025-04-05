@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import './Auth.css';
 import { UserContext } from '../../UserContext';
-import LogoNeotech2 from './LogoLogin.png';
+import LogoNeotech2 from './Logo7.svg';
 import { useNavigate } from 'react-router-dom';
 import ResetPassword from './ResetPassword';
 

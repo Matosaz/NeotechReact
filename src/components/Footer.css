@@ -18,7 +18,9 @@
     padding: 16px 0px 0px 0px;
     list-style-type: none;
 }
-
+.conteudofooter p{
+    margin-top: -20px;
+}
 .conteudofooter li a{
     display: block;
     color: #fafafa;
@@ -35,18 +37,18 @@
 
 .conteudofooter p{
     color: #d6d6d6;
-    line-height: 30px;
+    margin-top: 10px;
 }
 .LogoNeotech{
-    width: 200px;
-  margin-left: 11%;
+    width: 180px;
+  margin-left: 10%;
 }
 
 .icons a{
     display: inline-block;
     font-size: 22px;
     color: #d6d6d6;
-    margin-left: 12%;
+    margin-left: 13%;
     transition: all .40s ease;
 }
 

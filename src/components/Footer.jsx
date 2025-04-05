@@ -1,7 +1,7 @@
 import React from 'react'
 import './Footer.css'
 import Politica from '../components/pages/Politicas/Politica'
-import Logo from '../assets/Logo.png'
+import Logo from '../assets/Logo7.svg'
 const Footer = () => {
   return (
    <footer className='Footer' id='Footer'>

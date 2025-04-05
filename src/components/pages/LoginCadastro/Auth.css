@@ -201,9 +201,9 @@
 .LogoNeotech2 {
   display: flex;
   margin-left: 100px;
-  width: 150px;
+  width: 140px;
   margin-bottom: -5px;
-  filter: invert(80%);
+  filter: invert(5%);
 }
 
 @media(min-width: 0px) and (max-width: 500px){
