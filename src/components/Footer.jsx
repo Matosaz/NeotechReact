@@ -2,6 +2,10 @@ import React from 'react'
 import './Footer.css'
 import Politica from '../components/pages/Politicas/Politica'
 import Logo from '../assets/Logo7.svg'
+import FacebookIcon from '@mui/icons-material/Facebook';
+import TwitterIcon from '@mui/icons-material/X';
+import InstagramIcon from '@mui/icons-material/Instagram';
+
 const Footer = () => {
   return (
    <footer className='Footer' id='Footer'>
@@ -11,10 +15,11 @@ const Footer = () => {
       <p>Inovação, tecnologia e sustentabilidade
       </p>
       <div className="icons">
-        <a href='#'><i className='bx bxl-facebook-circle'></i></a>
-        <a href='#'><i className='bx bxl-twitter'></i></a>
-        <a href='#'><i className='bx bxl-instagram-alt'></i></a>
-      </div>
+  <a href="#"><FacebookIcon style={{ fontSize: 30, color: 'white' }} /></a>
+  <a href="#"><TwitterIcon style={{ fontSize: 27, color: 'white' }} /></a>
+  <a href="#"><InstagramIcon style={{ fontSize: 30, color: 'white' }} /></a>
+</div>
+
     </section>
     <div className="conteudofooter">
       <h4>Institucional</h4>

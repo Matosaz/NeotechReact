@@ -24,15 +24,15 @@
 .conteudofooter li a{
     display: block;
     color: #fafafa;
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 400px;
-    transition: all .21s ;
+    transition: all .2s ease-out;
 }
 
 .conteudofooter li a:hover{
     transform: translateY(-1px) translateX(-1px);
-    font-weight: bold;
-   
+    font-weight: 500;
+    
 }
 
 .conteudofooter p{
@@ -45,10 +45,8 @@
 }
 
 .icons a{
-    display: inline-block;
-    font-size: 22px;
-    color: #d6d6d6;
-    margin-left: 13%;
+    display: inline-flex;
+    padding: 10px 30px; 
     transition: all .40s ease;
 }
 
