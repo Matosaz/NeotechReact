@@ -1,18 +1,41 @@
 import React, { useState } from "react";
-import { Modal, Box, Typography, TextField, Button } from "@mui/material";
+import { Modal, Box, Typography, TextField, Button, CircularProgress } from "@mui/material";
 import "./ResetPassword.css";
 
 const ResetPassword = ({ open, handleClose }) => {
   const [email, setEmail] = useState("");
-  const [code, setCode] = useState(""); // Para armazenar o código recebido por e-mail
-  const [newPassword, setNewPassword] = useState(""); // Para armazenar a nova senha
-  const [step, setStep] = useState(1); // 1: Enviar e-mail, 2: Inserir código e redefinir senha
+  const [code, setCode] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [step, setStep] = useState(1);
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  // Enviar o e-mail com o link de redefinição
+  const validateEmail = (email) => /\S+@\S+\.\S+/.test(email);
+  const validatePassword = (password) => password.length >= 6;
+
+  const resetForm = () => {
+    setEmail("");
+    setCode("");
+    setNewPassword("");
+    setStep(1);
+    setMessage("");
+    setLoading(false);
+  };
+
+  const handleCloseAndReset = () => {
+    resetForm();
+    handleClose();
+  };
+
   const handleEmailSubmit = async (e) => {
     e.preventDefault();
+    if (!validateEmail(email)) {
+      return setMessage("E-mail inválido.");
+    }
+
     setMessage("");
+    setLoading(true);
+
     try {
       const response = await fetch("https://intellij-neotech-production.up.railway.app/api/v1/users/forgot-password", {
         method: "POST",
@@ -22,7 +45,7 @@ const ResetPassword = ({ open, handleClose }) => {
 
       const data = await response.json();
       if (data.success) {
-        setStep(2); // Mudar para a etapa de inserir o código
+        setStep(2);
         setMessage("Código enviado para o seu e-mail.");
       } else {
         setMessage("Erro ao enviar o código.");
@@ -30,12 +53,19 @@ const ResetPassword = ({ open, handleClose }) => {
     } catch (error) {
       setMessage("Erro ao solicitar recuperação de senha.");
     }
+
+    setLoading(false);
   };
 
-  // Verificar o código e redefinir a senha
   const handleCodeSubmit = async (e) => {
     e.preventDefault();
+    if (!validatePassword(newPassword)) {
+      return setMessage("A senha deve conter pelo menos 6 caracteres.");
+    }
+
     setMessage("");
+    setLoading(true);
+
     try {
       const response = await fetch("https://intellij-neotech-production.up.railway.app/api/v1/users/verify-code", {
         method: "POST",
@@ -46,26 +76,43 @@ const ResetPassword = ({ open, handleClose }) => {
       const data = await response.json();
       if (data.success) {
         setMessage("Senha redefinida com sucesso.");
-        handleClose();
+        setTimeout(() => {
+          handleCloseAndReset();
+        }, 2000);
       } else {
         setMessage("Código inválido ou expirado.");
       }
     } catch (error) {
       setMessage("Erro ao redefinir a senha.");
     }
+
+    setLoading(false);
   };
 
   return (
-    <Modal open={open} onClose={handleClose}>
-      <Box className="reset-password-modal" sx={{ padding: '2rem' }}>
-        <Typography variant="h6"  fontFamily="Lexend" component="h2" className="modal-title" sx={{ marginBottom: '0.5rem', fontWeight: "600" }}>
+    <Modal open={open} onClose={handleCloseAndReset}>
+      <Box className="reset-password-modal" sx={{ padding: "2rem" }}>
+        <Typography
+          variant="h6"
+          fontFamily="Lexend"
+          component="h2"
+          className="modal-title"
+          sx={{ marginBottom: "0.5rem", fontWeight: "600" }}
+        >
           Recuperação de Senha
         </Typography>
-        <Typography variant="body2" fontFamily="Lexend" className="modal-description" sx={{ marginBottom: '1rem', textAlign: "center" }}>
-          {step === 1 ? "Insira seu e-mail para receber um link de redefinição de senha." : "Insira o código enviado e sua nova senha."}
+
+        <Typography
+          variant="body2"
+          fontFamily="Lexend"
+          className="modal-description"
+          sx={{ marginBottom: "1rem", textAlign: "center" }}
+        >
+          {step === 1
+            ? "Insira seu e-mail para receber um link de redefinição de senha."
+            : "Insira o código enviado e sua nova senha."}
         </Typography>
 
-        {/* Etapa 1: Solicitação do E-mail */}
         {step === 1 ? (
           <form onSubmit={handleEmailSubmit}>
             <TextField
@@ -77,52 +124,50 @@ const ResetPassword = ({ open, handleClose }) => {
               required
               className="modal-input"
               sx={{
-                marginBottom: '1.5rem',
+                marginBottom: "1.5rem",
                 borderRadius: "10px",
                 background: "#e3e3e3",
                 "& .MuiInputLabel-root": {
-                  color: "#3333339a", // cor verde para a label
+                  color: "#3333339a",
                 },
                 "& .MuiInputLabel-root.Mui-focused": {
-                  color: "#488042", // cor verde quando o campo estiver focado
+                  color: "#488042",
                 },
               }}
             />
             <Button
               type="submit"
               variant="contained"
-              fontFamily="Lexend" 
+              fontFamily="Lexend"
+              disabled={loading}
               className="modal-button"
-              sx={{ borderRadius: "8px", backgroundColor: "#5faa84", padding: '0.75rem' }}
+              sx={{ borderRadius: "8px", backgroundColor: "#5faa84", padding: "0.75rem" }}
             >
-              Enviar Código
+              {loading ? <CircularProgress size={24} color="inherit" /> : "Enviar Código"}
             </Button>
           </form>
         ) : (
-          // Etapa 2: Inserção do Código e Nova Senha
           <form onSubmit={handleCodeSubmit}>
             <TextField
               fullWidth
-              fontFamily="Lexend" 
               label="Código"
               value={code}
               onChange={(e) => setCode(e.target.value)}
               required
               className="modal-input"
               sx={{
-                marginBottom: '1rem',
+                marginBottom: "1rem",
                 background: "#e3e3e3",
                 "& .MuiInputLabel-root": {
-                  color: "#3333339a", // cor verde para a label
+                  color: "#3333339a",
                 },
                 "& .MuiInputLabel-root.Mui-focused": {
-                  color: "#488042", // cor verde quando o campo estiver focado
+                  color: "#488042",
                 },
               }}
             />
             <TextField
               fullWidth
-              fontFamily="Lexend" 
               label="Nova Senha"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
@@ -130,31 +175,41 @@ const ResetPassword = ({ open, handleClose }) => {
               type="password"
               className="modal-input"
               sx={{
-                marginBottom: '1.5rem',
+                marginBottom: "1.5rem",
                 background: "#e3e3e3",
                 "& .MuiInputLabel-root": {
-                  color: "#3333339a", // cor verde para a label
+                  color: "#3333339a",
                 },
                 "& .MuiInputLabel-root.Mui-focused": {
-                  color: "#488042", // cor verde quando o campo estiver focado
+                  color: "#488042",
                 },
               }}
             />
             <Button
               type="submit"
               variant="contained"
-              fontFamily="Lexend" 
+              fontFamily="Lexend"
+              disabled={loading}
               className="modal-button"
-              sx={{ borderRadius: "8px", backgroundColor: "#5faa84", padding: '0.75rem' }}
+              sx={{ borderRadius: "8px", backgroundColor: "#5faa84", padding: "0.75rem" }}
             >
-              Redefinir Senha
+              {loading ? <CircularProgress size={24} color="inherit" /> : "Redefinir Senha"}
             </Button>
           </form>
         )}
 
         {message && (
-          
-          <Typography fontFamily="Lexend" variant="body2" className="modal-message" sx={{ marginTop: '0.5rem', fontSize: "24" }}>
+          <Typography
+            fontFamily="Lexend"
+            variant="body2"
+            className="modal-message"
+            sx={{
+              marginTop: "0.5rem",
+              color: message.toLowerCase().includes("sucesso") ? "green" : "red",
+              fontSize: "1rem",
+              textAlign: "center",
+            }}
+          >
             {message}
           </Typography>
         )}
