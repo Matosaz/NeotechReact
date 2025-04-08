@@ -37,7 +37,7 @@ const ResetPassword = ({ open, handleClose }) => {
     setLoading(true);
 
     try {
-      const response = await fetch("https://intellij-neotech-production.up.railway.app/api/v1/users/forgot-password", {
+      const response = await fetch("https://intellij-neotech.onrender.com/api/v1/users/forgot-password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
@@ -67,7 +67,7 @@ const ResetPassword = ({ open, handleClose }) => {
     setLoading(true);
 
     try {
-      const response = await fetch("https://intellij-neotech-production.up.railway.app/api/v1/users/verify-code", {
+      const response = await fetch("https://intellij-neotech.onrender.com/api/v1/users/verify-code", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, code, newPassword }),
