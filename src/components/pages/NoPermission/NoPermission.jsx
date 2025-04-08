@@ -13,7 +13,7 @@ const NoPermission = () => {
   return (
     <div className="no-permission-container">
       <div className="no-permission-box">
-        <h1>Você não tem permissão para acessar esta área.</h1>
+        <h1>Você não possui permissão para acessar esta área.</h1>
         <p>Por favor, entre com uma conta com privilégios de administrador ou entre em contato com o suporte.</p>
         <button className="redirect-btn" onClick={handleRedirect}>
           Ir para o Login

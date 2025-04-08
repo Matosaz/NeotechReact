@@ -3,13 +3,15 @@
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background-color: #f3f2f2;
+    background-color: #f0f0f08c;
   }
   
   .no-permission-box {
     text-align: center;
-    background-color: rgb(255, 253, 253);
+    background: rgba(255, 255, 255, 0.849);
     padding: 30px;
+    backdrop-filter: blur(2.5px);
+    -webkit-backdrop-filter: blur(0.5px);
     border-radius:15px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     width: 100%;
@@ -30,7 +32,7 @@
     margin-bottom: 20px;
   }
   
-  .redirect-btn { width: 50%;
+  .redirect-btn { width: 40%;
     padding: 0.75rem;
     font-size: 1.1rem;
     background-color: #5faa84;
