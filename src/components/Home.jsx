@@ -3,8 +3,28 @@ import './Home.css'
 import RecVideo from '../assets/RecVideo.mp4'
 import Phoneimg from '../assets/Mockup1.png'
 import { UserContext } from './UserContext'
+import { motion } from 'framer-motion';
 import React, {useEffect, useState ,useContext,} from 'react';
   const Home = () => {
+    const fadeIn = {
+      hidden: {
+        opacity: 0,
+        y: 30,
+        filter: 'blur(2px)',
+      },
+      visible: {
+        opacity: 1,
+        y: 0,
+        filter: 'blur(0px)',
+        transition: {
+          duration: 1.1,
+          ease: [0.20, 1, 0.36, 1], // easeOutExpo
+          delay: 0.1,
+        },
+      },
+    };
+    
+    
     const { user } = useContext(UserContext);
 const [firstName, setFirstName] = useState("Usuário");
 
@@ -18,7 +38,7 @@ useEffect(() => {
       
   const counters = document.querySelectorAll(".counters span");
   const container = document.querySelector(".counters");
-    
+
   let activated = false;
 
   window.addEventListener("scroll", () => {
@@ -116,9 +136,9 @@ useEffect(() => {
   return (
     
     
-   <body>
-        <section className='Hero'>
-        <div className="txtimghero">
+    <div className="home-container">
+      <motion.section className='Hero' initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }} variants={fadeIn}>
+      <div className="txtimghero">
         <div className='AllTxtHero'> 
         <h2 className='TxtHero'> NeoTech</h2>
         <h3 className='TxtHero2'> The future is near</h3>
@@ -126,7 +146,7 @@ useEffect(() => {
         </div>
         <img src={Phoneimg} className='Phoneimg'/>
         </div>
-        </section>
+        </motion.section>
 
         {/* Início Serviços*/}
         <section className='Serviço' id='Serviço'>
@@ -309,7 +329,7 @@ useEffect(() => {
     {/* Fim Orçamento*/}
 
 
-   </body>
+    </div>
   )
 }
 

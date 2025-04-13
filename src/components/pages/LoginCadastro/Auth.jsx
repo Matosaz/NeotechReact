@@ -169,11 +169,15 @@ if (isLoginMode) {
 
   // Buscar detalhes completos do usuário antes de salvar no contexto/localStorage
   const userData = await fetchUserDetails(userId);
-
+  
   if (userData) {
+    // Adiciona o valor da flag isAdmin (vindo do login) ao userData
+    userData.isAdmin = data.isAdmin === 'true';
+  
     setUser(userData);
     localStorage.setItem('user', JSON.stringify(userData));
   }
+  
 
   alert(data.message); // Mensagem do backend, mas sem dados pessoais
   navigate('/#');

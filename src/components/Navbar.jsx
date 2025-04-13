@@ -6,11 +6,34 @@ import profile from '../assets/profile.png';
 import help from '../assets/help.png';
 import logoutpng from '../assets/logout.png';
 import { Link } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const { user, setUser } = useContext(UserContext); // Consome o contexto
+  const dropdownVariants = {
+    hidden: {
+      opacity: 0,
+      y: -35,    // Desliza para cima de forma sutil
+      scale: 0.75, // Leve redução de escala para sugerir que está "fechando"
+      transition: {
+        duration: 0.25,   // Tempo rápido de animação
+        ease: [0.20, 1, 0.36, 1], // easeOutExpo
+        delay: 0.09
+      },
+    },
+    visible: {
+      opacity: 1,
+      y: 0,      // Retorna para o centro
+      scale: 1,   // Escala natural
+      transition: {
+        ease: [0.25, 1.2, 0.36, 1.2], // easeOutExpo
+        duration: 0.25,   // Rapidez na entrada
+        delay: 0.05
 
+      },
+    },
+  };
   useEffect(() => {
     console.log("User atualizado:", user);
   }, [user]);
@@ -83,32 +106,43 @@ const Navbar = () => {
         {user ? ( // Se o usuário estiver logado, exibe o menu de Perfil
           <a className="FecharMenu" onClick={toggleMenu}>
             Perfil
-            <div className={`sub-menu-wrap ${menuOpen ? 'open-menu' : ''}`}>
-              <div className="sub-menu">
-                <div className="user-info">
-                  <h2>{user?.nome || 'Usuário'}</h2>
-                </div>
-                <hr />
-                {user.isAdmin && ( // Exibe apenas se for administrador
-               <a href="/Dashboard" className="sub-menu-link">
-                 <img src={profile} alt="Gerenciamento de usuários" />
-                 <p>Gerenciamento de usuários</p>
-               </a>
-               )}
-                <a href="/ConfigPerfil" className="sub-menu-link">
-                  <img src={profile} alt="Configuração de perfil" />
-                  <p>Configurações de perfil</p>
-                </a>
-                <a href="#" className="sub-menu-link">
-                  <img src={help} alt="Ajuda e suporte" />
-                  <p>Ajuda e suporte</p>
-                </a>
-                <a href="#" className="sub-menu-link" onClick={logout}>
-                  <img src={logoutpng} alt="Sair do perfil" />
-                  <p>Sair da conta</p>
-                </a>
-              </div>
-            </div>
+            <AnimatePresence mode="wait">
+  {menuOpen && (
+    <motion.div
+      className="sub-menu-wrap"
+      initial="hidden"
+      animate="visible"
+      exit="hidden"
+      variants={dropdownVariants}
+    >
+      <div className="sub-menu">
+        <div className="user-info">
+          <h2>{user?.nome || 'Usuário'}</h2>
+        </div>
+        <hr />
+        {user.isAdmin && (
+          <a href="/Dashboard" className="sub-menu-link">
+            <img src={profile} alt="Administração" />
+            <p>Área Administrativa</p>
+          </a>
+        )}
+        <a href="/ConfigPerfil" className="sub-menu-link">
+          <img src={profile} alt="Configuração de perfil" />
+          <p>Configurações de perfil</p>
+        </a>
+        <a href="#" className="sub-menu-link">
+          <img src={help} alt="Ajuda e suporte" />
+          <p>Ajuda e suporte</p>
+        </a>
+        <a href="#" className="sub-menu-link" onClick={logout}>
+          <img src={logoutpng} alt="Sair do perfil" />
+          <p>Sair da conta</p>
+        </a>
+      </div>
+    </motion.div>
+  )}
+</AnimatePresence>
+
           </a>
         ) : ( // Se o usuário não estiver logado, exibe a opção de login
           <a className="FecharMenu" href="/Auth">

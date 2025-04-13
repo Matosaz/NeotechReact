@@ -20,21 +20,21 @@ function UserManagement() {
   const [currentUser, setCurrentUser] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  
+
   const API_BASE_URL = "https://intellij-neotech.onrender.com/api/v1/users";
 
   const generatePDF = () => {
     const doc = new jsPDF();
     const img = new Image();
     img.src = NeotechLogo; // Caminho correto para a imagem importada
-  
+
     img.onload = function () {
       const pageWidth = doc.internal.pageSize.width;
-  
+
       const imgWidth = 30;
       const imgHeight = (img.height / img.width) * imgWidth;
-  
-      const imgX = (pageWidth - imgWidth) / 2; 
+
+      const imgX = (pageWidth - imgWidth) / 2;
       doc.addImage(img, 'PNG', imgX, 10, imgWidth, imgHeight);
 
       doc.setTextColor(47, 124, 55)
@@ -46,7 +46,7 @@ function UserManagement() {
       doc.setFontSize(12);
       doc.setFont('Helvetica', 'italic');
       doc.text(`Gerado em: ${new Date().toLocaleString()}`, pageWidth / 2, imgHeight + 30, { align: 'center' });
-  
+
       // Configuração da tabela
       const tableColumn = ['ID', 'Nome', 'Email', 'Status', 'Administrador'];
       const tableRows = users.map(user => [
@@ -56,7 +56,7 @@ function UserManagement() {
         user.codStatus,
         user.admin ? 'Sim' : 'Não',
       ]);
-  
+
       doc.autoTable({
         head: [tableColumn],
         body: tableRows,
@@ -71,21 +71,21 @@ function UserManagement() {
           doc.text(str, pageWidth / 2, pageHeight - 10, { align: 'center' });
         },
       });
-  
+
       // Espaço para assinatura no final da página
       const pageHeight = doc.internal.pageSize.height;
       doc.line((pageWidth - 180) / 2, pageHeight - 20, (pageWidth + 180) / 2, pageHeight - 20);
       doc.text('Neotech', pageWidth / 2, pageHeight - 15, { align: 'center' });
-  
+
       // Salvar PDF
       doc.save('relatorio_usuarios.pdf');
     };
-  
+
     img.onerror = function () {
       alert("Erro ao carregar o logotipo.");
     };
   };
-  
+
   useEffect(() => {
     fetch(API_BASE_URL)
       .then(response => response.json())
@@ -96,7 +96,7 @@ function UserManagement() {
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
   };
-  const filteredUsers = users.filter(user => 
+  const filteredUsers = users.filter(user =>
     user.nome.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -156,7 +156,7 @@ function UserManagement() {
   };
   const handleUpdateUser = async () => {
     if (!currentUser || typeof currentUser.id !== 'number') return;
-  
+
     const formData = new FormData();
     formData.append("data", JSON.stringify({
       nome: newUser.nome,
@@ -165,18 +165,18 @@ function UserManagement() {
       codStatus: newUser.ativo ? "ATIVO" : "INATIVO",
       senha: newUser.senha || ""
     }));
-  
+
     try {
       const response = await fetch(`${API_BASE_URL}/${currentUser.id}`, {
         method: 'PUT',
         body: formData,
       });
-  
+
       if (!response.ok) {
         alert('Erro ao atualizar usuário: ' + response.statusText);
         return;
       }
-  
+
       const updatedUser = await response.json();
       setUsers(users.map(user => (user.id === currentUser.id ? updatedUser : user)));
       resetForm();
@@ -185,7 +185,7 @@ function UserManagement() {
       alert('Erro ao atualizar usuário:', error);
     }
   };
-  
+
   const handleDeleteUser = async (id) => {
     try {
       await fetch(`${API_BASE_URL}/${id}`, {
@@ -206,22 +206,22 @@ function UserManagement() {
   };
 
   const columns = [
-    { 
-      accessorKey: 'nome', 
+    {
+      accessorKey: 'nome',
       header: 'Usuário',
       headerStyle: { color: '#3498db', fontWeight: 'bold', textAlign: 'center' },
       cellStyle: { color: '#3498db', textAlign: 'center', fontSize: '16px' }
     },
-    { 
-      accessorKey: 'codStatus', 
-      header: 'Status', 
+    {
+      accessorKey: 'codStatus',
+      header: 'Status',
       cell: ({ cell }) => (cell.getValue() === 'Ativo' ? 'Ativo' : 'Inativo'),
       headerClassName: 'column-status-header',
       cellClassName: 'column-status-cell',
     },
-    { 
-      accessorKey: 'admin', 
-      header: 'Administrador', 
+    {
+      accessorKey: 'admin',
+      header: 'Administrador',
       Cell: ({ cell }) => (cell.getValue() ? 'True' : 'False'),
       headerClassName: 'column-administrador-header',
       cellClassName: 'column-administrador-cell',
@@ -248,59 +248,69 @@ function UserManagement() {
 
   return (
     <body className='bodyManagement'>
-      
-    
-    <div className="container-management"> 
-      <Sidebar1 />
-      
-      <h1>Usuários</h1>
-      <div className="search-container">
-        <input 
-          type="text" 
-          placeholder="Pesquisar Usuários" 
-          value={searchTerm} 
-          onChange={handleSearch} 
-        />
-        <button>Pesquisar</button>
-      </div>
 
-      <div className="form-container">
-        <form onSubmit={(event) => { event.preventDefault(); 
-          if (isEditing){
-            handleUpdateUser();
-          }else{
-            handleAddUser();
-          }
-        }}>
-          <h2>{isEditing ? 'Editar Usuário' : 'Adicionar Novo Usuário'}</h2>
-          <div className="form-row">
-            <input className='nome' type="text" name="nome" placeholder="Nome do Usuário" value={newUser.nome} onChange={handleInputChange} required />
-            <input className='email' type="email" name="email" placeholder="Email" value={newUser.email} onChange={handleInputChange} required />
-            <div className="password-container">
-              <input type={showPassword ? 'text' : 'password'} autoComplete='current-password' name="senha" placeholder="Senha" value={newUser.senha} onChange={handleInputChange} />
-              <button type="button" onClick={toggleShowPassword} className="toggle-password">
-                <img src={showPassword ? hide : show} alt={showPassword ? "Ocultar senha" : "Mostrar senha"} />
-              </button>
+
+      <div className="container-management">
+        <Sidebar1 />
+
+        <h1>Usuários</h1>
+        <div className="search-container">
+          <input
+            type="text"
+            placeholder="Pesquisar Usuários"
+            value={searchTerm}
+            onChange={handleSearch}
+          />
+          <button>Pesquisar</button>
+        </div>
+
+        <div className="form-container">
+          <form onSubmit={(event) => {
+            event.preventDefault();
+            if (isEditing) {
+              handleUpdateUser();
+            } else {
+              handleAddUser();
+            }
+          }}>
+            <h2>{isEditing ? 'Editar Usuário' : 'Adicionar Novo Usuário'}</h2>
+            <div className="form-row">
+              <input className='nome' type="text" name="nome" placeholder="Nome do Usuário" value={newUser.nome} onChange={handleInputChange} required />
+              <input className='email' type="email" name="email" placeholder="Email" value={newUser.email} onChange={handleInputChange} required />
+              <div className="password-container">
+                <input type={showPassword ? 'text' : 'password'} autoComplete='current-password' name="senha" placeholder="Senha" value={newUser.senha} onChange={handleInputChange} />
+                <button type="button" onClick={toggleShowPassword} className="toggle-password">
+                  <img src={showPassword ? hide : show} alt={showPassword ? "Ocultar senha" : "Mostrar senha"} />
+                </button>
+              </div>
+              <label>
+                <input className='ativo' type="checkbox" name="ativo" checked={newUser.ativo} onChange={() => setNewUser(prevState => ({ ...prevState, ativo: !prevState.ativo }))} /> Ativo
+              </label>
+              <label>
+                <input className='adm' type="checkbox" name="administrador" checked={newUser.administrador} onChange={() => setNewUser(prevState => ({ ...prevState, administrador: !prevState.administrador }))} /> Administrador
+              </label>
+              <button className='ADD_button' type="submit">{isEditing ? 'Atualizar Usuário' : 'Adicionar Usuário'}</button>
             </div>
-            <label>
-              <input className='ativo' type="checkbox" name="ativo" checked={newUser.ativo} onChange={() => setNewUser(prevState => ({ ...prevState, ativo: !prevState.ativo }))} /> Ativo
-            </label>
-            <label>
-              <input className='adm' type="checkbox" name="administrador" checked={newUser.administrador} onChange={() => setNewUser(prevState => ({ ...prevState, administrador: !prevState.administrador }))} /> Administrador
-            </label>
-            <button className='ADD_button' type="submit">{isEditing ? 'Atualizar Usuário' : 'Adicionar Usuário'}</button>
-          </div>
-        </form>
-      </div>
+          </form>
+        </div>
 
-      <div className="table-container">
-        <MaterialReactTable columns={columns} data={filteredUsers} />
-      </div>
-      <button onClick={generatePDF} className="generate-pdf-button">
-      Gerar Relatório em PDF
-    </button>
+        <div className="table-container">
+          <MaterialReactTable
+            columns={columns}
+            data={filteredUsers}
+            initialState={{ pagination: { pageSize: 5 } }}
+            muiTablePaginationProps={{
+              rowsPerPageOptions: [5, 10, 20],
+            }}
+            
+          />
 
-    </div>
+        </div>
+        <button onClick={generatePDF} className="generate-pdf-button">
+          Gerar Relatório em PDF
+        </button>
+
+      </div>
     </body>
   );
 }

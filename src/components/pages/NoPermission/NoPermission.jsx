@@ -1,11 +1,18 @@
-import React from 'react';
+import React, { useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './NoPermission.css'; // Para estilos personalizados
+import { UserContext } from '../../UserContext';
+import './NoPermission.css';
 
 const NoPermission = () => {
+  const { user } = useContext(UserContext);
   const navigate = useNavigate();
 
-  // Função para redirecionar o usuário para a página de login
+  useEffect(() => {
+    if (user && user.isAdmin === true) {
+      navigate('/UserManagement'); // ajuste para a página que o admin pode acessar
+    }
+  }, [user, navigate]);
+
   const handleRedirect = () => {
     navigate('/Auth');
   };

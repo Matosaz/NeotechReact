@@ -15,27 +15,27 @@ const Calculadora = () => {
   const { user, setUser } = useContext(UserContext); // Usando o contexto para pegar o usuário logado
   const [countries, setCountries] = useState([]);
   const [formData, setFormData] = useState({
+    id: user?.id || '',
     nome: user?.nome || '',
     email: user?.email || '',
     telefone: user?.telefone || '',
     cep: user?.cep || '',
     endereco: user?.endereco || '',
-    
+    metodoContato: '',
+    aceitaContato: false, 
     numero: user?.numero || '',
     complemento: user?.complemento || '',
     bairro: user?.bairro || '',
     cidade: user?.cidade || '',
-    
+
     estado: user?.estado || '',
-    collectionDate: '',
-    collectionTime: '',
+    dataColeta: '',
+    horaColeta: '',
   });
   const [currentStep, setCurrentStep] = useState(1);
   const [dateError, setDateError] = useState('');
   const [timeError, setTimeError] = useState('');
-  const [telefone, settelefone] = useState(user?.telefone || "");
   const [disableNextButton, setDisableNextButton] = useState(false); // Estado para desabilitar o botão de próximo
-  const [contactMethod, setContactMethod] = useState('');
 
   useEffect(() => {
     if (user) {
@@ -118,106 +118,104 @@ const Calculadora = () => {
     } catch (error) {
       console.error("Erro ao buscar CEP", error);
     }
-  };const handleSubmit = async (e) => {
+  }; const handleSubmit = async (e) => {
     e.preventDefault();
   
-    // Prepare os dados do formulário
+    // Converter hora para formato com segundos
+    const horaComSegundos = formData.horaColeta.includes(':') 
+      ? `${formData.horaColeta}:00`
+      : `${formData.horaColeta.slice(0, 2)}:${formData.horaColeta.slice(2, 4)}:00`;
+  
+    // Preparar dados no formato esperado pelo backend
     const requestData = {
-      nome: formData.nome,
-      email: formData.email,
-      telefone: formData.telefone,
-      endereco: formData.endereco,
-      numero: formData.numero,
-      bairro: formData.bairro,
-      cidade: formData.cidade,
-      estado: formData.estado,
-      
-      cep: formData.cep,
-      collectionDate: formData.collectionDate,
-      collectionTime: formData.collectionTime,
-    };
-    console.log('Dados enviados:', requestData);
+      dataColeta: formData.dataColeta,
+      horaColeta: horaComSegundos,
+      metodoContato: formData.metodoContato,
+      aceitaContato: formData.aceitaContato,
+      usuario: { id: user?.id }
 
+    };
+  
+    console.log('Dados sendo enviados:', requestData);
+  
     // Verifica se todos os campos obrigatórios estão preenchidos
-    if (!requestData.nome || !requestData.email || !requestData.telefone || !requestData.endereco || !requestData.numero || !requestData.bairro || !requestData.cidade || !requestData.estado || !requestData.cep || !requestData.collectionDate || !requestData.collectionTime) {
-      alert('Por favor, preencha todos os campos obrigatórios.');
+   
+    if (!formData.metodoContato) {
+      alert('Por favor, selecione um método de contato.');
       return;
     }
-  
+    if (formData.aceitaContato === null || formData.aceitaContato === undefined) {
+      alert('Por favor, informe se aceita receber contato.');
+      return;
+    }
+
     try {
-      const response = await fetch( "https://intellij-neotech.onrender.com/api/v1/orcamentos", {
+      const response = await fetch("https://intellij-neotech.onrender.com/api/v1/orcamentos", {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(requestData),
       });
-  
-      if (response.ok) {
-        alert('Agendamento confirmado com sucesso!');
-      } if (!response.ok) {
-        // Tente obter o corpo da resposta como texto
-        const errorText = await response.text();
-        console.error('Erro na requisição:', errorText);
-        alert(`Erro: ${errorText}`);
-      } else {
-        // Caso a resposta seja válida, converta para JSON
-        const data = await response.json();
-        console.log('Dados recebidos:', data);
-        alert('Agendamento confirmado com sucesso!');
+      
+      const responseText = await response.text(); 
+      if (!response.ok) {
+        console.error('Erro na requisição:', responseText);
+        alert(`Erro: ${responseText.message || 'Erro ao enviar dados'}`);
+        return;
       }
       
+      console.log('Dados recebidos:', responseText);
+      alert('Agendamento confirmado com sucesso!');
     } catch (error) {
       console.error('Erro ao enviar os dados:', error);
       alert('Erro ao enviar os dados para o servidor.');
     }
   };
-  
-  
-const nextStep = () => {
-  const form = document.querySelector('form');
+  const nextStep = () => {
+    const form = document.querySelector('form');
 
-  // Validação do passo atual
-  if (currentStep < 5 && form.checkValidity()) {
-    if (currentStep === 4) {
-      const selectedDate = dayjs(formData.collectionDate);
-      const selectedTime = dayjs(formData.collectionTime, 'HH:mm');
-      const now = dayjs();
+    // Validação do passo atual
+    if (currentStep < 5 && form.checkValidity()) {
+      if (currentStep === 4) {
+        const selectedDate = dayjs(formData.dataColeta);
+        const selectedTime = dayjs(formData.horaColeta, 'HH:mm');
+        const now = dayjs();
 
-      if (!selectedDate.isValid()) {
-        setDateError('Por favor, selecione uma data válida.');
-        setTimeError('');
-        setDisableNextButton(true);
-        return;
-      }
+        if (!selectedDate.isValid()) {
+          setDateError('Por favor, selecione uma data válida.');
+          setTimeError('');
+          setDisableNextButton(true);
+          return;
+        }
 
-      if (!selectedTime.isValid()) {
-        setTimeError('Por favor, selecione um horário válido.');
+        if (!selectedTime.isValid()) {
+          setTimeError('Por favor, selecione um horário válido.');
+          setDateError('');
+          setDisableNextButton(true);
+          return;
+        }
+
+        // Verifica se a data e o horário são anteriores às atuais
+        if (selectedDate.isBefore(now, 'day') || (selectedDate.isSame(now, 'day') && selectedTime.isBefore(now, 'minute'))) {
+          setDateError('A data e/ou o horário selecionado é anterior ao horário atual.');
+          setTimeError('A data e/ou o horário selecionado é anterior ao horário atual.');
+          setDisableNextButton(true);
+          return;
+        }
+
+        // Se passou nas validações, limpa os erros e habilita o botão
         setDateError('');
-        setDisableNextButton(true);
-        return;
+        setTimeError('');
+        setDisableNextButton(false);
+        setCurrentStep(currentStep + 1);
+      } else {
+        setCurrentStep(currentStep + 1);
       }
-
-      // Verifica se a data e o horário são anteriores às atuais
-      if (selectedDate.isBefore(now, 'day') || (selectedDate.isSame(now, 'day') && selectedTime.isBefore(now, 'minute'))) {
-        setDateError('A data e/ou o horário selecionado é anterior ao horário atual.');
-        setTimeError('A data e/ou o horário selecionado é anterior ao horário atual.');
-        setDisableNextButton(true);
-        return;
-      }
-
-      // Se passou nas validações, limpa os erros e habilita o botão
-      setDateError('');
-      setTimeError('');
-      setDisableNextButton(false);
-      setCurrentStep(currentStep + 1);
     } else {
-      setCurrentStep(currentStep + 1);
+      form.reportValidity();
     }
-  } else {
-    form.reportValidity();
-  }
-};
+  };
 
   const prevStep = () => {
     if (currentStep > 1) {
@@ -234,7 +232,7 @@ const nextStep = () => {
     if (newValue) {
       const selectedDate = dayjs(newValue);
       const now = dayjs();
-  
+
       if (selectedDate.isBefore(now, 'day')) {
         setDateError('A data deve ser posterior à data atual.');
         setDisableNextButton(true); // Desabilita o botão
@@ -242,45 +240,46 @@ const nextStep = () => {
         setDateError('');
         setDisableNextButton(false); // Habilita o botão
       }
-  
-      setFormData({ ...formData, collectionDate: newValue.format('YYYY-MM-DD') });
+
+      setFormData({ ...formData, dataColeta: newValue.format('YYYY-MM-DD') });
     }
   };
-  
+
   const handleTimeChange = (newValue) => {
     if (newValue) {
       const selectedTime = dayjs(newValue, 'HH:mm');
       const now = dayjs();
-      const selectedDate = dayjs(formData.collectionDate);
+      const selectedDate = dayjs(formData.dataColeta);
   
       if (selectedDate.isSame(now, 'day') && selectedTime.isBefore(now, 'minute')) {
         setTimeError('O horário deve ser posterior ao horário atual.');
-        setDisableNextButton(true); // Desabilita o botão
+        setDisableNextButton(true);
       } else {
         setTimeError('');
-        setDisableNextButton(false); // Habilita o botão
+        setDisableNextButton(false);
       }
   
-      setFormData({ ...formData, collectionTime: newValue.format('HH:mm') });
+      const hours = String(newValue.hour()).padStart(2, '0');
+      const minutes = String(newValue.minute()).padStart(2, '0');
+      setFormData({ ...formData, horaColeta: `${hours}:${minutes}` });
     }
   };
-  
 
-// Função para desabilitar datas anteriores à data de hoje
-const shouldDisableDate = (date) => {
-  return date.isBefore(dayjs(), 'day');
-};
+  // Função para desabilitar datas anteriores à data de hoje
+  const shouldDisableDate = (date) => {
+    return date.isBefore(dayjs(), 'day');
+  };
 
-// Função para desabilitar horários passados para o dia de hoje
-const shouldDisableTime = (time) => {
-  const now = dayjs();
-  const selectedDate = dayjs(formData.collectionDate);
-  
-  if (selectedDate.isSame(now, 'day')) {
-    return time.isBefore(now, 'minute');
-  }
-  return false;
-};
+  // Função para desabilitar horários passados para o dia de hoje
+  const shouldDisableTime = (time) => {
+    const now = dayjs();
+    const selectedDate = dayjs(formData.dataColeta);
+
+    if (selectedDate.isSame(now, 'day')) {
+      return time.isBefore(now, 'minute');
+    }
+    return false;
+  };
 
   return (
     <section className='body-orcamento'>
@@ -338,8 +337,8 @@ const shouldDisableTime = (time) => {
                     <label>Telefone</label>
                     <InputTel
                       required
-                      value={telefone}
-                      onChange={(event) => settelefone(event.target.value)}
+                      value={formData.telefone}
+                      onChange={(event) => setFormData({ ...formData, telefone: event.target.value })}
                     />
                   </div>
                 </fieldset>
@@ -351,53 +350,44 @@ const shouldDisableTime = (time) => {
                   <legend className="legend-orcamento">Contato</legend>
                   <div className="form-group-orcamento2">
                     <RadioGroup
-                      name="contactMethod"
-                      onChange={handleChange}
+                      name="metodoContato"
+                      value={formData.metodoContato}
+                      onChange={(e) => setFormData({ ...formData, metodoContato: e.target.value })}
                       sx={{
                         flexDirection: 'row',
                         gap: '20px',
                       }}
                     >
-                      <FormControlLabel
-                        value="WhatsApp"
-                        control={
-                          <Radio
-                            sx={{
-                              '&.Mui-checked': {
-                                color: '#4caf50',
-                                transition: 'transform 0.3s ease',
-                                transform: 'scale(1.2)',
-                              },
-                              transition: 'transform 0.3s ease',
-                            }}
-                          />
-                        }
-                        label="Por WhatsApp"
-                      />
-                      <FormControlLabel
-                        value="Emailradio"
-                        control={
-                          <Radio
-                            sx={{
-                              '&.Mui-checked': {
-                                color: '#4caf50',
-                                transition: 'transform 0.3s ease',
-                                transform: 'scale(1.2)',
-                              },
-                              transition: 'transform 0.3s ease',
-                            }}
-                          />
-                        }
-                        label="Por e-mail"
-                      />
+                      <FormControlLabel sx={{
+                        '&.Mui-checked': {
+                          color: '#4caf50',
+                          transition: 'transform 0.3s ease',
+                          transform: 'scale(1.2)',
+                        },
+                        transition: 'transform 0.3s ease',
+                      }}
+                        value="whatsapp"
+                        control={<Radio />}
+                        label="WhatsApp" />
+
+                      <FormControlLabel sx={{
+                        '&.Mui-checked': {
+                          color: '#4caf50',
+                          transition: 'transform 0.3s ease',
+                          transform: 'scale(1.2)',
+                        },
+                        transition: 'transform 0.3s ease',
+                      }} value="email"
+                        control={<Radio />} label="Email" />
+
                     </RadioGroup>
                   </div>
                   <div className="form-group-orcamento2">
                     <FormControlLabel
                       control={
                         <Checkbox
-                          name="acceptContact"
-                          onChange={handleChange}
+                          checked={formData.aceitaContato}
+                          onChange={(e) => setFormData({ ...formData, aceitaContato: e.target.checked })}
                           sx={{
                             '&.Mui-checked': {
                               color: '#4caf50',
@@ -490,7 +480,7 @@ const shouldDisableTime = (time) => {
                     <div className="form-group-orcamento">
                       <label>Data da Coleta</label>
                       <DesktopDatePicker
-                        value={formData.collectionDate ? dayjs(formData.collectionDate) : null}
+                        value={formData.dataColeta ? dayjs(formData.dataColeta) : null}
                         onChange={handleDateChange}
                         shouldDisableDate={shouldDisableDate}// Bloqueia datas anteriores
                         slotProps={{ textField: { fullWidth: true } }}
@@ -517,7 +507,7 @@ const shouldDisableTime = (time) => {
                     <div className="form-group-orcamento">
                       <label>Horário da Coleta</label>
                       <DesktopTimePicker
-                        value={formData.collectionTime ? dayjs(formData.collectionTime, 'HH:mm') : null}
+                        value={formData.horaColeta ? dayjs(formData.horaColeta, 'HH:mm') : null}
                         onChange={handleTimeChange}
                         shouldDisableTime={shouldDisableTime}
                         slotProps={{ textField: { fullWidth: true } }}
@@ -575,10 +565,10 @@ const shouldDisableTime = (time) => {
                       <label>Endereço: {formData.endereco}</label>
                     </div>
                     <div className="form-group-orcamento">
-                      <label>Data da Coleta: {formData.collectionDate}</label>
+                      <label>Data da Coleta: {formData.dataColeta}</label>
                     </div>
                     <div className="form-group-orcamento">
-                      <label>Horário da Coleta: {formData.collectionTime}</label>
+                      <label>Horário da Coleta: {formData.horaColeta}</label>
                     </div>
                   </div>
                 </fieldset>
