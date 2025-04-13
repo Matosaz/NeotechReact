@@ -4,12 +4,19 @@ import { UserContext } from '../../UserContext';
 import LogoNeotech2 from './Logo7.svg';
 import { useNavigate } from 'react-router-dom';
 import ResetPassword from './ResetPassword';
-
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
+import CircularProgress from '@mui/material/CircularProgress';
 
 const API_BASE_URL = "https://intellij-neotech.onrender.com/api/v1/users";
 
 
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
+
 const Auth = () => {
+  const [loading, setLoading] = useState(false);
   const { setUser } = useContext(UserContext); // Acessa o contexto
   const [openModal, setOpenModal] = useState(false); // Estado para o modal
   const [isLoginMode, setIsLoginMode] = useState(true);
@@ -28,6 +35,7 @@ const Auth = () => {
     specialChar: false,
   });
   const [emailExists, setEmailExists] = useState(false);
+  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'info' });
   const navigate = useNavigate();
 
   // Alterna entre login e cadastro
@@ -75,30 +83,12 @@ const Auth = () => {
     setPasswordValidations(validations);
   };
 
-  const checkEmailExists = async () => {
-    if (!formData.email) return;
 
-    try {
-      const response = await fetch(`${API_BASE_URL}/check-email?email=${formData.email}`);
-      const data = await response.json();
-
-      if (data.exists ) {
-        setEmailExists(true);
-      } else {
-        setEmailExists(false);
-      }
-    } catch (error) {
-      if (error.response && error.response.status === 409) {
-        setEmailExists(true);
-        alert("E-mail já cadastrado! Por favor, use outro.");
-      } else {
-        console.error("Erro ao verificar e-mail:", error);
-      }
-    }
-  };const fetchUserDetails = async (userId) => {
+  
+  ; const fetchUserDetails = async (userId) => {
     try {
       console.log("Buscando detalhes do usuário para ID:", userId);
-  
+
       const response = await fetch(`${API_BASE_URL}/${userId}`, {
         method: 'GET',
         headers: {
@@ -106,93 +96,137 @@ const Auth = () => {
           'Content-Type': 'application/json'
         }
       });
-  
+
       if (!response.ok) {
         throw new Error('Erro ao buscar detalhes do usuário');
       }
-  
+
       const userData = await response.json();
       console.log("Dados completos do usuário recebidos:", userData);
-  
+
       return userData;  // 🔹 Agora a função retorna os dados completos
     } catch (error) {
       console.error("Erro ao carregar detalhes do usuário:", error);
       return null;
     }
   };
-  
-  
-  // Envia o formulário
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+// Função para verificar se o e-mail já existe no cadastro
+const checkEmailExists = async (email) => {
+  if (!formData.email) return;
 
-    // Verifica se as senhas coincidem
-    if (!isLoginMode && formData.password !== formData.confirmPassword) {
-      alert('As senhas não coincidem.');
-      return;
+  try {
+    const response = await fetch(`${API_BASE_URL}/check-email?email=${email}`);
+
+    if (response.status === 409) {
+      setEmailExists(true);
+    } else {
+      setEmailExists(false);
     }
-    if (!isLoginMode && emailExists) {
-      alert("E-mail já cadastrado! Por favor, utilize outro!"); // Se já existir, exibe um alerta e impede o cadastro
-      return;
-    }
-
-    const payload = {
-      email: formData.email,
-      senha: formData.password,
-    };
-
-    if (!isLoginMode) {
-      payload.nome = formData.name;  // Envia o nome no cadastro
-    }
-
-    try {
-      const url = isLoginMode ? `${API_BASE_URL}/login` : API_BASE_URL;
-
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
-
-      if (!response.ok) {
-        throw new Error(isLoginMode ? 'Erro no login' : 'Erro no cadastro.');
-      }
-
-      const data = await response.json();
-
-      // Login// Login
-if (isLoginMode) {
-  const isAdminBoolean = data.isAdmin === 'true';
-  const userId = parseInt(data.id, 10);
-
-  localStorage.setItem('token', data.token);
-
-  // Buscar detalhes completos do usuário antes de salvar no contexto/localStorage
-  const userData = await fetchUserDetails(userId);
-  
-  if (userData) {
-    // Adiciona o valor da flag isAdmin (vindo do login) ao userData
-    userData.isAdmin = data.isAdmin === 'true';
-  
-    setUser(userData);
-    localStorage.setItem('user', JSON.stringify(userData));
+  } catch (error) {
+    console.error("Erro ao verificar e-mail:", error);
   }
+};
+const handleSubmit = async (e) => {
+
+  setLoading(true);
   
+  e.preventDefault();
 
-  alert(data.message); // Mensagem do backend, mas sem dados pessoais
-  navigate('/#');
+  // Verifica se as senhas coincidem antes de qualquer outra coisa
+  if (!isLoginMode && formData.password !== formData.confirmPassword) {
+    setSnackbar({
+      open: true,
+      message: 'As senhas não coincidem.',
+      severity: 'warning'
+    });
+    setLoading(false);
+    return;  // Impede o envio do formulário
+  }
 
-      } else {
-        alert('Cadastro realizado com sucesso!');
-        toggleMode(); // Alterna para o modo de login
-      }
-    } catch (error) {
-      alert(`Erro: ${error.message}`); // Exibe mensagem genérica de erro
+  // Verifica se o e-mail já existe, caso seja um cadastro
+  if (!isLoginMode) {
+    await checkEmailExists(formData.email);
+    if (emailExists) {
+      console.log("E-mail já cadastrado");
+      setSnackbar({
+        open: true,
+        message: 'E-mail já cadastrado! Por favor, utilize outro!',
+        severity: 'warning'
+      });
+      setLoading(false);
+      return;
     }
+  }
+
+  const payload = {
+    email: formData.email,
+    senha: formData.password,
+  };
+
+  if (!isLoginMode) {
+    payload.nome = formData.name;
+  }
+
+  try {
+    const url = isLoginMode ? `${API_BASE_URL}/login` : API_BASE_URL;
+
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      throw new Error(isLoginMode ? 'Erro no login' : 'Erro no cadastro.');
+    }
+
+    const data = await response.json();
+
+    if (isLoginMode) {
+      const isAdminBoolean = data.isAdmin === 'true';
+      const userId = parseInt(data.id, 10);
+
+      localStorage.setItem('token', data.token);
+
+      const userData = await fetchUserDetails(userId);
+
+      if (userData) {
+        userData.isAdmin = data.isAdmin === 'true';
+        setUser(userData);
+        localStorage.setItem('user', JSON.stringify(userData));
+      }
+
+     // Delay de 2 segundos para exibir o snackbar de sucesso
+     setSnackbar({ open: true, message: data.message, severity: 'success' });
+
+     setTimeout(() => {
+      navigate('/#');
+    }, 1000);
+    } else {
+      setSnackbar({ open: true, message: 'Cadastro realizado com sucesso!', severity: 'success' });
+      setTimeout(() => {
+        toggleMode();
+      }, 1000);
+    }
+  } catch (error) {
+    setSnackbar({
+      open: true,
+      message: `Erro: ${error.message}`,
+      severity: 'error'
+    });
+  } finally {
+    setLoading(false);
+  }
+};
+
+
+  const handleCloseSnackbar = (_, reason) => {
+    if (reason === 'clickaway') return;
+    setSnackbar({ ...snackbar, open: false });
   };
 
   return (
-    
+
     <div className="auth-container">
       <div className="auth-box">
         <img className="LogoNeotech2" src={LogoNeotech2} alt="Logo da Neotech" />
@@ -278,9 +312,14 @@ if (isLoginMode) {
               <span className="underline"></span>
             </div>
           )}
-          <button type="submit" className="submit-btn" disabled={emailExists && !isLoginMode}>
-            {isLoginMode ? 'Login' : 'Cadastrar'}
+          <button
+            type="submit"
+            className="submit-btn"
+            disabled={loading || (emailExists && !isLoginMode)}
+          >
+            {loading ? <CircularProgress size={20} color="inherit" /> : (isLoginMode ? 'Login' : 'Cadastrar')}
           </button>
+
         </form>
 
         <p className="toggle-mode">
@@ -296,6 +335,21 @@ if (isLoginMode) {
         </p>
       </div>
       <ResetPassword open={openModal} handleClose={() => setOpenModal(false)} />
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={5000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity={snackbar.severity}
+          sx={{ width: '100%',      borderRadius: '8px',
+          }}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
 
     </div>
   );

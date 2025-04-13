@@ -10,8 +10,17 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import 'dayjs/locale/pt-br';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
+import CircularProgress from '@mui/material/CircularProgress';
+
 
 const ConfigPerfil = () => {
+  const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+  });
+  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'info' });
+  const [loading, setLoading] = useState(false);
   const { user, setUser } = useContext(UserContext); // Usando o contexto para pegar o usuário logado
   const [Cpf, setCpf] = useState(user?.cpf || ""); // Preenchendo com dados existentes, caso haja
   const [telefone, settelefone] = useState(user?.telefone || "");
@@ -52,13 +61,13 @@ const ConfigPerfil = () => {
         setBairro(data.bairro || "");
         setSelectedState(data.uf || "");
       } else {
-        alert("CEP não encontrado.");
+        setSnackbar({ open: true, message: 'CEP não encontrado.', severity: 'warning' });
       }
     } catch (error) {
       console.error("Erro ao buscar CEP:", error);
     }
   };
-  
+
 
   // Função para desabilitar datas anteriores
   const shouldDisableDate = (date) => {
@@ -66,6 +75,16 @@ const ConfigPerfil = () => {
   };
 
   const handleSaveChanges = async () => {
+    if (!user || !user.id) {
+      setSnackbar({
+        open: true,
+        message: 'Erro: Usuário não encontrado. Por favor, faça login novamente.',
+        severity: 'error',
+      });
+      return;
+    }
+
+    setLoading(true);
     const updatedUser = {
       cpf: Cpf,
       telefone: telefone,
@@ -76,41 +95,51 @@ const ConfigPerfil = () => {
       estado: selectedState,
       data_nascimento: birthDate,
     };
-  
+
     try {
       const formData = new FormData();
       formData.append("data", JSON.stringify(updatedUser));
-  
+
       if (previewAvatar && avatar instanceof File) {
         formData.append("avatar", avatar);
       }
-  
+
       const response = await fetch(`${API_BASE_URL}/${user.id}`, {
         method: "PUT",
         body: formData,
       });
-  
+
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(`Falha ao atualizar perfil: ${errorData.message || "Erro desconhecido"}`);
       }
-  
-      const newUserData = await response.json(); // 🔹 Pegamos os novos dados do usuário
-  
-      // 🔹 Atualiza o contexto e o localStorage corretamente
+
+      const newUserData = await response.json();
+
       setUser((prevUser) => {
         const updatedUser = { ...prevUser, ...newUserData };
-        localStorage.setItem("user", JSON.stringify(updatedUser)); // Atualiza localStorage
+        localStorage.setItem("user", JSON.stringify(updatedUser));
         return updatedUser;
       });
-  
-      alert("Perfil atualizado com sucesso!");
+
+      setSnackbar({
+        open: true,
+        message: 'Perfil atualizado com sucesso!',
+        severity: 'success',
+      });
+
     } catch (error) {
-      console.error("Erro ao salvar alterações:", error);
-      alert("Ocorreu um erro ao salvar as alterações.");
+      setSnackbar({
+        open: true,
+        message: error.message || "Ocorreu um erro ao salvar as alterações.",
+        severity: 'error',
+      });
+    } finally {
+      setLoading(false); // ✅ Finaliza carregamento
     }
   };
-  
+
+
   // Função para validar a data de nascimento
 
 
@@ -153,7 +182,7 @@ const ConfigPerfil = () => {
     if (file) {
       const allowedTypes = ["image/png", "image/jpeg", "image/jpg"]; // Formatos permitidos
       if (!allowedTypes.includes(file.type)) {
-        alert("Por favor, selecione uma imagem nos formatos PNG, JPEG ou JPG.");
+        setSnackbar({ open: true, message: 'Por favor, selecione uma imagem nos formatos PNG, JPEG ou JPG.', severity: 'warning' });
         return;
       }
 
@@ -164,7 +193,7 @@ const ConfigPerfil = () => {
       // Salva a URL temporária da imagem no localStorage
       localStorage.setItem('previewAvatar', objectURL);
     } else {
-      alert('Por favor, selecione uma imagem válida.');
+      setSnackbar({ open: true, message: 'Por favor, selecione uma imagem válida', severity: 'warning' });
     }
   };
   // Função chamada ao alterar o valor do CEP
@@ -212,18 +241,28 @@ const ConfigPerfil = () => {
               {/* Campos do formulário */}
               <div className="profile-form-group">
                 <label>Nome completo</label>
-                <input type="text" value={user?.nome}  />
+                <input
+                  type="text"
+                  value={user?.nome}
+                  required
+                  minLength="3"
+                  placeholder="Digite seu nome completo"
+                />
               </div>
               <div className="profile-form-group">
                 <label>Telefone</label>
                 <InputTel
                   value={telefone}
                   onChange={(event) => settelefone(event.target.value)}
+                  required
+                  pattern="^\(\d{2}\)\s\d{4,5}-\d{4}$" // Validação para o formato (XX) XXXX-XXXX ou (XX) XXXXX-XXXX
+                  title="Telefone deve estar no formato (XX) XXXX-XXXX ou (XX) XXXXX-XXXX"
                 />
               </div>
               <div className="profile-form-group">
                 <label>Gênero</label>
-                <select>
+                <select required>
+                  <option value="">Selecione seu gênero</option>
                   <option>Masculino</option>
                   <option>Feminino</option>
                   <option>Não-binário</option>
@@ -237,15 +276,14 @@ const ConfigPerfil = () => {
                     value={birthDate ? dayjs(birthDate) : null}
                     onChange={(newValue) => setBirthDate(newValue ? newValue.format('YYYY-MM-DD') : '')}
                     shouldDisableDate={shouldDisableDate}
-                    slotProps={{ textField: { fullWidth: true } }}
+                    slotProps={{ textField: { fullWidth: true, required: true } }}
                     renderInput={(params) => (
                       <TextField
                         {...params}
                         error={!!dateError}
                         helperText={dateError}
-
+                        required
                       />
-
                     )}
                   />
                 </div>
@@ -255,6 +293,9 @@ const ConfigPerfil = () => {
                 <Input
                   value={Cpf}
                   onChange={(event) => handleCpfChange(event.target.value)}
+                  required
+                  pattern="\d{3}\.\d{3}\.\d{3}-\d{2}" // Validação para o formato XXX.XXX.XXX-XX
+                  title="CPF deve estar no formato XXX.XXX.XXX-XX"
                 />
               </div>
               <div className="profile-form-group">
@@ -262,6 +303,9 @@ const ConfigPerfil = () => {
                 <InputCep
                   value={Cep}
                   onChange={(event) => handleCepChange(event.target.value)}
+                  required
+                  pattern="\d{5}-\d{3}" // Validação para o formato XXXXX-XXX
+                  title="CEP deve estar no formato XXXXX-XXX"
                 />
               </div>
               <div className="profile-form-group">
@@ -271,6 +315,7 @@ const ConfigPerfil = () => {
                   placeholder="Logradouro"
                   value={Endereco}
                   onChange={(event) => setEndereco(event.target.value)}
+                  required
                 />
               </div>
               <div className="profile-form-group">
@@ -280,6 +325,7 @@ const ConfigPerfil = () => {
                   placeholder="Bairro"
                   value={Bairro}
                   onChange={(event) => setBairro(event.target.value)}
+                  required
                 />
               </div>
               <div className="profile-form-group">
@@ -289,6 +335,7 @@ const ConfigPerfil = () => {
                   placeholder="Cidade"
                   value={Cidade}
                   onChange={(event) => setCidade(event.target.value)}
+                  required
                 />
               </div>
               <div className="profile-form-group">
@@ -296,6 +343,7 @@ const ConfigPerfil = () => {
                 <select
                   value={selectedState}
                   onChange={(event) => setSelectedState(event.target.value)}
+                  required
                 >
                   <option value="">Selecione um estado</option>
                   {states.map((state) => (
@@ -306,19 +354,41 @@ const ConfigPerfil = () => {
                 </select>
               </div>
             </form>
+
             <section className="profile-email-section">
               <h3>My email Address</h3>
               <p>
                 <span className="profile-email-address">{user?.email || "Email não disponível"}</span>
                 <span className="profile-email-age">1 mês atrás</span>
               </p>
-              <button className="profile-salvar-alteracoes" onClick={handleSaveChanges}>
-                Salvar alterações
+              <button
+                className="profile-salvar-alteracoes"
+                disabled={loading}
+                onClick={handleSaveChanges}
+              >
+                {loading ? (
+                  <>
+                    <CircularProgress size={20} style={{ color: '#fff' }} />
+                    Salvando...
+                  </>
+                ) : (
+                  'Salvar alterações'
+                )}
               </button>
             </section>
           </section>
         </main>
+        <Snackbar
+          open={snackbar.open}
+          autoHideDuration={6000}
+          onClose={() => setSnackbar({ ...snackbar, open: false })}
+        >
+          <Alert onClose={() => setSnackbar({ ...snackbar, open: false })} severity={snackbar.severity}>
+            {snackbar.message}
+          </Alert>
+        </Snackbar>
       </div>
+
     </div>
   );
 };
