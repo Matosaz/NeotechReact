@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { MaterialReactTable } from 'material-react-table';
 import './UserManagement.css';
-import show from './olho.png';
 import NeotechLogo from '../Logo7png.png'
-import hide from './visivel.png';
 import Sidebar1 from './Sidebar/SidebarManagement';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -11,6 +9,21 @@ import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import { Checkbox, FormControlLabel, FormGroup } from '@mui/material';  // Importando Checkbox do MUI
+import { styled } from '@mui/material/styles';
+import PrintIcon from '@mui/icons-material/Print';
+
+
+const CustomCheckbox = styled(Checkbox)(({ theme }) => ({
+  '&.Mui-checked': {
+    color: theme.palette.success.main,
+  },
+  '&.MuiCheckbox-root': {
+    color: theme.palette.text.secondary,
+  },
+}));
 
 function UserManagement() {
   const [users, setUsers] = useState([]);
@@ -278,17 +291,63 @@ function UserManagement() {
               <input className='nome' type="text" name="nome" placeholder="Nome do Usuário" value={newUser.nome} onChange={handleInputChange} required />
               <input className='email' type="email" name="email" placeholder="Email" value={newUser.email} onChange={handleInputChange} required />
               <div className="password-container">
-                <input type={showPassword ? 'text' : 'password'} autoComplete='current-password' name="senha" placeholder="Senha" value={newUser.senha} onChange={handleInputChange} />
-                <button type="button" onClick={toggleShowPassword} className="toggle-password">
-                  <img src={showPassword ? hide : show} alt={showPassword ? "Ocultar senha" : "Mostrar senha"} />
-                </button>
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  autoComplete="current-password"
+                  name="senha"
+                  placeholder="Senha"
+                  value={newUser.senha}
+                  onChange={handleInputChange}
+                />
+                <IconButton
+                  onClick={toggleShowPassword}
+                  className="toggle-password"
+                  edge="start"
+                  size="small"
+                  aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
+                >
+                  {showPassword ? <VisibilityOff fontSize="small" /> : <Visibility fontSize="small" />}
+                </IconButton>
               </div>
-              <label>
-                <input className='ativo' type="checkbox" name="ativo" checked={newUser.ativo} onChange={() => setNewUser(prevState => ({ ...prevState, ativo: !prevState.ativo }))} /> Ativo
-              </label>
-              <label>
-                <input className='adm' type="checkbox" name="administrador" checked={newUser.administrador} onChange={() => setNewUser(prevState => ({ ...prevState, administrador: !prevState.administrador }))} /> Administrador
-              </label>
+              <FormGroup row sx={{
+                marginLeft:"-40px",
+                display: "flex",
+                flexWrap: "nowrap", // impede quebra de linha
+                gap: "20px", // espaçamento entre os itens
+                alignItems: "center",
+              }}>
+
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={newUser.ativo}
+                      onChange={() => setNewUser(prevState => ({ ...prevState, ativo: !prevState.ativo }))}
+                      sx={{
+                        '&.Mui-checked': {
+                          color: '#5faa84', // Cor do checkbox selecionado
+                        },
+                      }}
+                    />
+                  }
+                  label="Ativo"
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      className='checkbox'
+                      checked={newUser.administrador}
+                      onChange={() => setNewUser(prevState => ({ ...prevState, administrador: !prevState.administrador }))}
+                      sx={{
+                        '&.Mui-checked': {
+                          color: '#5faa84', // Cor do checkbox selecionado
+                        },
+                      }}
+                    />
+                  }
+                  label="Administrador"
+                />
+              </FormGroup>
+
               <button className='ADD_button' type="submit">{isEditing ? 'Atualizar Usuário' : 'Adicionar Usuário'}</button>
             </div>
           </form>
@@ -302,13 +361,13 @@ function UserManagement() {
             muiTablePaginationProps={{
               rowsPerPageOptions: [5, 10, 20],
             }}
-            
-          />
 
+          />
         </div>
         <button onClick={generatePDF} className="generate-pdf-button">
-          Gerar Relatório em PDF
-        </button>
+  <PrintIcon sx={{ marginRight: "8px" }} />
+  Gerar Relatório
+</button>
 
       </div>
     </body>

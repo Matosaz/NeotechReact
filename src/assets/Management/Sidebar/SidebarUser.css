@@ -1,50 +1,43 @@
-/* Sidebar */
-.sidebarUser {
-  height: 100vh; /* Fixa a altura da sidebar ao tamanho da janela */
-  width: 55px;
-  background-color: #90be95ef;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding-top: 20px;
-  position: fixed; /* Faz a barra lateral ficar fixa na tela */
+.sidebar-user {
+  position: fixed;
   top: 0;
   left: 0;
+  height: 100vh;
+  width: 72px;
+  background: #ffffff;
+  border-right: transparent;
+  display: flex;
+  border-right: #b9b9b91e 1px solid;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 16px;
+  gap: 16px;
+  box-shadow: 4px 0 12px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
 }
 
-
-/* Estilo dos ícones */
-.icon-wrapperManagement {
-  margin: 15px ;
-  cursor: pointer;
+.sidebar-link {
+  text-decoration: none;
 }
 
-.icon-wrapperManagement img {
-  width: 25px;
-  height: 25px;
-  transition: filter 0.2s;
+.sidebar-icon-wrapper {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #4a5568;
+  border-radius: 12px;
+  transition: all 0.3s ease;
 }
 
-/* Ícone ativo */
-.icon-wrapperManagement.active img {
-  filter: invert(100%); /* Altera a cor do ícone ativo para branco */
+.sidebar-icon-wrapper:hover {
+  background-color: #90be95ef;
+  color: bisque;
 }
 
-/* Efeito hover nos ícones */
-.icon-wrapperManagement:hover img {
-  filter: invert(100%);
-}
-
-
-.icon-Seta img {
-  width: 45px;
-  height: 45px;
-  transition: filter 0.2s;
-}
-
-
-
-/* Efeito hover nos ícones */
-.icon-Seta:hover img {
-  filter: invert(100%);
+.sidebar-icon-wrapper.active {
+  background-color: #90be95ef;
+  color: bisque;
+  box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.06);
 }

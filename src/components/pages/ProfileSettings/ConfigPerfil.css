@@ -11,6 +11,10 @@
     
   }
   
+.profile-email-age{
+  margin-top: -10px;
+}
+
   .profile-main {
     flex: 1;
     padding: 40px;
@@ -86,16 +90,16 @@
 .profile-email-section h3{
     margin-bottom: 15px;
 }
-
+.invisivel{
+  margin-top: 20px;
+  visibility: hidden;
+}
 
 .profile-email-age, .profile-email-address{
     display: flex;
     padding-bottom: 5px;
 }
 
-.profile-add-email-button{
-    margin-top: 25px;
-}
 
 .MuiOutlinedInput-notchedOutline {
   border: none !important;
@@ -116,4 +120,12 @@
  justify-items: center;
 left: 500px;
 bottom: 10px;
+}
+.save-button-container {
+  width: 100%;
+  display: flex;
+  position: relative;
+  margin-top: -55px;
+  justify-content: flex-end; /* Alinha o botão à direita */
+  padding-right: 230px; /* Ajuste o valor para controlar o quanto ele fica à direita */
 }

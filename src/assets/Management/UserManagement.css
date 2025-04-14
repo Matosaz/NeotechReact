@@ -1,8 +1,8 @@
 
 .bodyManagement{
     height: 100vh;
-    background: url(/src/assets/teste4.png) no-repeat;
-    /* background-color: #fafafaf; */
+    /* background: url(/src/assets/teste4.png) no-repeat; */
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.25), rgba(127, 192, 141, 0.3));
 }
 .container-management {
     max-width: 1280px;
@@ -55,16 +55,24 @@ button:hover {
     background-color: rgb(214, 60, 60);
 }
 .generate-pdf-button{
-    margin-left: 1100px;
+    margin-left: auto; /* Alinha à direita */
     position: relative;
     display: flex;
+    margin-top: 10px;
+    width: 130px;
+    padding: 10px;
+    width: fit-content;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
 }
 /* Ajustes na form-container */
 .form-container {
     display: flex;
     align-items: center;
     gap: 20px;
-    background-color: #7fc08d;
+    background-color: #5faa6f86;
     padding: 20px;
     border-radius: 8px;
     margin-bottom: 20px;
@@ -97,42 +105,31 @@ button:hover {
 
 .toggle-password {
     position: absolute;
-    top: 50%;
-    right: 8px;
-    transform: translateY(-50%);
-    background: none;
-    border: none;
-    cursor: pointer;
+    margin-left: -35px!important;
   }
 
-.toggle-password img {
-    width: 24px;
-    height: 24px;
-    margin-top: 7px;
-}
-.toggle-password:hover{
-    background:none;
-    opacity: 0.40;
+
+
+/* Customização dos checkboxes */
+.MuiCheckbox-root {
+    color: #e9e9e9 !important; /* Cor do checkbox */
+    transition: all 0.3s ease; /* Transição suave ao interagir com o checkbox */
+    display: flex;
+    flex-wrap: wrap; /* opcional, permite quebra em telas menores */
+  
 }
 
-.form-row label {
-    display: flex;
-    align-items: center;
-    scale: 1.2;
-    color: #fafafafd;
+.MuiCheckbox-root.Mui-checked {
+    color: #069647 !important; /* Cor do checkbox quando marcado */
+}
+
+.MuiFormControlLabel-label {
     font-family: "Lexend";
     font-weight: 500;
-  }
-  
-.form-row label .ativo{
-    margin-left: 40px;
-    margin-right: -10px
-  }
-  .form-row label .adm{
-    position: relative;
-    margin-left: -40px;
-    margin-right: -10px
-  }
+    color: #fafafa;
+    font-size: 14px;
+}
+
 
 
   .form-row {
@@ -156,15 +153,7 @@ button:hover {
 
 
 
-td {
-    
-    border: 1px solid rgba(255, 228, 196, 0.534);
-    font-weight: 500;
-}
 
-th {
-    border: 1px solid rgba(255, 228, 196, 0.534);
-}
 
 .action-buttons {
     display: flex;
@@ -175,13 +164,13 @@ th {
 .ADD_button {
     align-self: flex-start;
     height: 50px;
-    width: 250px;
+    width: 200px;
     background-color: #5faa84;
     color: white;
     border: none;
     padding: 5px;
     cursor: pointer;
-    border-radius: 5px;
+    border-radius: 10px;
   }
 
 .ADD_button:hover {

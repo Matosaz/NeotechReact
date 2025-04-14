@@ -30,6 +30,7 @@ const ConfigPerfil = () => {
   const [Bairro, setBairro] = useState(user?.bairro || "");
   const [selectedState, setSelectedState] = useState(user?.estado || "");
   const [birthDate, setBirthDate] = useState(user?.data_nascimento || "");
+  const [genero, setGenero] = useState(user?.genero || "");
   const [dateError, setDateError] = useState('');
   const [states, setStates] = useState([]); // Definindo o estado para armazenar os estados
   const [avatar, setAvatar] = useState(user?.avatar || null); // Imagem armazenada no backend
@@ -45,6 +46,7 @@ const ConfigPerfil = () => {
       setBirthDate(user.data_nascimento || "");
       setAvatar(user.avatar || null);
       setCpf(user.cpf || "");
+    setGenero(user.genero || "");
 
     }
   }, [user]);
@@ -94,6 +96,8 @@ const ConfigPerfil = () => {
       bairro: Bairro,
       estado: selectedState,
       data_nascimento: birthDate,
+      genero: genero, 
+
     };
 
     try {
@@ -115,6 +119,7 @@ const ConfigPerfil = () => {
       }
 
       const newUserData = await response.json();
+      console.log("Dados retornados do backend:", newUserData);
 
       setUser((prevUser) => {
         const updatedUser = { ...prevUser, ...newUserData };
@@ -261,14 +266,19 @@ const ConfigPerfil = () => {
               </div>
               <div className="profile-form-group">
                 <label>Gênero</label>
-                <select required>
+                <select
+                  value={genero}
+                  onChange={(e) => setGenero(e.target.value)}
+                  required
+                >
                   <option value="">Selecione seu gênero</option>
-                  <option>Masculino</option>
-                  <option>Feminino</option>
-                  <option>Não-binário</option>
-                  <option>Prefiro não informar</option>
+                  <option value="Masculino">Masculino</option>
+                  <option value="Feminino">Feminino</option>
+                  <option value="Não-binário">Não-binário</option>
+                  <option value="Prefiro não informar">Prefiro não informar</option>
                 </select>
               </div>
+
               <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="pt-br">
                 <div className="profile-form-group">
                   <label>Data de Nascimento</label>
@@ -356,11 +366,11 @@ const ConfigPerfil = () => {
             </form>
 
             <section className="profile-email-section">
-              <h3>My email Address</h3>
+              <h3>Última modificação:</h3>
               <p>
-                <span className="profile-email-address">{user?.email || "Email não disponível"}</span>
                 <span className="profile-email-age">1 mês atrás</span>
               </p>
+              <div className="save-button-container">
               <button
                 className="profile-salvar-alteracoes"
                 disabled={loading}
@@ -375,6 +385,9 @@ const ConfigPerfil = () => {
                   'Salvar alterações'
                 )}
               </button>
+              </div>
+              <p className="invisivel">insivível</p>
+
             </section>
           </section>
         </main>
