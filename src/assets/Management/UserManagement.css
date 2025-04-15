@@ -111,7 +111,7 @@ button:hover {
 
 
 /* Customização dos checkboxes */
-.MuiCheckbox-root {
+.bodyManagement .MuiCheckbox-root {
     color: #e9e9e9 !important; /* Cor do checkbox */
     transition: all 0.3s ease; /* Transição suave ao interagir com o checkbox */
     display: flex;
@@ -119,11 +119,11 @@ button:hover {
   
 }
 
-.MuiCheckbox-root.Mui-checked {
+.bodyManagement .MuiCheckbox-root.Mui-checked {
     color: #069647 !important; /* Cor do checkbox quando marcado */
 }
 
-.MuiFormControlLabel-label {
+.bodyManagement .MuiFormControlLabel-label {
     font-family: "Lexend";
     font-weight: 500;
     color: #fafafa;

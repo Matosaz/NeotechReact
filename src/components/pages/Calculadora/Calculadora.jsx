@@ -8,10 +8,21 @@ import { InputCep } from '../ProfileSettings/MaskedInput';
 import { DesktopDatePicker, DesktopTimePicker } from '@mui/x-date-pickers';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { motion } from 'framer-motion';
+import { CheckCircle } from 'lucide-react';
+import { Button } from '@mui/material';
 import dayjs from 'dayjs';
 import 'dayjs/locale/pt-br';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
+import CircularProgress from '@mui/material/CircularProgress';
 
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 const Calculadora = () => {
+  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'info' });
+  const [loading, setLoading] = useState(false);
   const { user, setUser } = useContext(UserContext); // Usando o contexto para pegar o usuário logado
   const [countries, setCountries] = useState([]);
   const [formData, setFormData] = useState({
@@ -22,7 +33,7 @@ const Calculadora = () => {
     cep: user?.cep || '',
     endereco: user?.endereco || '',
     metodoContato: '',
-    aceitaContato: false, 
+    aceitaContato: false,
     numero: user?.numero || '',
     complemento: user?.complemento || '',
     bairro: user?.bairro || '',
@@ -70,6 +81,8 @@ const Calculadora = () => {
         return 'Quando você almeja que a coleta ocorra?:';
       case 5:
         return 'Verifique se as informações estão corretas';
+      case 6:
+        return 'Agendamento Confirmado!';
       default:
         return 'Vamos começar!';
     }
@@ -118,14 +131,16 @@ const Calculadora = () => {
     } catch (error) {
       console.error("Erro ao buscar CEP", error);
     }
-  }; const handleSubmit = async (e) => {
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-  
+    setLoading(true)
     // Converter hora para formato com segundos
-    const horaComSegundos = formData.horaColeta.includes(':') 
+    const horaComSegundos = formData.horaColeta.includes(':')
       ? `${formData.horaColeta}:00`
       : `${formData.horaColeta.slice(0, 2)}:${formData.horaColeta.slice(2, 4)}:00`;
-  
+
     // Preparar dados no formato esperado pelo backend
     const requestData = {
       dataColeta: formData.dataColeta,
@@ -135,18 +150,24 @@ const Calculadora = () => {
       usuario: { id: user?.id }
 
     };
-  
+
     console.log('Dados sendo enviados:', requestData);
-  
+
     // Verifica se todos os campos obrigatórios estão preenchidos
-   
+
     if (!formData.metodoContato) {
-      alert('Por favor, selecione um método de contato.');
-      return;
+      setSnackbar({
+        open: true,
+        message: 'Por favor, selecione um método de contato',
+        severity: 'warning',
+      }); return;
     }
     if (formData.aceitaContato === null || formData.aceitaContato === undefined) {
-      alert('Por favor, informe se aceita receber contato.');
-      return;
+      setSnackbar({
+        open: true,
+        message: 'Por favor, informe se deseja receber contato',
+        severity: 'warning',
+      }); return;
     }
 
     try {
@@ -157,19 +178,32 @@ const Calculadora = () => {
         },
         body: JSON.stringify(requestData),
       });
-      
-      const responseText = await response.text(); 
+
+      const responseText = await response.text();
       if (!response.ok) {
         console.error('Erro na requisição:', responseText);
-        alert(`Erro: ${responseText.message || 'Erro ao enviar dados'}`);
+        setSnackbar({
+          open: true,
+          message: (`Erro: ${responseText.message || 'Erro ao enviar dados'}`),
+          severity: 'error',
+        });;
+        setLoading(false);
+
         return;
       }
-      
+
       console.log('Dados recebidos:', responseText);
-      alert('Agendamento confirmado com sucesso!');
+      setCurrentStep(6); // Avança para a tela de sucesso
+
     } catch (error) {
       console.error('Erro ao enviar os dados:', error);
-      alert('Erro ao enviar os dados para o servidor.');
+      setSnackbar({
+        open: true,
+        message: 'Erro ao enviar os dados para o servidor',
+        severity: 'error',
+      });
+    } finally {
+      setLoading(false); // Desativa o loading independente do resultado
     }
   };
   const nextStep = () => {
@@ -250,7 +284,7 @@ const Calculadora = () => {
       const selectedTime = dayjs(newValue, 'HH:mm');
       const now = dayjs();
       const selectedDate = dayjs(formData.dataColeta);
-  
+
       if (selectedDate.isSame(now, 'day') && selectedTime.isBefore(now, 'minute')) {
         setTimeError('O horário deve ser posterior ao horário atual.');
         setDisableNextButton(true);
@@ -258,7 +292,7 @@ const Calculadora = () => {
         setTimeError('');
         setDisableNextButton(false);
       }
-  
+
       const hours = String(newValue.hour()).padStart(2, '0');
       const minutes = String(newValue.minute()).padStart(2, '0');
       setFormData({ ...formData, horaColeta: `${hours}:${minutes}` });
@@ -358,29 +392,34 @@ const Calculadora = () => {
                         gap: '20px',
                       }}
                     >
-                      <FormControlLabel sx={{
-                        '&.Mui-checked': {
-                          color: '#4caf50',
-                          transition: 'transform 0.3s ease',
-                          transform: 'scale(1.2)',
-                        },
-                        transition: 'transform 0.3s ease',
-                      }}
+                      <FormControlLabel
                         value="whatsapp"
-                        control={<Radio />}
-                        label="WhatsApp" />
-
-                      <FormControlLabel sx={{
-                        '&.Mui-checked': {
-                          color: '#4caf50',
-                          transition: 'transform 0.3s ease',
-                          transform: 'scale(1.2)',
-                        },
-                        transition: 'transform 0.3s ease',
-                      }} value="email"
-                        control={<Radio />} label="Email" />
-
+                        control={
+                          <Radio
+                            sx={{
+                              '&.Mui-checked': {
+                                color: '#4caf50',
+                              },
+                            }}
+                          />
+                        }
+                        label="WhatsApp"
+                      />
+                      <FormControlLabel
+                        value="email"
+                        control={
+                          <Radio
+                            sx={{
+                              '&.Mui-checked': {
+                                color: '#4caf50',
+                              },
+                            }}
+                          />
+                        }
+                        label="Email"
+                      />
                     </RadioGroup>
+
                   </div>
                   <div className="form-group-orcamento2">
                     <FormControlLabel
@@ -573,6 +612,72 @@ const Calculadora = () => {
                   </div>
                 </fieldset>
               )}
+
+              {currentStep === 6 && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5 }}
+                  className="success-container"
+                >
+                  <div className="success-content">
+                    <CheckCircle
+                      size={80}
+                      color="#4CAF50"
+                      strokeWidth={1.5}
+                      className="success-icon"
+                    />
+                    <h3 className="success-title">Coleta Agendada com Sucesso!</h3>
+
+                    <div className="success-details">
+                      <p className="success-message">
+                        Seu agendamento foi confirmado e em breve entraremos em contato para confirmar os detalhes.
+                      </p>
+
+                      <div className="resume-card">
+                        <h4>Resumo do Agendamento</h4>
+                        <div className="resume-item">
+                          <span className="resume-label">Data:</span>
+                          <span className="resume-value">{dayjs(formData.dataColeta).format('DD/MM/YYYY')}</span>
+                        </div>
+                        <div className="resume-item">
+                          <span className="resume-label">Horário:</span>
+                          <span className="resume-value">{formData.horaColeta}</span>
+                        </div>
+                        <div className="resume-item">
+                          <span className="resume-label">Local:</span>
+                          <span className="resume-value">
+                            {formData.endereco}, {formData.numero} - {formData.bairro}, {formData.cidade}/{formData.estado}
+                          </span>
+                        </div>
+                      </div>
+
+                      <p className="success-note">
+                        Um e-mail de confirmação foi enviado para <strong>{formData.email}</strong> com todos os detalhes.
+                      </p>
+                    </div>
+
+                    <Button
+                      variant="contained"
+                      color="success"
+                      size="large"
+                      onClick={() => window.location.href = '/'}
+                      sx={{
+                        mt: 3,
+                        padding: '12px 24px',
+                        borderRadius: '8px',
+                        fontWeight: 'bold',
+                        textTransform: 'none',
+                        fontSize: '1rem'
+                      }}
+                    >
+                      Voltar para a Página Inicial
+                    </Button>
+                  </div>
+                </motion.div>
+              )}
+
+
               {/* Navegação */}
               <div className="form-navigation">
                 {currentStep > 1 && (
@@ -584,9 +689,30 @@ const Calculadora = () => {
                   <button type="button" onClick={nextStep} disabled={disableNextButton}>
                     Próximo
                   </button>
-                ) : (
-                  <button type="submit">Confirmar agendamento</button>
-                )}
+                ) : currentStep === 5 ? (
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    style={{ position: 'relative' }}
+                  >
+                    {loading ? (
+                      <>
+                        <CircularProgress
+                          size={24}
+                          color="inherit"
+                          style={{
+                            position: 'absolute',
+                            left: '50%',
+                            marginLeft: '-12px',
+                          }}
+                        />
+                        <span style={{ opacity: 0 }}>Confirmar agendamento</span>
+                      </>
+                    ) : (
+                      'Confirmar agendamento'
+                    )}
+                  </button>
+                ) : null}
               </div>
             </form>
           </div>

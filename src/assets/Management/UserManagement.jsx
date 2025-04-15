@@ -260,7 +260,7 @@ function UserManagement() {
   ];
 
   return (
-    <body className='bodyManagement'>
+    <div className='bodyManagement'>
 
 
       <div className="container-management">
@@ -370,7 +370,7 @@ function UserManagement() {
 </button>
 
       </div>
-    </body>
+    </div>
   );
 }
 
