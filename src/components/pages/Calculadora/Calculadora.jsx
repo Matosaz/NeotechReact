@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import './Calculadora.css';
-import { Radio, RadioGroup, FormControlLabel, Checkbox } from '@mui/material';
+import { Radio, RadioGroup, FormControlLabel, Checkbox,TextField, } from '@mui/material';
 import { ArrowBack } from '@mui/icons-material';
 import { InputTel } from '../ProfileSettings/MaskedInput';
 import { UserContext } from "../../UserContext"; // Importando o UserContext
@@ -260,7 +260,7 @@ const Calculadora = () => {
   };
 
   const updateProgress = () => {
-    return (currentStep / 5) * 100;
+    return (currentStep / 6) * 100;
   };
   const handleDateChange = (newValue) => {
     if (newValue) {
@@ -316,6 +316,80 @@ const Calculadora = () => {
   };
 
   return (
+    <>
+      {currentStep === 6 ? (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="success-container"
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            minHeight: '100vh',
+            backgroundImage:"url(/src/assets/TesteCalculadora.png)",
+            backgroundColor: '#f5f5f5',
+            padding: '20px'
+          }}
+        >
+          <div className="success-content">
+            <CheckCircle
+              size={85}
+              color="#5CAF60"
+              strokeWidth={1.7}
+              className="success-icon"
+            />
+            <h3 className="success-title">Coleta Agendada com Sucesso!</h3>
+  
+            <div className="success-details">
+              <p className="success-message">
+                Seu agendamento foi confirmado e em breve entraremos em contato para confirmar os detalhes.
+              </p>
+  
+              <div className="resume-card">
+                <h4>Resumo do Agendamento</h4>
+                <div className="resume-item">
+                  <span className="resume-label">Data:</span>
+                  <span className="resume-value">{dayjs(formData.dataColeta).format('DD/MM/YYYY')}</span>
+                </div>
+                <div className="resume-item">
+                  <span className="resume-label">Horário:</span>
+                  <span className="resume-value"> às {formData.horaColeta} </span>
+                </div>
+                <div className="resume-item">
+                  <span className="resume-label">Local:</span>
+                  <span className="resume-value">
+                    {formData.endereco}, {formData.numero} - {formData.bairro}, {formData.cidade}/{formData.estado}
+                  </span>
+                </div>
+                
+              </div>
+  
+              <p className="success-note">
+                Um e-mail de confirmação foi enviado para <strong>{formData.email}</strong> com todos os detalhes.
+              </p>
+            </div>
+  
+            <Button
+              variant="contained"
+              color="success"
+              size="large"
+              onClick={() => window.location.href = '/'}
+              sx={{
+                mt: 3,
+                backgroundColor: "#2E7D42",
+                borderRadius: '8px',
+                fontWeight: 'bold',
+                textTransform: 'none',
+              }}
+            >
+              Voltar para a Página Inicial
+            </Button>
+          </div>
+        </motion.div>
+      ) : ( 
+
     <section className='body-orcamento'>
       <button onClick={Voltarorcamento} className='voltar-orcamento'> <ArrowBack fontSize="small" className="icon" />Retornar</button>
       <div className='upper-orcamento'>
@@ -613,70 +687,6 @@ const Calculadora = () => {
                 </fieldset>
               )}
 
-              {currentStep === 6 && (
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5 }}
-                  className="success-container"
-                >
-                  <div className="success-content">
-                    <CheckCircle
-                      size={80}
-                      color="#4CAF50"
-                      strokeWidth={1.5}
-                      className="success-icon"
-                    />
-                    <h3 className="success-title">Coleta Agendada com Sucesso!</h3>
-
-                    <div className="success-details">
-                      <p className="success-message">
-                        Seu agendamento foi confirmado e em breve entraremos em contato para confirmar os detalhes.
-                      </p>
-
-                      <div className="resume-card">
-                        <h4>Resumo do Agendamento</h4>
-                        <div className="resume-item">
-                          <span className="resume-label">Data:</span>
-                          <span className="resume-value">{dayjs(formData.dataColeta).format('DD/MM/YYYY')}</span>
-                        </div>
-                        <div className="resume-item">
-                          <span className="resume-label">Horário:</span>
-                          <span className="resume-value">{formData.horaColeta}</span>
-                        </div>
-                        <div className="resume-item">
-                          <span className="resume-label">Local:</span>
-                          <span className="resume-value">
-                            {formData.endereco}, {formData.numero} - {formData.bairro}, {formData.cidade}/{formData.estado}
-                          </span>
-                        </div>
-                      </div>
-
-                      <p className="success-note">
-                        Um e-mail de confirmação foi enviado para <strong>{formData.email}</strong> com todos os detalhes.
-                      </p>
-                    </div>
-
-                    <Button
-                      variant="contained"
-                      color="success"
-                      size="large"
-                      onClick={() => window.location.href = '/'}
-                      sx={{
-                        mt: 3,
-                        padding: '12px 24px',
-                        borderRadius: '8px',
-                        fontWeight: 'bold',
-                        textTransform: 'none',
-                        fontSize: '1rem'
-                      }}
-                    >
-                      Voltar para a Página Inicial
-                    </Button>
-                  </div>
-                </motion.div>
-              )}
-
 
               {/* Navegação */}
               <div className="form-navigation">
@@ -728,12 +738,12 @@ const Calculadora = () => {
                      sx={{ width: '100%',      borderRadius: '8px',
                      }}>
                     {snackbar.message}
-                  </Alert>
-                </Snackbar>
-                 
-      </div>
-    </section>
-  );
-};
+                    </Alert>
+            </Snackbar>
+          </div>
+        </section>
+      )}
+    </>
+)};
 
 export default Calculadora;
