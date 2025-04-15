@@ -717,6 +717,20 @@ const Calculadora = () => {
             </form>
           </div>
         </div>
+         <Snackbar
+                  open={snackbar.open}
+                  autoHideDuration={6000}
+                  onClose={() => setSnackbar({ ...snackbar, open: false })}
+                  anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+
+                >
+                  <Alert onClose={() => setSnackbar({ ...snackbar, open: false })} severity={snackbar.severity}
+                     sx={{ width: '100%',      borderRadius: '8px',
+                     }}>
+                    {snackbar.message}
+                  </Alert>
+                </Snackbar>
+                 
       </div>
     </section>
   );
