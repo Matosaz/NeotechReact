@@ -166,7 +166,7 @@ textarea{
   position: absolute; /* Torna a posição independente do layout principal */
   top: 20px; /* Ajusta a posição do botão em relação ao topo */
   left: 20px; /* Ajusta a posição do botão em relação à esquerda */
-  background-color: transparent;
+  background-color: #99c2aa6e;
   color: #fafafa;
   font-size: 1.1rem;
   font-weight: 600;
