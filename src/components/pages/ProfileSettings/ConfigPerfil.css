@@ -103,24 +103,17 @@
 
 .MuiOutlinedInput-notchedOutline {
   border: none !important;
-  width: 100%;
+  width: 100%s;
 }
 
-.MuiButtonBase-root  {
-  color: #555; /* Ajusta a cor do ícone */
-  position: absolute;
+.MuiInputAdornment-root {
+  position: absolute;  /* Posiciona o ícone de forma absoluta dentro do input */
+  right: 25px;  /* Ajuste para colocar o ícone no final do campo */
+  bottom: 7px;  /* Ajuste para alinhar verticalmente */
   display: flex;
- margin-left: 200px;
+  align-items: center; /* Garante que o ícone fique alinhado verticalmente */
 }
- .MuiInputAdornment-root{
-  position: absolute;
- align-items: center ;
- align-content: center;
- justify-content: center;
- justify-items: center;
-left: 500px;
-bottom: 10px;
-}
+
 .save-button-container {
   width: 100%;
   display: flex;

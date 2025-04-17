@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import './Calculadora.css';
-import { Radio, RadioGroup, FormControlLabel, Checkbox,TextField, } from '@mui/material';
+import { Radio, RadioGroup, FormControlLabel, Checkbox, TextField, } from '@mui/material';
 import { ArrowBack } from '@mui/icons-material';
 import { InputTel } from '../ProfileSettings/MaskedInput';
 import { UserContext } from "../../UserContext"; // Importando o UserContext
@@ -66,12 +66,12 @@ const Calculadora = () => {
   const getStepTitle = () => {
     switch (currentStep) {
       case 1:
-        return 'Vamos começar. Para quem será o orçamento?';
+        return 'Vamos começar. Para quem será a coleta?';
       case 2:
         return (
           <>
             Como podemos te retornar?
-            <p className='contact-orcamento-p'>Essas informações são importantes para enviarmos o orçamento e lhe ajudarmos se possuir alguma dúvida :)</p>
+            <p className='contact-orcamento-p'>Essas informações são importantes para enviarmos um resumo do agendamento e lhe ajudarmos se possuir alguma dúvida :)</p>
           </>
         );
       case 3:
@@ -135,6 +135,11 @@ const Calculadora = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("Formulário enviado na etapa:", currentStep); // 🐛 debug
+    if (currentStep != 5) return; // ✅ Garante que só envia no passo 5
+
+
+
     setLoading(true)
     // Converter hora para formato com segundos
     const horaComSegundos = formData.horaColeta.includes(':')
@@ -151,7 +156,6 @@ const Calculadora = () => {
 
     };
 
-    console.log('Dados sendo enviados:', requestData);
 
     // Verifica se todos os campos obrigatórios estão preenchidos
 
@@ -210,7 +214,7 @@ const Calculadora = () => {
     const form = document.querySelector('form');
 
     // Validação do passo atual
-    if (currentStep < 5 && form.checkValidity()) {
+    if (currentStep < 6 && form.checkValidity()) {
       if (currentStep === 4) {
         const selectedDate = dayjs(formData.dataColeta);
         const selectedTime = dayjs(formData.horaColeta, 'HH:mm');
@@ -254,7 +258,6 @@ const Calculadora = () => {
   const prevStep = () => {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
-      console.log('currentStep decrementado para', currentStep - 1);
 
     }
   };
@@ -328,7 +331,7 @@ const Calculadora = () => {
             justifyContent: 'center',
             alignItems: 'center',
             minHeight: '100vh',
-            backgroundImage:"url(/src/assets/TesteCalculadora.png)",
+            backgroundImage: "url(/src/assets/TesteCalculadora.png)",
             backgroundColor: '#f5f5f5',
             padding: '20px'
           }}
@@ -341,12 +344,12 @@ const Calculadora = () => {
               className="success-icon"
             />
             <h3 className="success-title">Coleta Agendada com Sucesso!</h3>
-  
+
             <div className="success-details">
               <p className="success-message">
                 Seu agendamento foi confirmado e em breve entraremos em contato para confirmar os detalhes.
               </p>
-  
+
               <div className="resume-card">
                 <h4>Resumo do Agendamento</h4>
                 <div className="resume-item">
@@ -363,14 +366,14 @@ const Calculadora = () => {
                     {formData.endereco}, {formData.numero} - {formData.bairro}, {formData.cidade}/{formData.estado}
                   </span>
                 </div>
-                
+
               </div>
-  
+
               <p className="success-note">
                 Um e-mail de confirmação foi enviado para <strong>{formData.email}</strong> com todos os detalhes.
               </p>
             </div>
-  
+
             <Button
               variant="contained"
               color="success"
@@ -388,362 +391,368 @@ const Calculadora = () => {
             </Button>
           </div>
         </motion.div>
-      ) : ( 
+      ) : (
 
-    <section className='body-orcamento'>
-      <button onClick={Voltarorcamento} className='voltar-orcamento'> <ArrowBack fontSize="small" className="icon" />Retornar</button>
-      <div className='upper-orcamento'>
+        <section className='body-orcamento'>
+          <button type="button" onClick={Voltarorcamento} className='voltar-orcamento'> <ArrowBack fontSize="small" className="icon" />Retornar</button>
+          <div className='upper-orcamento'>
 
-        <h2 className='title-orcamento'>{getStepTitle()}</h2>
-
-
-        <div className="wrap-orcamento">
-          <div className="col-lg-12-orcamento">
-            {/* Barra de Progresso */}
-            <div id="progress-orcamento">
-              <div
-                id="progress-complete-orcamento"
-                style={{ width: `${updateProgress()}%` }}
-              ></div>
-            </div>
-
-            {/* Formulário Multi-step */}
-            <form className="form-orcamento" onSubmit={handleSubmit} noValidate>
-              {/* Passo 1: Account information */}
-              {currentStep === 1 && (
-                <fieldset className='fieldset-orcamento'>
-                  <legend className='legend-orcamento'>Identificação</legend>
-                  <div className="form-group-orcamento">
-                    <label>Nome</label>
-                    <input
-                      placeholder='Digite seu nome'
-                      id="Name-orcamento"
-                      name="nome"
-                      type="text"
-                      className="form-control-orcamento"
-                      value={formData.nome}
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
-                  <div className="form-group-orcamento">
-                    <label>Email</label>
-                    <input
-                      placeholder="Digite seu email"
-                      id="Email-orcamento"
-                      name="email"
-                      type="email"
-                      className="form-control-orcamento"
-                      value={formData.email}
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
+            <h2 className='title-orcamento'>{getStepTitle()}</h2>
 
 
-                  <div className="form-group-orcamento">
-                    <label>Telefone</label>
-                    <InputTel
-                      required
-                      value={formData.telefone}
-                      onChange={(event) => setFormData({ ...formData, telefone: event.target.value })}
-                    />
-                  </div>
-                </fieldset>
-              )}
+            <div className="wrap-orcamento">
+              <div className="col-lg-12-orcamento">
+                {/* Barra de Progresso */}
+                <div id="progress-orcamento">
+                  <div
+                    id="progress-complete-orcamento"
+                    style={{ width: `${updateProgress()}%` }}
+                  ></div>
+                </div>
 
-              {/* Passo 2: Contact Information */}
-              {currentStep === 2 && (
-                <fieldset className="fieldset-orcamento">
-                  <legend className="legend-orcamento">Contato</legend>
-                  <div className="form-group-orcamento2">
-                    <RadioGroup
-                      name="metodoContato"
-                      value={formData.metodoContato}
-                      onChange={(e) => setFormData({ ...formData, metodoContato: e.target.value })}
-                      sx={{
-                        flexDirection: 'row',
-                        gap: '20px',
-                      }}
-                    >
-                      <FormControlLabel
-                        value="whatsapp"
-                        control={
-                          <Radio
-                            sx={{
-                              '&.Mui-checked': {
-                                color: '#4caf50',
-                              },
-                            }}
-                          />
-                        }
-                        label="WhatsApp"
-                      />
-                      <FormControlLabel
-                        value="email"
-                        control={
-                          <Radio
-                            sx={{
-                              '&.Mui-checked': {
-                                color: '#4caf50',
-                              },
-                            }}
-                          />
-                        }
-                        label="Email"
-                      />
-                    </RadioGroup>
+                {/* Formulário Multi-step */}
+                <form className="form-orcamento" onSubmit={handleSubmit} noValidate>
+                  {/* Passo 1: Account information */}
+                  {currentStep === 1 && (
+                    <fieldset className='fieldset-orcamento'>
+                      <legend className='legend-orcamento'>Identificação</legend>
+                      <div className="form-group-orcamento">
+                        <label>Nome</label>
+                        <input
+                          placeholder='Digite seu nome'
+                          id="Name-orcamento"
+                          name="nome"
+                          type="text"
+                          className="form-control-orcamento"
+                          value={formData.nome}
+                          onChange={handleChange}
+                          required
+                        />
+                      </div>
+                      <div className="form-group-orcamento">
+                        <label>Email</label>
+                        <input
+                          placeholder="Digite seu email"
+                          id="Email-orcamento"
+                          name="email"
+                          type="email"
+                          className="form-control-orcamento"
+                          value={formData.email}
+                          onChange={handleChange}
+                          required
+                        />
+                      </div>
 
-                  </div>
-                  <div className="form-group-orcamento2">
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          checked={formData.aceitaContato}
-                          onChange={(e) => setFormData({ ...formData, aceitaContato: e.target.checked })}
+
+                      <div className="form-group-orcamento">
+                        <label>Telefone</label>
+                        <InputTel
+                          required
+                          value={formData.telefone}
+                          onChange={(event) => setFormData({ ...formData, telefone: event.target.value })}
+                          pattern="\(\d{2}\) \d{4,5}-\d{4}"
+                          title="Digite um número de telefone válido (ex: (99) 99999-9999)"
+                        />
+                      </div>
+                    </fieldset>
+                  )}
+
+                  {/* Passo 2: Contact Information */}
+                  {currentStep === 2 && (
+                    <fieldset className="fieldset-orcamento">
+                      <legend className="legend-orcamento">Contato</legend>
+                      <div className="form-group-orcamento2">
+                        <RadioGroup
+                          name="metodoContato"
+                          value={formData.metodoContato}
+                          onChange={(e) => setFormData({ ...formData, metodoContato: e.target.value })}
                           sx={{
-                            '&.Mui-checked': {
-                              color: '#4caf50',
-                              transition: 'transform 0.3s ease',
-                              transform: 'scale(1.2)',
-                            },
-                            transition: 'transform 0.3s ease',
+                            flexDirection: 'row',
+                            gap: '20px',
                           }}
-                        />
-                      }
-                      label="Aceito receber o contato da Neotech em meu e-mail e/ou WhatsApp"
-                    />
-                  </div>
-                </fieldset>
-              )}
-
-              {/* Passo 3: Item Recycling Information */}
-              {currentStep === 3 && (
-                <fieldset className='fieldset-orcamento'>
-                  <legend className='legend-orcamento'>Endereço</legend>
-                  <div className="form-group-orcamento">
-                    <label>CEP</label>
-                    <InputCep value={formData.cep} onChange={(e) => handleCepChange(e.target.value)} />
-
-                  </div>
-                  <div className="form-group-orcamento">
-                    <label>Endereço</label>
-                    <input
-                      type="text"
-                      name="endereco"
-                      value={formData.endereco}
-                      onChange={handleChange}
-                      required
-                      placeholder="Digite seu endereço"
-                    />
-                  </div>
-                  <div className="form-group-orcamento">
-                    <label>Número</label>
-                    <input
-                      type="text"
-                      name="numero"
-                      value={formData.numero}
-                      onChange={handleChange}
-                      required
-                      placeholder="Número da residência"
-                    />
-                  </div>
-                  <div className="form-group-orcamento">
-                    <label>Bairro</label>
-                    <input
-                      type="text"
-                      name="bairro"
-                      value={formData.bairro}
-                      onChange={handleChange}
-                      required
-                      placeholder="Digite seu bairro"
-                    />
-                  </div>
-                  <div className="form-group-orcamento">
-                    <label>Cidade</label>
-                    <input
-                      type="text"
-                      name="cidade"
-                      value={formData.cidade}
-                      onChange={handleChange}
-                      required
-                      placeholder="Digite sua cidade"
-                    />
-                  </div>
-                  <div className="form-group-orcamento">
-                    <label>Estado</label>
-                    <input
-                      type="text"
-                      name="estado"
-                      value={formData.estado}
-                      onChange={handleChange}
-                      required
-                      placeholder="Digite seu estado"
-                    />
-                  </div>
-                </fieldset>
-              )}
-
-
-              {/* Passo 4: Estimativa de Orçamento */}
-              {currentStep === 4 && (
-                <fieldset className='fieldset-orcamento'>
-                  <legend className='legend-orcamento'>Escolha a data e horário para a coleta</legend>
-                  <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="pt-br">
-                    <div className="form-group-orcamento">
-                      <label>Data da Coleta</label>
-                      <DesktopDatePicker
-                        value={formData.dataColeta ? dayjs(formData.dataColeta) : null}
-                        onChange={handleDateChange}
-                        shouldDisableDate={shouldDisableDate}// Bloqueia datas anteriores
-                        slotProps={{ textField: { fullWidth: true } }}
-
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            className="form-control-orcamento"
-                            error={!!dateError}
-                            helperText={dateError}
-                            sx={{
-                              backgroundColor: '#dad7d75d',
-                              borderRadius: '8px',
-                              '& .MuiOutlinedInput-root': {
-                                '& fieldset': { border: 'none' },
-                                '&:hover fieldset': { border: 'none' },
-                                '&.Mui-focused fieldset': { border: 'none' }
-                              }
-                            }}
+                        >
+                          <FormControlLabel
+                            value="whatsapp"
+                            control={
+                              <Radio
+                                sx={{
+                                  '&.Mui-checked': {
+                                    color: '#4caf50',
+                                  },
+                                }}
+                              />
+                            }
+                            label="WhatsApp"
                           />
-                        )}
-                      />
-                    </div>
-                    <div className="form-group-orcamento">
-                      <label>Horário da Coleta</label>
-                      <DesktopTimePicker
-                        value={formData.horaColeta ? dayjs(formData.horaColeta, 'HH:mm') : null}
-                        onChange={handleTimeChange}
-                        shouldDisableTime={shouldDisableTime}
-                        slotProps={{ textField: { fullWidth: true } }}
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            className="form-control-orcamento"
-                            error={!!timeError}
-                            helperText={timeError}
-                            sx={{
-                              backgroundColor: '#dad7d75d',
-                              borderRadius: '8px',
-                              '& .MuiOutlinedInput-root': {
-                                '& fieldset': { border: 'none' },
-                                '&:hover fieldset': { border: 'none' },
-                                '&.Mui-focused fieldset': { border: 'none' },
-                              },
-                            }}
+                          <FormControlLabel
+                            value="email"
+                            control={
+                              <Radio
+                                sx={{
+                                  '&.Mui-checked': {
+                                    color: '#4caf50',
+                                  },
+                                }}
+                              />
+                            }
+                            label="Email"
                           />
-                        )}
-                      />
-                    </div>
-                  </LocalizationProvider>
-                </fieldset>
-              )}
-              {currentStep === 5 && (
-                <fieldset className='fieldset-orcamento'>
-                  <legend className='legend-orcamento'>Confirmação do Agendamento</legend>
-                  <div className="ConfirmDesign">
-                    <div className="form-group-orcamento">
-                      <label>Nome: {formData.nome}</label>
-                    </div>
-                    <div className="form-group-orcamento">
-                      <label>Email: {formData.email}</label>
-                    </div>
-                    <div className="form-group-orcamento">
-                      <label>Telefone: {formData.telefone}</label>
-                    </div>
+                        </RadioGroup>
 
-                    <div className="form-group-orcamento">
-                      <label>Bairro: {formData.bairro}</label>
-                    </div>
-
-                    <div className="form-group-orcamento">
-                      <label>CEP: {formData.cep}</label>
-                    </div>
-
-                    <div className="form-group-orcamento">
-                      <label>Cidade: {formData.cidade}</label>
-                    </div>
-                    <div className="form-group-orcamento">
-                      <label>Número: {formData.numero}</label>
-                    </div>
-                    <div className="form-group-orcamento">
-                      <label>Endereço: {formData.endereco}</label>
-                    </div>
-                    <div className="form-group-orcamento">
-                      <label>Data da Coleta: {formData.dataColeta}</label>
-                    </div>
-                    <div className="form-group-orcamento">
-                      <label>Horário da Coleta: {formData.horaColeta}</label>
-                    </div>
-                  </div>
-                </fieldset>
-              )}
-
-
-              {/* Navegação */}
-              <div className="form-navigation">
-                {currentStep > 1 && (
-                  <button type="button" className="buttonprevious" onClick={prevStep}>
-                    Voltar
-                  </button>
-                )}
-                {currentStep <= 4 ? (
-                  <button type="button" onClick={nextStep} disabled={disableNextButton}>
-                    Próximo
-                  </button>
-                ) : currentStep === 5 ? (
-                  <button
-                    type="submit"
-                    disabled={loading}
-                    style={{ position: 'relative' }}
-                  >
-                    {loading ? (
-                      <>
-                        <CircularProgress
-                          size={24}
-                          color="inherit"
-                          style={{
-                            position: 'absolute',
-                            left: '50%',
-                            marginLeft: '-12px',
-                          }}
+                      </div>
+                      <div className="form-group-orcamento2">
+                        <FormControlLabel
+                          control={
+                            <Checkbox
+                              checked={formData.aceitaContato}
+                              onChange={(e) => setFormData({ ...formData, aceitaContato: e.target.checked })}
+                              sx={{
+                                '&.Mui-checked': {
+                                  color: '#4caf50',
+                                  transition: 'transform 0.3s ease',
+                                  transform: 'scale(1.2)',
+                                },
+                                transition: 'transform 0.3s ease',
+                              }}
+                            />
+                          }
+                          label="Aceito receber o contato da Neotech em meu e-mail e/ou WhatsApp"
                         />
-                        <span style={{ opacity: 0 }}>Confirmar agendamento</span>
-                      </>
-                    ) : (
-                      'Confirmar agendamento'
+                      </div>
+                    </fieldset>
+                  )}
+
+                  {/* Passo 3: Item Recycling Information */}
+                  {currentStep === 3 && (
+                    <fieldset className='fieldset-orcamento'>
+                      <legend className='legend-orcamento'>Endereço</legend>
+                      <div className="form-group-orcamento">
+                        <label>CEP</label>
+                        <InputCep value={formData.cep} onChange={(e) => handleCepChange(e.target.value)} />
+
+                      </div>
+                      <div className="form-group-orcamento">
+                        <label>Endereço</label>
+                        <input
+                          type="text"
+                          name="endereco"
+                          value={formData.endereco}
+                          onChange={handleChange}
+                          required
+                          placeholder="Digite seu endereço"
+                        />
+                      </div>
+                      <div className="form-group-orcamento">
+                        <label>Número</label>
+                        <input
+                          type="text"
+                          name="numero"
+                          value={formData.numero}
+                          onChange={handleChange}
+                          required
+                          placeholder="Número da residência"
+                        />
+                      </div>
+                      <div className="form-group-orcamento">
+                        <label>Bairro</label>
+                        <input
+                          type="text"
+                          name="bairro"
+                          value={formData.bairro}
+                          onChange={handleChange}
+                          required
+                          placeholder="Digite seu bairro"
+                        />
+                      </div>
+                      <div className="form-group-orcamento">
+                        <label>Cidade</label>
+                        <input
+                          type="text"
+                          name="cidade"
+                          value={formData.cidade}
+                          onChange={handleChange}
+                          required
+                          placeholder="Digite sua cidade"
+                        />
+                      </div>
+                      <div className="form-group-orcamento">
+                        <label>Estado</label>
+                        <input
+                          type="text"
+                          name="estado"
+                          value={formData.estado}
+                          onChange={handleChange}
+                          required
+                          placeholder="Digite seu estado"
+                        />
+                      </div>
+                    </fieldset>
+                  )}
+
+
+                  {/* Passo 4: Estimativa de Orçamento */}
+                  {currentStep === 4 && (
+                    <fieldset className='fieldset-orcamento'>
+                      <legend className='legend-orcamento'>Escolha a data e horário para a coleta</legend>
+                      <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="pt-br">
+                        <div className="form-group-orcamento">
+                          <label>Data da Coleta</label>
+                          <DesktopDatePicker
+                            value={formData.dataColeta ? dayjs(formData.dataColeta) : null}
+                            onChange={handleDateChange}
+                            shouldDisableDate={shouldDisableDate}// Bloqueia datas anteriores
+                            slotProps={{ textField: { fullWidth: true } }}
+
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                className="form-control-orcamento"
+                                error={!!dateError}
+                                helperText={dateError}
+                                sx={{
+                                  backgroundColor: '#dad7d75d',
+                                  borderRadius: '8px',
+                                  '& .MuiOutlinedInput-root': {
+                                    '& fieldset': { border: 'none' },
+                                    '&:hover fieldset': { border: 'none' },
+                                    '&.Mui-focused fieldset': { border: 'none' }
+                                  }
+                                }}
+                              />
+                            )}
+                          />
+                        </div>
+                        <div className="form-group-orcamento">
+                          <label>Horário da Coleta</label>
+                          <DesktopTimePicker
+                            value={formData.horaColeta ? dayjs(formData.horaColeta, 'HH:mm') : null}
+                            onChange={handleTimeChange}
+                            shouldDisableTime={shouldDisableTime}
+                            slotProps={{ textField: { fullWidth: true } }}
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                className="form-control-orcamento"
+                                error={!!timeError}
+                                helperText={timeError}
+                                sx={{
+                                  backgroundColor: '#dad7d75d',
+                                  borderRadius: '8px',
+                                  '& .MuiOutlinedInput-root': {
+                                    '& fieldset': { border: 'none' },
+                                    '&:hover fieldset': { border: 'none' },
+                                    '&.Mui-focused fieldset': { border: 'none' },
+                                  },
+                                }}
+                              />
+                            )}
+                          />
+                        </div>
+                      </LocalizationProvider>
+                    </fieldset>
+                  )}
+                  {currentStep === 5 && (
+                    <fieldset className='fieldset-orcamento'>
+                      <legend className='legend-orcamento'>Confirmação do Agendamento</legend>
+                      <div className="ConfirmDesign">
+                        <div className="form-group-orcamento">
+                          <label>Nome: {formData.nome}</label>
+                        </div>
+                        <div className="form-group-orcamento">
+                          <label>Email: {formData.email}</label>
+                        </div>
+                        <div className="form-group-orcamento">
+                          <label>Telefone: {formData.telefone}</label>
+                        </div>
+
+                        <div className="form-group-orcamento">
+                          <label>Bairro: {formData.bairro}</label>
+                        </div>
+
+                        <div className="form-group-orcamento">
+                          <label>CEP: {formData.cep}</label>
+                        </div>
+
+                        <div className="form-group-orcamento">
+                          <label>Cidade: {formData.cidade}</label>
+                        </div>
+                        <div className="form-group-orcamento">
+                          <label>Número: {formData.numero}</label>
+                        </div>
+                        <div className="form-group-orcamento">
+                          <label>Endereço: {formData.endereco}</label>
+                        </div>
+                        <div className="form-group-orcamento">
+                          <label>Data da Coleta: {formData.dataColeta}</label>
+                        </div>
+                        <div className="form-group-orcamento">
+                          <label>Horário da Coleta: {formData.horaColeta}</label>
+                        </div>
+                      </div>
+                    </fieldset>
+                  )}
+
+
+                  {/* Navegação */}
+                  <div className="form-navigation">
+                    {currentStep > 1 && (
+                      <button type="button" className="buttonprevious" onClick={prevStep}>
+                        Voltar
+                      </button>
                     )}
-                  </button>
-                ) : null}
-              </div>
-            </form>
-          </div>
-        </div>
-         <Snackbar
-                  open={snackbar.open}
-                  autoHideDuration={6000}
-                  onClose={() => setSnackbar({ ...snackbar, open: false })}
-                  anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+                    {currentStep <= 4 ? (
+                      <button type="button" onClick={nextStep} disabled={disableNextButton}>
+                        Próximo
+                      </button>
+                    ) : currentStep === 5 ? (
+                      <button
+                        type="button"
+                        disabled={loading}
+                        onClick={handleSubmit} // Explicitamente chama o handleSubmit no clique
 
-                >
-                  <Alert onClose={() => setSnackbar({ ...snackbar, open: false })} severity={snackbar.severity}
-                     sx={{ width: '100%',      borderRadius: '8px',
-                     }}>
-                    {snackbar.message}
-                    </Alert>
+                        style={{ position: 'relative' }}
+                      >
+                        {loading ? (
+                          <>
+                            <CircularProgress
+                              size={24}
+                              color="inherit"
+                              style={{
+                                position: 'absolute',
+                                left: '50%',
+                                marginLeft: '-12px',
+                              }}
+                            />
+                            <span style={{ opacity: 0 }}>Confirmar agendamento</span>
+                          </>
+                        ) : (
+                          'Confirmar agendamento'
+                        )}
+                      </button>
+                    ) : null}
+                  </div>
+                </form>
+              </div>
+            </div>
+            <Snackbar
+              open={snackbar.open}
+              autoHideDuration={6000}
+              onClose={() => setSnackbar({ ...snackbar, open: false })}
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+
+            >
+              <Alert onClose={() => setSnackbar({ ...snackbar, open: false })} severity={snackbar.severity}
+                sx={{
+                  width: '100%', borderRadius: '8px',
+                }}>
+                {snackbar.message}
+              </Alert>
             </Snackbar>
           </div>
         </section>
       )}
     </>
-)};
+  )
+};
 
 export default Calculadora;

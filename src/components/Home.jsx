@@ -318,10 +318,10 @@ useEffect(() => {
           </div>
           <div className="wrapconteudo">
             <div className="conteudo">
-              <h2 className='TituloOrçamento'>Orçamento</h2>
+              <h2 className='TituloOrçamento'>Coleta sustentável</h2>
               <p>
-              Recicle seus eletroeletrônicos e contribua para um planeta mais sustentável! Solicite um orçamento conosco e descubra como podemos transformar seus resíduos em novas oportunidades. Com um atendimento rápido e eficiente, garantimos a destinação correta dos materiais. Entre em contato agora e colabore para um futuro sustentável!</p>
-              <a href='/Calculadora' className='botao2'>Faça um orçamento</a>
+              Recicle seus eletroeletrônicos e contribua para um planeta mais sustentável! Agende uma coleta conosco e descubra como podemos transformar seus resíduos em novas oportunidades. Com um atendimento rápido e eficiente, garantimos a destinação correta dos materiais. Entre em contato agora e colabore para um futuro sustentável!</p>
+              <a href='/Calculadora' className='botao2'>Agenda uma coleta</a>
             </div>
           </div>
         </div>

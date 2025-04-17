@@ -368,7 +368,7 @@ const ConfigPerfil = () => {
             <section className="profile-email-section">
               <h3>Última modificação:</h3>
               <p>
-                <span className="profile-email-age">1 mês atrás</span>
+                <span className="profile-email-age">{user?.ultimaModificacao ? new Date(user.ultimaModificacao).toLocaleDateString() : 'Nunca'}</span>
               </p>
               <div className="save-button-container">
               <button
