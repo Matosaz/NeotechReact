@@ -8,13 +8,15 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import jsPDF from 'jspdf';
+import CircularProgress from '@mui/material/CircularProgress';
 import 'jspdf-autotable';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { Checkbox, FormControlLabel, FormGroup } from '@mui/material';  // Importando Checkbox do MUI
 import { styled } from '@mui/material/styles';
 import PrintIcon from '@mui/icons-material/Print';
-
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
 
 const CustomCheckbox = styled(Checkbox)(({ theme }) => ({
   '&.Mui-checked': {
@@ -26,6 +28,11 @@ const CustomCheckbox = styled(Checkbox)(({ theme }) => ({
 }));
 
 function UserManagement() {
+  const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+  });
+
+  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'info' });
   const [users, setUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [newUser, setNewUser] = useState({ nome: '', ativo: false, administrador: false, email: '', senha: '' });
@@ -37,6 +44,8 @@ function UserManagement() {
   const API_BASE_URL = "https://intellij-neotech.onrender.com/api/v1/users";
 
   const generatePDF = () => {
+    setLoadingPDF(true);
+
     const doc = new jsPDF();
     const img = new Image();
     img.src = NeotechLogo; // Caminho correto para a imagem importada
@@ -91,19 +100,33 @@ function UserManagement() {
       doc.text('Neotech', pageWidth / 2, pageHeight - 15, { align: 'center' });
 
       // Salvar PDF
+
       doc.save('relatorio_usuarios.pdf');
+      setLoadingPDF(false);  // Finaliza o carregamento do PDF após o download
+
     };
 
     img.onerror = function () {
-      alert("Erro ao carregar o logotipo.");
+      setSnackbar({ open: true, message: 'Erro ao carregar o logotipo do PDF.', severity: 'error' });
+      setLoadingPDF(false);
+
     };
   };
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadingUserSubmit, setLoadingUserSubmit] = useState(false);
+  const [loadingPDF, setLoadingPDF] = useState(false);
 
   useEffect(() => {
     fetch(API_BASE_URL)
       .then(response => response.json())
-      .then(data => setUsers(data))
-      .catch(error => console.error('Erro ao buscar usuários:', error));
+      .then(data => {
+        setUsers(data);
+        setIsLoading(false);
+      })
+      .catch(error => {
+        console.error('Erro ao buscar usuários:', error);
+        setIsLoading(false);
+      });
   }, []);
 
   const handleSearch = (event) => {
@@ -126,11 +149,13 @@ function UserManagement() {
 
   const handleAddUser = async () => {
     if (newUser.email && newUser.senha && newUser.nome) {
+      setLoadingUserSubmit(true);
+
       try {
         const response = await fetch(API_BASE_URL, {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json', // Especifica o tipo de conteúdo correto
+            'Content-Type': 'application/json', 
           },
           body: JSON.stringify({
             nome: newUser.nome,
@@ -142,16 +167,21 @@ function UserManagement() {
         });
 
         if (!response.ok) {
-          alert('Erro ao adicionar usuário: ' + response.statusText);
+          setSnackbar({ open: true, message: 'Erro ao adicionar o usuário:.' + response.statusText, severity: 'error' });
           return;
         }
 
         const data = await response.json();
         setUsers(prevUsers => [...prevUsers, data]);
+        setSnackbar({ open: true, message: 'Usuário adicionado com sucesso!', severity: 'success' }); 
         resetForm();
       } catch (error) {
-        setErrorMessage(error.message);
-        alert('Erro ao adicionar usuário:', error);
+
+        const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido ao adicionar o usuário';
+        setSnackbar({ open: true, message: `Erro ao adicionar o usuário: ${errorMessage}`, severity: 'error' });
+
+      } finally {
+        setLoadingUserSubmit(false);
       }
     }
   };
@@ -169,6 +199,7 @@ function UserManagement() {
   };
   const handleUpdateUser = async () => {
     if (!currentUser || typeof currentUser.id !== 'number') return;
+    setLoadingUserSubmit(true);
 
     const formData = new FormData();
     formData.append("data", JSON.stringify({
@@ -186,16 +217,20 @@ function UserManagement() {
       });
 
       if (!response.ok) {
-        alert('Erro ao atualizar usuário: ' + response.statusText);
+        setSnackbar({ open: true, message: 'Erro ao atualizar o usuário:.' + response.statusText, severity: 'error' });
         return;
       }
 
       const updatedUser = await response.json();
       setUsers(users.map(user => (user.id === currentUser.id ? updatedUser : user)));
+      setSnackbar({ open: true, message: 'Usuário atualizado com sucesso!', severity: 'success' }); 
       resetForm();
     } catch (error) {
-      setErrorMessage(error.message);
-      alert('Erro ao atualizar usuário:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido ao atualizar o usuário';
+      setSnackbar({ open: true, message: `Erro ao atualizar o usuário: ${errorMessage}`, severity: 'error' });
+
+    } finally {
+      setLoadingUserSubmit(false);
     }
   };
 
@@ -206,8 +241,8 @@ function UserManagement() {
       });
       setUsers(users.filter(user => user.id !== id));
     } catch (error) {
-      setErrorMessage('Erro ao deletar usuário');
-      alert('Erro ao deletar usuário:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido ao deletar o usuário';
+      setSnackbar({ open: true, message: `Erro ao deletar o usuário: ${errorMessage}`, severity: 'error' });
     }
   };
 
@@ -310,7 +345,7 @@ function UserManagement() {
                 </IconButton>
               </div>
               <FormGroup row sx={{
-                marginLeft:"-40px",
+                marginLeft: "-40px",
                 display: "flex",
                 flexWrap: "nowrap", // impede quebra de linha
                 gap: "20px", // espaçamento entre os itens
@@ -348,27 +383,53 @@ function UserManagement() {
                 />
               </FormGroup>
 
-              <button className='ADD_button' type="submit">{isEditing ? 'Atualizar Usuário' : 'Adicionar Usuário'}</button>
+              <button className='ADD_button' type="submit" disabled={loadingUserSubmit}>
+                {loadingUserSubmit ? (
+                  <CircularProgress size={24} color="inherit" />
+                ) : (
+                  isEditing ? 'Atualizar Usuário' : 'Adicionar Usuário'
+                )}
+              </button>
             </div>
           </form>
         </div>
 
         <div className="table-container">
-          <MaterialReactTable
-            columns={columns}
-            data={filteredUsers}
-            initialState={{ pagination: { pageSize: 5 } }}
-            muiTablePaginationProps={{
-              rowsPerPageOptions: [5, 10, 20],
-            }}
+          {isLoading ? (
+            <div className="loading-message">Carregando usuários...</div>
+          ) : (
+            <MaterialReactTable
+              columns={columns}
+              data={filteredUsers}
+              initialState={{ pagination: { pageSize: 5 } }}
+              muiTablePaginationProps={{
+                rowsPerPageOptions: [5, 10, 20],
+              }}
+            />
+          )}
 
-          />
         </div>
-        <button onClick={generatePDF} className="generate-pdf-button">
-  <PrintIcon sx={{ marginRight: "8px" }} />
-  Gerar Relatório
-</button>
+        <button onClick={generatePDF} className="generate-pdf-button" disabled={loadingPDF}>
+          {loadingPDF ? (
+            <CircularProgress size={24} color="inherit" />
+          ) : (
+            <>
+              <PrintIcon sx={{ marginRight: "8px" }} />
+              Gerar Relatório
+            </>
+          )}
+        </button>
 
+        <Snackbar
+          open={snackbar.open}
+          onClose={() => setSnackbar({ ...snackbar, open: false })}
+          autoHideDuration={5000}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        >
+          <Alert onClose={() => setSnackbar({ ...snackbar, open: false })} severity={snackbar.severity}>
+            {snackbar.message}
+          </Alert>
+        </Snackbar>
       </div>
     </div>
   );

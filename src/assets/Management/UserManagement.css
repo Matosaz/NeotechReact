@@ -54,18 +54,19 @@ button:hover {
 .botaodeletar:hover{
     background-color: rgb(214, 60, 60);
 }
-.generate-pdf-button{
-    margin-left: auto; /* Alinha à direita */
+.generate-pdf-button {
+    margin-left: auto;
     position: relative;
-    display: flex;
     margin-top: 10px;
-    width: 130px;
     padding: 10px;
-    width: fit-content;
     display: flex;
     align-items: center;
     justify-content: center;
     text-align: center;
+    font-family: "Lexend";
+    min-width: 160px; /* Reservar espaço mínimo */
+    height: 40px;      /* Altura fixa opcional para evitar "pulos" */
+    transition: background-color 0.3s ease;
 }
 /* Ajustes na form-container */
 .form-container {
