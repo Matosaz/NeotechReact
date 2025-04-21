@@ -16,6 +16,8 @@ import 'dayjs/locale/pt-br';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import CircularProgress from '@mui/material/CircularProgress';
+import backgroundImage from '../../../assets/TesteCalculadora.png'; // ajuste o caminho conforme sua pasta
+
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -331,7 +333,7 @@ const Calculadora = () => {
             justifyContent: 'center',
             alignItems: 'center',
             minHeight: '100vh',
-            backgroundImage: "url(/src/assets/TesteCalculadora.png)",
+            backgroundImage: `url(${backgroundImage})`,
             backgroundColor: '#f5f5f5',
             padding: '20px'
           }}

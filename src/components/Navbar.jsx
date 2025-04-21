@@ -1,7 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import './Navbar.css';
 import { UserContext } from './UserContext'; // Contexto de autenticação
-import setting from '../assets/setting.png';
 import profile from '../assets/profile.png';
 import help from '../assets/help.png';
 import logoutpng from '../assets/logout.png';
@@ -81,7 +80,7 @@ const Navbar = () => {
           <a href="/mapa">Ponto de coleta</a>
           <a href="#Serviço">Saiba mais</a>
           <a href="#Timeline">Serviços</a>
-          <a href="#Orçamento">Orçamento</a>
+          <a href="#Orçamento">Agendamento</a>
           <a href="#Footer">Contato</a>
           {user ? ( // Se o usuário estiver logado, exibe o menu de Perfil
           <> 
@@ -99,7 +98,7 @@ const Navbar = () => {
         <Link to="/mapa" className="FecharMenu">Ponto de coleta</Link>
         <a className="FecharMenu" href="#Serviço">Saiba mais</a>
         <a className="FecharMenu" href="#Timeline">Serviços</a>
-        <a className="FecharMenu" href="#Orçamento">Orçamento</a>
+        <a className="FecharMenu" href="#Orçamento">Agendamento</a>
         <a className="FecharMenu" href="#Footer">Contato</a>
 
 
