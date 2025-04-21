@@ -12,7 +12,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import 'jspdf-autotable';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import { Checkbox, FormControlLabel, FormGroup } from '@mui/material';  // Importando Checkbox do MUI
+import {Checkbox, FormControlLabel, FormGroup, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button } from '@mui/material';  // Importando Checkbox do MUI
 import { styled } from '@mui/material/styles';
 import PrintIcon from '@mui/icons-material/Print';
 import Snackbar from '@mui/material/Snackbar';
@@ -40,7 +40,8 @@ function UserManagement() {
   const [currentUser, setCurrentUser] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [userToDelete, setUserToDelete] = useState(null);
   const API_BASE_URL = "https://intellij-neotech.onrender.com/api/v1/users";
 
   const generatePDF = () => {
@@ -234,6 +235,35 @@ function UserManagement() {
     }
   };
 
+
+  const handleOpenDeleteDialog = (userId) => {
+    setUserToDelete(userId);
+    setDeleteDialogOpen(true);
+  };
+
+  // Função para fechar o modal de confirmação
+  const handleCloseDeleteDialog = () => {
+    setDeleteDialogOpen(false);
+    setUserToDelete(null);
+  };
+
+  // Função para confirmar a exclusão
+  const handleConfirmDelete = async () => {
+    if (!userToDelete) return;
+    
+    try {
+      await fetch(`${API_BASE_URL}/${userToDelete}`, {
+        method: 'DELETE',
+      });
+      setUsers(users.filter(user => user.id !== userToDelete));
+      setSnackbar({ open: true, message: 'Usuário excluído com sucesso!', severity: 'success' });
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido ao deletar o usuário';
+      setSnackbar({ open: true, message: `Erro ao deletar o usuário: ${errorMessage}`, severity: 'error' });
+    } finally {
+      handleCloseDeleteDialog();
+    }
+  };
   const handleDeleteUser = async (id) => {
     try {
       await fetch(`${API_BASE_URL}/${id}`, {
@@ -285,7 +315,7 @@ function UserManagement() {
             </IconButton>
           </Tooltip>
           <Tooltip title="Excluir">
-            <IconButton color="error" onClick={() => handleDeleteUser(row.original.id)}>
+            <IconButton color="error" onClick={() => handleOpenDeleteDialog(row.original.id)}>
               <DeleteIcon />
             </IconButton>
           </Tooltip>
@@ -296,10 +326,31 @@ function UserManagement() {
 
   return (
     <div className='bodyManagement'>
+    <div className="container-management">
+      <Sidebar1 />
 
-
-      <div className="container-management">
-        <Sidebar1 />
+      {/* Modal de confirmação para exclusão */}
+      <Dialog
+        open={deleteDialogOpen}
+        onClose={handleCloseDeleteDialog}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{"Confirmar exclusão"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Tem certeza que deseja excluir este usuário? Esta ação não pode ser desfeita.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDeleteDialog} color="primary">
+            Cancelar
+          </Button>
+          <Button onClick={handleConfirmDelete} color="error" autoFocus>
+            Confirmar
+          </Button>
+        </DialogActions>
+      </Dialog>
 
         <h1>Usuários</h1>
         <div className="search-container">
