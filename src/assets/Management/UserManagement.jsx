@@ -331,26 +331,65 @@ function UserManagement() {
 
       {/* Modal de confirmação para exclusão */}
       <Dialog
-        open={deleteDialogOpen}
-        onClose={handleCloseDeleteDialog}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">{"Confirmar exclusão"}</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            Tem certeza que deseja excluir este usuário? Esta ação não pode ser desfeita.
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDeleteDialog} color="primary">
-            Cancelar
-          </Button>
-          <Button onClick={handleConfirmDelete} color="error" autoFocus>
-            Confirmar
-          </Button>
-        </DialogActions>
-      </Dialog>
+  open={deleteDialogOpen}
+  onClose={handleCloseDeleteDialog}
+  aria-labelledby="alert-dialog-title"
+  aria-describedby="alert-dialog-description"
+  PaperProps={{
+    sx: {
+      borderRadius: '15px',
+      padding: 2,
+      backgroundColor: '#f9f9f9', // ajuste conforme sua paleta
+      boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)'
+    }
+  }}
+>
+  <DialogTitle
+    id="alert-dialog-title"
+    sx={{
+      fontWeight: 'bold',
+      color: '#2f7c37', // cor que remete ao verde da identidade visual
+      fontSize: '20px'
+    }}
+  >
+    {"Confirmar exclusão"}
+  </DialogTitle>
+  <DialogContent>
+    <DialogContentText
+      id="alert-dialog-description"
+      sx={{ fontSize: '16px', color: '#333' }}
+    >
+      Tem certeza que deseja excluir este usuário? Esta ação não pode ser desfeita.
+    </DialogContentText>
+  </DialogContent>
+  <DialogActions>
+    <Button
+      onClick={handleCloseDeleteDialog}
+      variant="outlined"
+      sx={{
+        borderRadius: '8px',
+        textTransform: 'none',
+        color: '#2f7c37',
+        borderColor: '#2f7c37',
+        '&:hover': {
+          backgroundColor: '#e8f5e9',
+          borderColor: '#2f7c37',
+        },
+      }}
+    >
+      Cancelar
+    </Button>
+    <Button
+      onClick={handleConfirmDelete}
+      variant="contained"
+      color="error"
+      autoFocus
+      sx={{ borderRadius: '8px', textTransform: 'none' }}
+    >
+      Confirmar
+    </Button>
+  </DialogActions>
+</Dialog>
 
         <h1>Usuários</h1>
         <div className="search-container">
