@@ -385,7 +385,7 @@ const Calculadora = () => {
                 mt: 3,
                 backgroundColor: "#2E7D42",
                 borderRadius: '8px',
-                fontWeight: 'bold',
+                fontWeight: '600',
                 textTransform: 'none',
               }}
             >
