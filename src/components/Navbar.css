@@ -118,11 +118,13 @@
   color: #525252;
   margin: 20px 10px;
 }
+
 .sub-menu-link p{
     color: #121212;
     margin-left: 20px;
-    transition: .2s ease-in-out;
     text-wrap: nowrap;
+    transition: all 0.1s ease-in-out;
+    letter-spacing: 0.2px;
 }
 .sub-menu-link img{
   width: 40px;
@@ -131,10 +133,25 @@
   margin-left: -80px;
 
 }
-.sub-menu-link:hover p{
-  font-weight: 600;
-}
 
+
+
+.sub-menu-link:hover p{
+    padding: 4px 2px;
+    font-weight: 600;
+    scale: 1.02;
+
+}
+.sub-menu-link svg {
+    width: 40px;
+  height: 40px;
+  background-color: #90ca96;
+  border-radius: 50%;
+  padding: 5px;
+  margin-left: -80px;
+  fill: #ffffff;
+  }
+  
 @media(min-width:2380px){
     .header{
     align-items: center;

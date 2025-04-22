@@ -1,11 +1,12 @@
 import React, { useState, useContext, useEffect } from 'react';
 import './Navbar.css';
 import { UserContext } from './UserContext'; // Contexto de autenticação
-import profile from '../assets/profile.png';
-import help from '../assets/help.png';
-import logoutpng from '../assets/logout.png';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -29,7 +30,6 @@ const Navbar = () => {
         ease: [0.25, 1.2, 0.36, 1.2], // easeOutExpo
         duration: 0.25,   // Rapidez na entrada
         delay: 0.05
-
       },
     },
   };
@@ -106,42 +106,41 @@ const Navbar = () => {
           <a className="FecharMenu" onClick={toggleMenu}>
             Perfil
             <AnimatePresence mode="wait">
-  {menuOpen && (
-    <motion.div
-      className="sub-menu-wrap"
-      initial="hidden"
-      animate="visible"
-      exit="hidden"
-      variants={dropdownVariants}
-    >
-      <div className="sub-menu">
-        <div className="user-info">
-          <h2>{user?.nome || 'Usuário'}</h2>
-        </div>
-        <hr />
-        {user.isAdmin && (
-          <a href="/Dashboard" className="sub-menu-link">
-            <img src={profile} alt="Administração" />
-            <p>Área Administrativa</p>
-          </a>
-        )}
-        <a href="/ConfigPerfil" className="sub-menu-link">
-          <img src={profile} alt="Configuração de perfil" />
-          <p>Configurações de perfil</p>
-        </a>
-        <a href="#" className="sub-menu-link">
-          <img src={help} alt="Ajuda e suporte" />
-          <p>Ajuda e suporte</p>
-        </a>
-        <a href="#" className="sub-menu-link" onClick={logout}>
-          <img src={logoutpng} alt="Sair do perfil" />
-          <p>Sair da conta</p>
-        </a>
-      </div>
-    </motion.div>
-  )}
-</AnimatePresence>
-
+              {menuOpen && (
+                <motion.div
+                  className="sub-menu-wrap"
+                  initial="hidden"
+                  animate="visible"
+                  exit="hidden"
+                  variants={dropdownVariants}
+                >
+                  <div className="sub-menu">
+                    <div className="user-info">
+                      <h2>{user?.nome || 'Usuário'}</h2>
+                    </div>
+                    <hr />
+                    {user.isAdmin && (
+                      <a href="/Dashboard" className="sub-menu-link">
+                        <AdminPanelSettingsIcon sx={{ color: '#121212' }}/>
+                        <p>Área Administrativa</p>
+                      </a>
+                    )}
+                    <a href="/ConfigPerfil" className="sub-menu-link">
+                      <AccountCircleIcon sx={{ color: '#121212' }}/>
+                      <p>Configurações de perfil</p>
+                    </a>
+                    <a href="#" className="sub-menu-link">
+                      <HelpOutlineIcon sx={{ color: '#121212' }}/>
+                      <p>Ajuda e suporte</p>
+                    </a>
+                    <a href="#" className="sub-menu-link" onClick={logout}>
+                      <ExitToAppIcon sx={{ color: '#121212' }}/>
+                      <p>Sair da conta</p>
+                    </a>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </a>
         ) : ( // Se o usuário não estiver logado, exibe a opção de login
           <a className="FecharMenu" href="/Auth">
