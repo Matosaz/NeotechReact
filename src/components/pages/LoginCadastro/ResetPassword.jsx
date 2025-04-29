@@ -5,6 +5,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 
+//Comentário teste
 const ResetPassword = ({ open, handleClose }) => {
   const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
