@@ -114,6 +114,7 @@ const Navbar = () => {
                   exit="hidden"
                   variants={dropdownVariants}
                 >
+                {/* Alteração de dependência */}
                   <div className="sub-menu">
                     <div className="user-info">
                       <h2>{user?.nome || 'Usuário'}</h2>
