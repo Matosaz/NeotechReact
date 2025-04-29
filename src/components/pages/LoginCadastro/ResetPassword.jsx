@@ -5,11 +5,12 @@ import CloseIcon from "@mui/icons-material/Close";
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 
-//Comentário teste
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
+
 const ResetPassword = ({ open, handleClose }) => {
-  const Alert = React.forwardRef(function Alert(props, ref) {
-    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-  });
+
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'info' });
   const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
