@@ -35,7 +35,7 @@ const ResetPassword = ({ open, handleClose }) => {
     if (reason === 'clickaway') return;
     setSnackbar({ ...snackbar, open: false });
   };
-
+  
   const handleCloseAndReset = () => {
     resetForm();
     handleClose();
@@ -93,6 +93,8 @@ const ResetPassword = ({ open, handleClose }) => {
       });
 
       const data = await response.json();
+      console.log(data); // Verifique o que está sendo retornado pela API
+
       if (data.success) {
         setSnackbar({ open: true, message: 'Senha redefinida com sucesso.', severity: 'error' }); // ou 'error'
 

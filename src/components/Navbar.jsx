@@ -120,7 +120,7 @@ const Navbar = () => {
                       <h2>{user?.nome || 'Usuário'}</h2>
                     </div>
                     <hr />
-                    {user.isAdmin && (
+                    {user?.isAdmin && (
                       <a href="/Dashboard" className="sub-menu-link">
                         <AdminPanelSettingsIcon sx={{ color: '#121212' }}/>
                         <p>Área Administrativa</p>
