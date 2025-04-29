@@ -7,9 +7,7 @@ import ResetPassword from './ResetPassword';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import CircularProgress from '@mui/material/CircularProgress';
-
 const API_BASE_URL = "https://intellij-neotech.onrender.com/api/v1/users";
-
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -17,8 +15,8 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 
 const Auth = () => {
   const [loading, setLoading] = useState(false);
-  const { setUser } = useContext(UserContext); // Acessa o contexto
-  const [openModal, setOpenModal] = useState(false); // Estado para o modal
+  const { setUser } = useContext(UserContext);
+  const [openModal, setOpenModal] = useState(false);
   const [isLoginMode, setIsLoginMode] = useState(true);
   const [formData, setFormData] = useState({
     name: '',
@@ -38,61 +36,40 @@ const Auth = () => {
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'info' });
   const navigate = useNavigate();
 
-  // Alterna entre login e cadastro
   const toggleMode = () => {
     setIsLoginMode(!isLoginMode);
-    setFormData({
-      name: '',
-      email: '',
-      password: '',
-      confirmPassword: ''
-    });
-    setEmailExists(false); // Resetar o alerta ao mudar de modo
+    setFormData({ name: '', email: '', password: '', confirmPassword: '' });
+    setEmailExists(false);
   };
 
-  // Atualiza o estado dos campos do formulário
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-
-    if (name === 'password') {
-      validatePassword(value);
-    }
+    if (name === 'password') validatePassword(value);
   };
 
-  // Função para validar a senha
   const handlePasswordChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-
-    // Validando a senha a cada mudança
-    if (name === 'password') {
-      validatePassword(value);
-    }
+    if (name === 'password') validatePassword(value);
   };
 
-  // Validação da senha
   const validatePassword = (password) => {
-    const validations = {
+    setPasswordValidations({
       length: password.length >= 8,
       lowercase: /[a-z]/.test(password),
       uppercase: /[A-Z]/.test(password),
       number: /\d/.test(password),
       specialChar: /[!@#$%^&*(),.?":{}|<>]/.test(password),
-    };
-    setPasswordValidations(validations);
+    });
   };
 
-
-  
-  ; const fetchUserDetails = async (userId) => {
+  const fetchUserDetails = async (userId) => {
     try {
-      console.log("Buscando detalhes do usuário para ID:", userId);
-
       const response = await fetch(`${API_BASE_URL}/${userId}`, {
         method: 'GET',
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('user')}`,
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
           'Content-Type': 'application/json'
         }
       });
@@ -101,124 +78,90 @@ const Auth = () => {
         throw new Error('Erro ao buscar detalhes do usuário');
       }
 
-      const userData = await response.json();
-      console.log("Dados completos do usuário recebidos:", userData);
-
-      return userData;  // 🔹 Agora a função retorna os dados completos
+      return await response.json();
     } catch (error) {
       console.error("Erro ao carregar detalhes do usuário:", error);
       return null;
     }
   };
-// Função para verificar se o e-mail já existe no cadastro
-const checkEmailExists = async (email) => {
-  if (!formData.email) return;
 
-  try {
-    const response = await fetch(`${API_BASE_URL}/check-email?email=${email}`);
-
-    if (response.status === 409) {
-      setEmailExists(true);
-    } else {
-      setEmailExists(false);
+  const checkEmailExists = async (email) => {
+    if (!email) return;
+    try {
+      const response = await fetch(`${API_BASE_URL}/check-email?email=${email}`);
+      setEmailExists(response.status === 409);
+    } catch (error) {
+      console.error("Erro ao verificar e-mail:", error);
     }
-  } catch (error) {
-    console.error("Erro ao verificar e-mail:", error);
-  }
-};
-const handleSubmit = async (e) => {
+  };
 
-  setLoading(true);
-  
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
 
-  // Verifica se as senhas coincidem antes de qualquer outra coisa
-  if (!isLoginMode && formData.password !== formData.confirmPassword) {
-    setSnackbar({
-      open: true,
-      message: 'As senhas não coincidem.',
-      severity: 'warning'
-    });
-    setLoading(false);
-    return;  // Impede o envio do formulário
-  }
-
-  // Verifica se o e-mail já existe, caso seja um cadastro
-  if (!isLoginMode) {
-    await checkEmailExists(formData.email);
-    if (emailExists) {
-      console.log("E-mail já cadastrado");
-      setSnackbar({
-        open: true,
-        message: 'E-mail já cadastrado! Por favor, utilize outro!',
-        severity: 'warning'
-      });
+    if (!isLoginMode && formData.password !== formData.confirmPassword) {
+      setSnackbar({ open: true, message: 'As senhas não coincidem.', severity: 'warning' });
       setLoading(false);
       return;
     }
-  }
 
-  const payload = {
-    email: formData.email,
-    senha: formData.password,
-  };
-
-  if (!isLoginMode) {
-    payload.nome = formData.name;
-  }
-
-  try {
-    const url = isLoginMode ? `${API_BASE_URL}/login` : API_BASE_URL;
-
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
-
-    if (!response.ok) {
-      throw new Error(isLoginMode ? 'Erro no login' : 'Erro no cadastro.');
+    if (!isLoginMode) {
+      await checkEmailExists(formData.email);
+      if (emailExists) {
+        setSnackbar({
+          open: true,
+          message: 'E-mail já cadastrado! Por favor, utilize outro!',
+          severity: 'warning'
+        });
+        setLoading(false);
+        return;
+      }
     }
 
-    const data = await response.json();
+    const payload = {
+      email: formData.email,
+      senha: formData.password,
+      ...(isLoginMode ? {} : { nome: formData.name }),
+    };
 
-    if (isLoginMode) {
-      const isAdminBoolean = data.isAdmin === 'true';
-      const userId = parseInt(data.id, 10);
+    try {
+      const url = isLoginMode ? `${API_BASE_URL}/login` : API_BASE_URL;
 
-      localStorage.setItem('token', data.token);
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
 
-      const userData = await fetchUserDetails(userId);
+      if (!response.ok) throw new Error(isLoginMode ? 'Erro no login' : 'Erro no cadastro');
 
-      if (userData) {
-        userData.isAdmin = data.isAdmin === 'true';
-        setUser(userData);
-        localStorage.setItem('user', JSON.stringify(userData));
+      const data = await response.json();
+
+      if (isLoginMode) {
+        const userId = parseInt(data.id, 10);
+        localStorage.setItem('token', data.token);
+
+        const userData = await fetchUserDetails(userId);
+
+        if (userData) {
+          userData.isAdmin = data.isAdmin === 'true';
+          setUser(userData);
+          localStorage.setItem('user', JSON.stringify(userData));
+        }
+
+        setSnackbar({ open: true, message: data.message, severity: 'success' });
+        setTimeout(() => navigate('/home'), 1000);
+      } else {
+        setSnackbar({ open: true, message: 'Cadastro realizado com sucesso!', severity: 'success' });
+        setTimeout(toggleMode, 1000);
       }
 
-     // Delay de 2 segundos para exibir o snackbar de sucesso
-     setSnackbar({ open: true, message: data.message, severity: 'success' });
-
-     setTimeout(() => {
-      navigate('/#');
-    }, 1000);
-    } else {
-      setSnackbar({ open: true, message: 'Cadastro realizado com sucesso!', severity: 'success' });
-      setTimeout(() => {
-        toggleMode();
-      }, 1000);
+    } catch (error) {
+      setSnackbar({ open: true, message: `Erro: ${error.message}`, severity: 'error' });
+    } finally {
+      setLoading(false);
     }
-  } catch (error) {
-    setSnackbar({
-      open: true,
-      message: `Erro: ${error.message}`,
-      severity: 'error'
-    });
-  } finally {
-    setLoading(false);
-  }
-};
-
+  };
 
   const handleCloseSnackbar = (_, reason) => {
     if (reason === 'clickaway') return;
