@@ -1,5 +1,14 @@
 import React, { useState } from "react";
-import { Modal, Box, Typography, TextField, Button, CircularProgress } from "@mui/material";
+import {
+  Modal,
+  Box,
+  Typography,
+  TextField,
+  Button,
+  CircularProgress,
+  IconButton,
+} from "@mui/material";
+import { X } from "lucide-react";
 import "./ResetPassword.css";
 
 const ResetPassword = ({ open, handleClose }) => {
@@ -27,11 +36,14 @@ const ResetPassword = ({ open, handleClose }) => {
     handleClose();
   };
 
+  const handleBackdropClick = (event) => {
+    // Impede o fechamento ao clicar fora do modal
+    event.stopPropagation();
+  };
+
   const handleEmailSubmit = async (e) => {
     e.preventDefault();
-    if (!validateEmail(email)) {
-      return setMessage("E-mail inválido.");
-    }
+    if (!validateEmail(email)) return setMessage("E-mail inválido.");
 
     setMessage("");
     setLoading(true);
@@ -50,7 +62,7 @@ const ResetPassword = ({ open, handleClose }) => {
       } else {
         setMessage("Erro ao enviar o código.");
       }
-    } catch (error) {
+    } catch {
       setMessage("Erro ao solicitar recuperação de senha.");
     }
 
@@ -59,9 +71,7 @@ const ResetPassword = ({ open, handleClose }) => {
 
   const handleCodeSubmit = async (e) => {
     e.preventDefault();
-    if (!validatePassword(newPassword)) {
-      return setMessage("A senha deve conter pelo menos 6 caracteres.");
-    }
+    if (!validatePassword(newPassword)) return setMessage("A senha deve conter pelo menos 6 caracteres.");
 
     setMessage("");
     setLoading(true);
@@ -82,7 +92,7 @@ const ResetPassword = ({ open, handleClose }) => {
       } else {
         setMessage("Código inválido ou expirado.");
       }
-    } catch (error) {
+    } catch {
       setMessage("Erro ao redefinir a senha.");
     }
 
@@ -90,8 +100,25 @@ const ResetPassword = ({ open, handleClose }) => {
   };
 
   return (
-    <Modal open={open} onClose={handleCloseAndReset}>
-      <Box className="reset-password-modal" sx={{ padding: "2rem" }}>
+    <Modal
+      open={open}
+      onClose={() => {}}
+      disableEscapeKeyDown
+      aria-labelledby="reset-password-modal"
+    >
+      <Box
+        className="reset-password-modal"
+        sx={{ padding: "2rem", position: "relative" }}
+        onClick={handleBackdropClick}
+      >
+        {/* Botão de fechar */}
+        <IconButton
+          onClick={handleCloseAndReset}
+          sx={{ position: "absolute", top: 10, right: 10, color: "#444" }}
+        >
+          <X size={22} />
+        </IconButton>
+
         <Typography
           variant="h6"
           fontFamily="Lexend"
