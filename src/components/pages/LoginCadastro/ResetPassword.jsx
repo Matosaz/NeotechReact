@@ -188,7 +188,7 @@ const ResetPassword = ({ open, handleClose }) => {
               fontFamily="Lexend"
               disabled={loading}
               className="modal-button"
-              sx={{ borderRadius: "8px", backgroundColor: "#5faa84", padding: "0.75rem", textTransform:'none', fontWeight:'500' }}
+              sx={{ borderRadius: "8px", backgroundColor: "#5faa84", padding: "0.75rem" }}
             >
               {loading ? <CircularProgress size={24} color="inherit" /> : "Enviar Código"}
             </Button>
