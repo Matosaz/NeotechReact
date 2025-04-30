@@ -41,7 +41,9 @@ const Auth = () => {
     setFormData({ name: '', email: '', password: '', confirmPassword: '' });
     setEmailExists(false);
   };
-
+  if (typeof window === 'undefined') {
+    return null; // Ou um loading state para SSR
+  }
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });

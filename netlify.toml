@@ -1,12 +1,9 @@
+[build]
+  command = "npm install && npm run build"  # Instala dependências antes de buildar
+  publish = "dist"
+  environment = { NODE_ENV = "production" }
+
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
-
-[build]
-  command = "npm run build"
-  publish = "dist"
-  environment = { NODE_ENV = "production" }
-
-[dev]
-  framework = "#static"
