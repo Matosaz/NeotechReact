@@ -1,17 +1,8 @@
 import React, { useState } from "react";
 import { Modal, Box, Typography, TextField, Button, CircularProgress } from "@mui/material";
 import "./ResetPassword.css";
-import CloseIcon from "@mui/icons-material/Close";
-import Snackbar from '@mui/material/Snackbar';
-import MuiAlert from '@mui/material/Alert';
-
-const Alert = React.forwardRef(function Alert(props, ref) {
-  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-});
 
 const ResetPassword = ({ open, handleClose }) => {
-
-  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'info' });
   const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -31,11 +22,6 @@ const ResetPassword = ({ open, handleClose }) => {
     setLoading(false);
   };
 
-  const handleCloseSnackbar = (_, reason) => {
-    if (reason === 'clickaway') return;
-    setSnackbar({ ...snackbar, open: false });
-  };
-  
   const handleCloseAndReset = () => {
     resetForm();
     handleClose();
@@ -44,11 +30,10 @@ const ResetPassword = ({ open, handleClose }) => {
   const handleEmailSubmit = async (e) => {
     e.preventDefault();
     if (!validateEmail(email)) {
-      return setSnackbar({ open: true, message: 'Email inválido!', severity: 'error' }); // ou 'error'
-      ;
+      return setMessage("E-mail inválido.");
     }
 
-    setSnackbar("");
+    setMessage("");
     setLoading(true);
 
     try {
@@ -61,14 +46,12 @@ const ResetPassword = ({ open, handleClose }) => {
       const data = await response.json();
       if (data.success) {
         setStep(2);
-        setSnackbar({ open: true, message: 'O código foi enviado para o seu email!', severity: 'success' }); // ou 'error'
+        setMessage("Código enviado para o seu e-mail.");
       } else {
-        setSnackbar({ open: true, message: 'Erro ao enviar o código', severity: 'error' }); // ou 'error'
-
+        setMessage("Erro ao enviar o código.");
       }
     } catch (error) {
-      setSnackbar({ open: true, message: 'Erro ao solicitar recuperação de senha.', severity: 'error' }); // ou 'error'
-
+      setMessage("Erro ao solicitar recuperação de senha.");
     }
 
     setLoading(false);
@@ -77,9 +60,7 @@ const ResetPassword = ({ open, handleClose }) => {
   const handleCodeSubmit = async (e) => {
     e.preventDefault();
     if (!validatePassword(newPassword)) {
-      return setSnackbar({ open: true, message: 'A senha deve conter ao mínimo seis caracteres.', severity: 'warning' }); // ou 'error'
-
-
+      return setMessage("A senha deve conter pelo menos 6 caracteres.");
     }
 
     setMessage("");
@@ -93,52 +74,24 @@ const ResetPassword = ({ open, handleClose }) => {
       });
 
       const data = await response.json();
-      console.log(data); // Verifique o que está sendo retornado pela API
-
       if (data.success) {
-        setSnackbar({ open: true, message: 'Senha redefinida com sucesso.', severity: 'error' }); // ou 'error'
-
+        setMessage("Senha redefinida com sucesso.");
         setTimeout(() => {
           handleCloseAndReset();
-        }, 1000);
+        }, 2000);
       } else {
-        setSnackbar({ open: true, message: 'Código inválido ou experirado.', severity: 'warning' }); // ou 'error'
-
+        setMessage("Código inválido ou expirado.");
       }
     } catch (error) {
-      setSnackbar({ open: true, message: 'Erro ao redefinir a senha.', severity: 'error' }); // ou 'error'
+      setMessage("Erro ao redefinir a senha.");
     }
 
     setLoading(false);
   };
 
   return (
-
-    <Modal
-      open={open}
-      onClose={(_, reason) => {
-        if (reason !== "backdropClick") {
-          handleCloseAndReset();
-        }
-      }}
-    >      <Box className="reset-password-modal" sx={{ padding: "2rem", position: "relative" }}>
-        <Button
-          onClick={handleCloseAndReset}
-          sx={{
-            position: "absolute",
-            top: "8px",
-            right: "8px",
-            minWidth: "auto",
-            padding: "4px 4px",
-            color: "#444",
-            transition: "color 0.2s ease-in-out",
-            "&:hover": {
-              backgroundColor: "#e3e3e3",
-            }
-          }}
-        >
-          <CloseIcon />
-        </Button>
+    <Modal open={open} onClose={handleCloseAndReset}>
+      <Box className="reset-password-modal" sx={{ padding: "2rem" }}>
         <Typography
           variant="h6"
           fontFamily="Lexend"
@@ -260,27 +213,6 @@ const ResetPassword = ({ open, handleClose }) => {
             {message}
           </Typography>
         )}
-        <Snackbar
-          open={snackbar.open}
-          autoHideDuration={3000}
-          onClose={handleCloseSnackbar}
-          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-          sx={{
-            position: 'absolute',
-            marginBottom: '-55px', // Distância da parte inferior da tela
-            left: '50%',
-            transform: 'translateX(-50%)',
-            width: '80%', // Pode ajustar a largura para seu gosto
-          }}
-        >
-          <Alert
-            onClose={handleCloseSnackbar}
-            severity={snackbar.severity}
-            sx={{ width: '100%', borderRadius: '8px' }}
-          >
-            {snackbar.message}
-          </Alert>
-        </Snackbar>
       </Box>
     </Modal>
   );
