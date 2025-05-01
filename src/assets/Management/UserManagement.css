@@ -16,21 +16,33 @@
     margin-left: 100px;
 }
 
+.titleManag{
+    color: #3b3b3b;
+    font-size: 2.7rem;
+    font-weight: 600;
+    margin-bottom: 15px;
+}
 
+.form-container h2{
+    color:  #3d3d3dea;
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 5px;
+   
+}
 .search-container {
     display: flex;
     align-items: center;
     gap: 10px;
-    margin-bottom: 20px;
+    margin-bottom: 25px;
 }
 
 .search-container input {
-    padding: 8px;
     font-size: 14px;
-    width: 350px;
     border-radius: 8px;
     border-style: none;
     background-color: #ced6d1;
+    
 }
 
  button {
@@ -176,6 +188,31 @@ button:hover {
 
 .ADD_button:hover {
     background-color: #4c906b;
+  }
+  
+/* Loading spinner */
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 0px;
+    margin-left: 0px;
+  }
+  
+  .spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #5faa84;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
   }
   
 

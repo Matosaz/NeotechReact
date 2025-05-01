@@ -152,7 +152,7 @@ const Auth = () => {
         }
 
         setSnackbar({ open: true, message: data.message, severity: 'success' });
-        setTimeout(() => navigate('/home'), 1000);
+        setTimeout(() => navigate('/#'), 1000);
       } else {
         setSnackbar({ open: true, message: 'Cadastro realizado com sucesso!', severity: 'success' });
         setTimeout(toggleMode, 1000);

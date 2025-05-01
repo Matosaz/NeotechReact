@@ -266,8 +266,9 @@ textarea{
   color: #666;
   margin-top: 1.5rem;
 }
-.MuiSvgIcon-root {
-  margin-right: 4px; /* ajusta o espaçamento interno */
+.form-group-orcamento .MuiSvgIcon-root {
+  margin-right: 5px;
+  margin-bottom: 10px; /* ajusta o espaçamento interno */
 }
 
 .legend-orcamento{

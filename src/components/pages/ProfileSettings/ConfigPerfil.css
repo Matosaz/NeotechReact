@@ -122,3 +122,7 @@
   justify-content: flex-end; /* Alinha o botão à direita */
   padding-right: 230px; /* Ajuste o valor para controlar o quanto ele fica à direita */
 }
+.profile-salvar-alteracoes{
+  width: 150px;
+  padding: 12px;
+}

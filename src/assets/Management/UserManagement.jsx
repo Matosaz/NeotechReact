@@ -12,11 +12,13 @@ import CircularProgress from '@mui/material/CircularProgress';
 import 'jspdf-autotable';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import {Checkbox, FormControlLabel, FormGroup, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button } from '@mui/material';  // Importando Checkbox do MUI
+import { Checkbox, FormControlLabel, FormGroup, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button } from '@mui/material';  // Importando Checkbox do MUI
 import { styled } from '@mui/material/styles';
 import PrintIcon from '@mui/icons-material/Print';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
+import ProfileAvatar from "../camerausericon.png";
+import { Search } from 'lucide-react';
 
 const CustomCheckbox = styled(Checkbox)(({ theme }) => ({
   '&.Mui-checked': {
@@ -31,7 +33,6 @@ function UserManagement() {
   const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
   });
-
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'info' });
   const [users, setUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -43,6 +44,7 @@ function UserManagement() {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
   const API_BASE_URL = "https://intellij-neotech.onrender.com/api/v1/users";
+  const [avatar, setAvatar] = useState(users?.avatar || null); // Imagem armazenada no backend
 
   const generatePDF = () => {
     setLoadingPDF(true);
@@ -156,7 +158,7 @@ function UserManagement() {
         const response = await fetch(API_BASE_URL, {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json', 
+            'Content-Type': 'application/json',
           },
           body: JSON.stringify({
             nome: newUser.nome,
@@ -174,7 +176,7 @@ function UserManagement() {
 
         const data = await response.json();
         setUsers(prevUsers => [...prevUsers, data]);
-        setSnackbar({ open: true, message: 'Usuário adicionado com sucesso!', severity: 'success' }); 
+        setSnackbar({ open: true, message: 'Usuário adicionado com sucesso!', severity: 'success' });
         resetForm();
       } catch (error) {
 
@@ -224,7 +226,7 @@ function UserManagement() {
 
       const updatedUser = await response.json();
       setUsers(users.map(user => (user.id === currentUser.id ? updatedUser : user)));
-      setSnackbar({ open: true, message: 'Usuário atualizado com sucesso!', severity: 'success' }); 
+      setSnackbar({ open: true, message: 'Usuário atualizado com sucesso!', severity: 'success' });
       resetForm();
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido ao atualizar o usuário';
@@ -250,7 +252,7 @@ function UserManagement() {
   // Função para confirmar a exclusão
   const handleConfirmDelete = async () => {
     if (!userToDelete) return;
-    
+
     try {
       await fetch(`${API_BASE_URL}/${userToDelete}`, {
         method: 'DELETE',
@@ -264,17 +266,6 @@ function UserManagement() {
       handleCloseDeleteDialog();
     }
   };
-  const handleDeleteUser = async (id) => {
-    try {
-      await fetch(`${API_BASE_URL}/${id}`, {
-        method: 'DELETE',
-      });
-      setUsers(users.filter(user => user.id !== id));
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido ao deletar o usuário';
-      setSnackbar({ open: true, message: `Erro ao deletar o usuário: ${errorMessage}`, severity: 'error' });
-    }
-  };
 
   const resetForm = () => {
     setIsEditing(false);
@@ -284,6 +275,34 @@ function UserManagement() {
   };
 
   const columns = [
+
+    {
+      accessorKey: 'avatar',
+      header: 'Foto',
+      size: 60,
+      Cell: ({ row }) => {
+        const avatar = row.original.avatar;
+        const nome = row.original.nome;
+
+        const imageSrc = avatar
+          ? `data:image/png;base64,${avatar}`
+          : ProfileAvatar;
+
+        return (
+          <img
+            src={imageSrc}
+            alt={`Avatar de ${nome}`}
+            style={{
+              width: 40,
+              height: 40,
+              borderRadius: '50%',
+              objectFit: 'cover',
+              border: '0.5px solid #e3e3e3'
+            }}
+          />
+        );
+      }
+    },
     {
       accessorKey: 'nome',
       header: 'Usuário',
@@ -293,17 +312,60 @@ function UserManagement() {
     {
       accessorKey: 'codStatus',
       header: 'Status',
-      cell: ({ cell }) => (cell.getValue() === 'Ativo' ? 'Ativo' : 'Inativo'),
+      Cell: ({ cell }) => {
+        const status = cell.getValue();
+        const isActive = status === 'ATIVO';
+    
+        return (
+          <span
+            style={{
+              backgroundColor: isActive ? '#C8E6C9' : '#FFCDD2',
+              color: isActive ? '#2e7d32' : '#c62828',
+              padding: '4px 12px',
+              borderRadius: '20px',
+              fontSize: '0.875rem',
+              fontWeight: '500',
+              display: 'inline-block',
+              minWidth: '60px',
+              textAlign: 'center'
+            }}
+          >
+            {isActive ? 'Ativo' : 'Inativo'}
+          </span>
+        );
+      },
       headerClassName: 'column-status-header',
       cellClassName: 'column-status-cell',
     },
-    {
-      accessorKey: 'admin',
-      header: 'Administrador',
-      Cell: ({ cell }) => (cell.getValue() ? 'True' : 'False'),
-      headerClassName: 'column-administrador-header',
-      cellClassName: 'column-administrador-cell',
-    },
+    
+   {
+  accessorKey: 'admin',
+  header: 'Administrador',
+  Cell: ({ cell }) => {
+    const isAdmin = cell.getValue();
+    const color = isAdmin ? '#C8E6C9' : '#FFCDD2'; // Verde ou Vermelho
+    const label = isAdmin ? 'Sim' : 'Não';
+
+    return (
+      <span
+        style={{
+          backgroundColor: color,
+          color: isAdmin? '#2e7d32' : '#c62828',
+          padding: '4px 10px',
+          borderRadius: '20px',
+          fontSize: '0.8rem',
+          fontWeight: '600',
+          display: 'inline-block',
+          textAlign: 'center',
+          minWidth: '60px',
+        }}
+      >
+        {label}
+      </span>
+    );
+  }
+},
+
     { accessorKey: 'email', header: 'Email' },
     {
       header: 'Ações',
@@ -326,81 +388,99 @@ function UserManagement() {
 
   return (
     <div className='bodyManagement'>
-    <div className="container-management">
-      <Sidebar1 />
+      <div className="container-management">
+        <Sidebar1 />
 
-      {/* Modal de confirmação para exclusão */}
-      <Dialog
-  open={deleteDialogOpen}
-  onClose={handleCloseDeleteDialog}
-  aria-labelledby="alert-dialog-title"
-  aria-describedby="alert-dialog-description"
-  PaperProps={{
-    sx: {
-      borderRadius: '15px',
-      padding: 2,
-      backgroundColor: '#f9f9f9', // ajuste conforme sua paleta
-      boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)'
-    }
-  }}
->
-  <DialogTitle
-    id="alert-dialog-title"
-    sx={{
-      fontWeight: 'bold',
-      color: '#2f7c37', // cor que remete ao verde da identidade visual
-      fontSize: '20px'
+        {/* Modal de confirmação para exclusão */}
+        <Dialog
+          open={deleteDialogOpen}
+          onClose={handleCloseDeleteDialog}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+          PaperProps={{
+            sx: {
+              borderRadius: '15px',
+              padding: 2,
+              backgroundColor: '#f9f9f9', // ajuste conforme sua paleta
+              boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)'
+            }
+          }}
+        >
+          <DialogTitle
+            id="alert-dialog-title"
+            sx={{
+              fontWeight: 'bold',
+              color: '#2f7c37', // cor que remete ao verde da identidade visual
+              fontSize: '20px'
+            }}
+          >
+            {"Confirmar exclusão"}
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText
+              id="alert-dialog-description"
+              sx={{ fontSize: '16px', color: '#333' }}
+            >
+              Tem certeza que deseja excluir este usuário? Esta ação não pode ser desfeita.
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              onClick={handleCloseDeleteDialog}
+              variant="outlined"
+              sx={{
+                borderRadius: '8px',
+                textTransform: 'none',
+                color: '#2f7c37',
+                borderColor: '#2f7c37',
+                '&:hover': {
+                  backgroundColor: '#e8f5e9',
+                  borderColor: '#2f7c37',
+                },
+              }}
+            >
+              Cancelar
+            </Button>
+            <Button
+              onClick={handleConfirmDelete}
+              variant="contained"
+              color="error"
+              autoFocus
+              sx={{ borderRadius: '8px', textTransform: 'none' }}
+            >
+              Confirmar
+            </Button>
+          </DialogActions>
+        </Dialog>
+
+        <h1 className='titleManag'>Gerenciar usuários</h1>
+        <div className="search-container" style={{ position: 'relative', width: '100%', maxWidth: '410px' }}>
+  <input
+    type="text"
+    placeholder="Pesquisar Usuários"
+    value={searchTerm}
+    onChange={handleSearch}
+    style={{
+      width: '100%',
+      padding: '10px 12px',
+      borderRadius: '10px',
+      fontSize: '14px'
     }}
-  >
-    {"Confirmar exclusão"}
-  </DialogTitle>
-  <DialogContent>
-    <DialogContentText
-      id="alert-dialog-description"
-      sx={{ fontSize: '16px', color: '#333' }}
-    >
-      Tem certeza que deseja excluir este usuário? Esta ação não pode ser desfeita.
-    </DialogContentText>
-  </DialogContent>
-  <DialogActions>
-    <Button
-      onClick={handleCloseDeleteDialog}
-      variant="outlined"
-      sx={{
-        borderRadius: '8px',
-        textTransform: 'none',
-        color: '#2f7c37',
-        borderColor: '#2f7c37',
-        '&:hover': {
-          backgroundColor: '#e8f5e9',
-          borderColor: '#2f7c37',
-        },
-      }}
-    >
-      Cancelar
-    </Button>
-    <Button
-      onClick={handleConfirmDelete}
-      variant="contained"
-      color="error"
-      autoFocus
-      sx={{ borderRadius: '8px', textTransform: 'none' }}
-    >
-      Confirmar
-    </Button>
-  </DialogActions>
-</Dialog>
+  />
+  <Search
+    size={20}
+    style={{
+      position: 'absolute',
+      right: '12px',
+      top: '50%',
+      transform: 'translateY(-50%)',
+      color: '#999',
+      pointerEvents: 'none'
+    }}
+  />
+</div>
 
-        <h1>Usuários</h1>
-        <div className="search-container">
-          <input
-            type="text"
-            placeholder="Pesquisar Usuários"
-            value={searchTerm}
-            onChange={handleSearch}
-          />
-          <button>Pesquisar</button>
-        </div>
+
 
         <div className="form-container">
           <form onSubmit={(event) => {
@@ -485,9 +565,12 @@ function UserManagement() {
         </div>
 
         <div className="table-container">
-          {isLoading ? (
-            <div className="loading-message">Carregando usuários...</div>
-          ) : (
+        {isLoading ? (
+          <div className="loading-container">
+            <div className="spinner"></div>
+            <p>Carregando dados...</p>
+          </div>
+        ) :  (
             <MaterialReactTable
               columns={columns}
               data={filteredUsers}
@@ -497,8 +580,8 @@ function UserManagement() {
               }}
             />
           )}
-
         </div>
+
         <button onClick={generatePDF} className="generate-pdf-button" disabled={loadingPDF}>
           {loadingPDF ? (
             <CircularProgress size={24} color="inherit" />

@@ -1,34 +1,223 @@
 .dashboard-container {
     display: flex;
     padding-top: 20px;
-    background: url(/src/assets/teste5.png) no-repeat;
-    height: 100vh;
+    background: url(/src/assets/teste6.png) no-repeat;
+    min-height: 120vh;
 
   }
   
   .dashboard-content {
     padding: 20px;
-    font-size: 18px;
-    margin-left: 200px;
+    flex: 1;
+    margin-left: 100px;
+    padding-right: 100px;
+  
   }
   
-  .dashboard-info {
-    display: flex;
-    justify-content: space-around;
-    margin-top: 20px;
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.dashboard-header h1 {
+  color: #3b3b3b;
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+/* Seletor de período */
+
+
+
+/* Grid de métricas */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.metric-card {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-left: 5px solid;
+}
+
+.metric-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+}
+
+.metric-card h3 {
+  color: #5a606b;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.metric-card p {
+  color: #474747;
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin: 0.5rem 0;
+}
+
+.metric-card span {
+  color: #4141418c;
+  font-size: 14px;
+}
+
+/* Cores dos cards */
+.metric-card.primary {
+  border-left-color: #4e73df;
+}
+
+.metric-card.success {
+  border-left-color: #1cc88a;
+}
+
+.metric-card.warning {
+  border-left-color: crimson;
+}
+
+.metric-card.info {
+  border-left-color: #f6c23e;
+}
+
+/* Grid de gráficos */
+.charts-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
+
+.chart-card {
+  background: white;
+  border-radius: 10px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.09);
+}
+
+.chart-card h3 {
+  color: #2e384de3;
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.chart-container {
+  height: 300px;
+  width: 100%;
+}
+
+/* Lista de atividades */
+.activity-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.activity-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.8rem 0.5rem;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.activity-item:last-child {
+  border-bottom: none;
+}
+
+.activity-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.activity-icon i {
+  font-size: 1rem;
+}
+
+.activity-icon.primary {
+  background: #4e73df;
+}
+
+.activity-icon.success {
+  background: #1cc88a;
+}
+
+.activity-icon.warning {
+  background: #f6c23e;
+}
+
+.activity-icon.info {
+  background: #36b9cc;
+}
+
+.activity-details p {
+  color: #5e5e5e;
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+}
+
+.activity-details span {
+  color: #707070a6;
+  font-size: 14px;
+}
+
+/* Loading spinner */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 250px;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #5faa84;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Responsividade */
+@media (max-width: 1200px) {
+  .metrics-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
   
-  .info-card {
-    background-color: #f5f5f5;
-    padding: 20px;
-    border-radius: 8px;
-    text-align: center;
-    width: 200px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  .charts-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .metrics-grid {
+    grid-template-columns: 1fr;
   }
   
-  .info-card p {
-    font-size: 24px;
-    font-weight: bold;
+  .dashboard-content {
+    margin-left: 0;
+    padding: 1rem;
   }
-  
+}

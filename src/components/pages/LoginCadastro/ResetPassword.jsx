@@ -232,8 +232,12 @@ const ResetPassword = ({ open, handleClose }) => {
             className="modal-message"
             sx={{
               marginTop: "0.5rem",
-              color: message.toLowerCase().includes("sucesso") ? "green" : "red",
-              fontSize: "1rem",
+              color:
+              message.toLowerCase().includes("sucesso") ||
+              message.toLowerCase().includes("código enviado")
+                ? "green"
+                : "red",
+                          fontSize: "1rem",
               textAlign: "center",
             }}
           >

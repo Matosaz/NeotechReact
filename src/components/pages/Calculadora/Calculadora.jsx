@@ -400,7 +400,6 @@ const Calculadora = () => {
           <div className='upper-orcamento'>
 
             <h2 className='title-orcamento'>{getStepTitle()}</h2>
-{/* teste */}
 
             <div className="wrap-orcamento">
               <div className="col-lg-12-orcamento">

@@ -378,8 +378,7 @@ const ConfigPerfil = () => {
               >
                 {loading ? (
                   <>
-                    <CircularProgress size={20} style={{ color: '#fff' }} />
-                    Salvando...
+                    <CircularProgress size={16} style={{ color: '#fff', strokeWidth:"2px"}} />
                   </>
                 ) : (
                   'Salvar alterações'
