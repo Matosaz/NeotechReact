@@ -7,8 +7,9 @@ import NaoEncontrada from './components/pages/404/NaoEncontrada'
 import Mapa from './components/pages/mapa/Mapa'
 import Auth from './components/pages/LoginCadastro/Auth'
 import NoPermission from './components/pages/NoPermission/NoPermission'
-import UserManagement from './assets/Management/UserManagement'
-import Dashboard from './assets/Management/Dashboard/Dashboard'
+import UserManagement from './components/pages/Management/UserManagement/UserManagement'
+import OrcamentoManagement from './components/pages/Management/OrcamentoManagement/OrcamentoManagement'
+import Dashboard from './components/pages/Management/Dashboard/Dashboard'
 import Politica from './components/pages/Politicas/Politica'
 import Calculadora from './components/pages/Calculadora/Calculadora'
 import ConfigPerfil from './components/pages/ProfileSettings/ConfigPerfil'
@@ -60,6 +61,8 @@ function App() {
           <Route path='/FAQ' element={<FAQ1 />} />
           <Route path='/Dashboard' element={<Dashboard />} />
           <Route path='/UserManagement' element={<ProtectedRoute><UserManagement /></ProtectedRoute>
+          } />
+           <Route path='/OrcamentoManagement' element={<ProtectedRoute><OrcamentoManagement /></ProtectedRoute>
           } />
           <Route path="/NoPermission" element={<NoPermission />} /> 
           <Route path='/Mapa' element={<Mapa1 />} />

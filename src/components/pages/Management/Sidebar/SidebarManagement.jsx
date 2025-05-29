@@ -5,9 +5,10 @@ import { styled } from "@mui/material/styles";
 import { motion } from "framer-motion";
 import {
   User,
-  Settings,
   ClipboardList,
-  ArrowLeft
+  LayoutDashboard,
+  ArrowLeft,
+  ChartColumnStacked ,
 } from "lucide-react";
 import "./SidebarManagement.css";
 
@@ -31,9 +32,9 @@ const CustomTooltip = styled(({ className, ...props }) => (
 
 const icons = [
   { label: "Retornar", icon: <ArrowLeft size={25} />, path: "/" },
-  { label: "Dashboard", icon: <ClipboardList size={25} />, path: "/dashboard" },
+  { label: "Dashboard", icon: <LayoutDashboard size={25} />, path: "/dashboard" },
   { label: "Gerenciar Usuários", icon: <User size={25} />, path: "/UserManagement" },
-  { label: "Preferências", icon: <Settings size={25} />, path: "/configuracoes" },
+  { label: "Gerenciar Categorias", icon: <ChartColumnStacked  size={25} />, path: "/OrcamentoManagement" },
 ];
 
 const SidebarManagement = () => {

@@ -1,0 +1,245 @@
+.OrcamentoManagement {
+    height: 100vh;
+    /* background: url(/src/assets/teste4.png) no-repeat; */
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.25), rgba(127, 192, 141, 0.3));
+}
+
+.OrcamentoManagement .container-management {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: "Lexend";
+    align-items: center;
+    align-content: center;
+    color: #121212;
+    padding-top: 40px;
+    margin-left: 100px;
+}
+
+.titleManag {
+    color: #3b3b3b;
+    font-size: 2.7rem;
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+.OrcamentoManagement .form-container h2 {
+    color: #3d3d3dea;
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 5px;
+
+}
+
+.OrcamentoManagement .search-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 25px;
+}
+
+.OrcamentoManagement .search-container input {
+    font-size: 14px;
+    border-radius: 8px;
+    border-style: none;
+    background-color: #ced6d1;
+
+}
+
+button {
+    padding: 8px 12px;
+    background-color: rgb(95, 170, 132);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+
+}
+
+button:hover {
+    background-color: #4c906b;
+    ;
+}
+
+.OrcamentoManagement .botaodeletar {
+    background-color: rgb(247, 71, 71);
+}
+
+.botaodeletar:hover {
+    background-color: rgb(214, 60, 60);
+}
+
+.generate-pdf-button {
+    margin-left: auto;
+    position: relative;
+    margin-top: 10px;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-family: "Lexend";
+    min-width: 160px;
+    /* Reservar espaço mínimo */
+    height: 40px;
+    /* Altura fixa opcional para evitar "pulos" */
+    transition: background-color 0.3s ease;
+}
+
+/* Ajustes na form-container */
+.OrcamentoManagement .form-container {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    background-color: #5faa6f86;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    justify-content: space-between;
+    /* Distribui os itens de forma uniforme */
+}
+
+.OrcamentoManagement .form-container input {
+    width: 70%;
+    /* Todos os inputs terão 30% da largura */
+    padding: 8px;
+    font-size: 14px;
+    background-color: #ffffff;
+}
+
+.OrcamentoManagement textarea {
+    border-radius: 10px;
+    border: none;
+    width: 400px;
+    height: 35px;
+    padding: 8px;
+}
+
+.OrcamentoManagement .ADD_button {
+    align-self: flex-start;
+    height: 50px;
+    margin-top: 0;
+}
+
+
+
+
+
+/* Customização dos checkboxes */
+.OrcamentoManagement .MuiCheckbox-root {
+    color: #e9e9e9 !important;
+    margin-left: 20px;
+    transition: all 0.3s ease;
+    /* Transição suave ao interagir com o checkbox */
+    display: flex;
+    flex-wrap: wrap;
+    /* opcional, permite quebra em telas menores */
+
+}
+
+.OrcamentoManagement .MuiCheckbox-root.Mui-checked {
+    color: #069647 !important;
+    /* Cor do checkbox quando marcado */
+}
+
+.OrcamentoManagement .MuiFormControlLabel-label {
+    font-family: "Lexend";
+    font-weight: 500;
+    color: #fafafa;
+    font-size: 14px;
+}
+
+
+
+.OrcamentoManagement .form-row {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    /* Espaçamento entre os elementos */
+}
+
+
+
+.table-container {
+    overflow-x: auto;
+    border-radius: 10px;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+.OrcamentoManagement .ADD_button {
+    align-self: flex-end;
+    margin-left: -100px;
+    height: 50px;
+    width: 250px;
+    background-color: #5faa84;
+    color: white;
+    border: none;
+    padding: 5px;
+    cursor: pointer;
+    border-radius: 10px;
+}
+
+.ADD_button:hover {
+    background-color: #4c906b;
+}
+
+.CANCEL_button {
+    height: 50px;
+    background-color: rgb(196, 31, 31);
+    border-radius: 10px;
+
+    width: 150px;
+}
+.CANCEL_button:hover{
+        background-color: rgb(175, 29, 29);
+
+}
+/* Loading spinner */
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 0px;
+    margin-left: 0px;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #5faa84;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .form-container {
+        flex-direction: column;
+    }
+
+    .form-container input {
+        width: 100%;
+        /* Em telas menores, os inputs ocuparão 100% da largura */
+    }
+
+}

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { MaterialReactTable } from 'material-react-table';
 import './UserManagement.css';
-import NeotechLogo from '../Logo7png.png'
-import Sidebar1 from './Sidebar/SidebarManagement';
+import NeotechLogo from "../../../../assets/Logo7png.png"
+import Sidebar1 from '../Sidebar/SidebarManagement';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import IconButton from '@mui/material/IconButton';
@@ -17,7 +17,7 @@ import { styled } from '@mui/material/styles';
 import PrintIcon from '@mui/icons-material/Print';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
-import ProfileAvatar from "../camerausericon.png";
+import ProfileAvatar from "../../../../assets/camerausericon.png";
 import { Search } from 'lucide-react';
 
 const CustomCheckbox = styled(Checkbox)(({ theme }) => ({
@@ -293,8 +293,8 @@ function UserManagement() {
             src={imageSrc}
             alt={`Avatar de ${nome}`}
             style={{
-              width: 40,
-              height: 40,
+              width: 50,
+              height: 50,
               borderRadius: '50%',
               objectFit: 'cover',
               border: '0.5px solid #e3e3e3'
@@ -553,13 +553,25 @@ function UserManagement() {
                 />
               </FormGroup>
 
-              <button className='ADD_button' type="submit" disabled={loadingUserSubmit}>
-                {loadingUserSubmit ? (
-                  <CircularProgress size={24} color="inherit" />
-                ) : (
-                  isEditing ? 'Atualizar Usuário' : 'Adicionar Usuário'
-                )}
-              </button>
+            <div className="form-buttons">
+  <button className='ADD_button' type="submit" disabled={loadingUserSubmit}>
+    {loadingUserSubmit ? (
+      <CircularProgress size={24} color="inherit" />
+    ) : (
+      isEditing ? 'Atualizar Usuário' : 'Adicionar Usuário'
+    )}
+  </button>
+  
+  {isEditing && (
+    <button
+      type="button"
+      onClick={resetForm}
+      className='CANCEL_button_USER'>
+      Cancelar
+    </button>
+  )}
+</div>
+
             </div>
           </form>
         </div>

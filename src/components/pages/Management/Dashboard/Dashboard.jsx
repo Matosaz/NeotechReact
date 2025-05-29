@@ -21,7 +21,6 @@ function Dashboard() {
   const [users, setUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [timeRange, setTimeRange] = useState('monthly');
-
   const API_BASE_URL = "https://intellij-neotech.onrender.com/api/v1/users";
 
   useEffect(() => {

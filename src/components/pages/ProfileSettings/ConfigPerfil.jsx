@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
 import "./ConfigPerfil.css";
-import Sidebar2 from "../../../assets/Management/Sidebar/SidebarUser";
+import Sidebar2 from "../Management/Sidebar/SidebarUser";
 import ProfileAvatar from "../../../assets/camerausericon.png";
 import { Input, InputTel, InputCep } from "./MaskedInput";
 import { UserContext } from "../../UserContext"; // Importando o UserContext

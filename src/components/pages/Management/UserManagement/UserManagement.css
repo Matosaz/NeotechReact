@@ -90,6 +90,7 @@ button:hover {
     border-radius: 8px;
     margin-bottom: 20px;
     justify-content: space-between;
+    
 /* Distribui os itens de forma uniforme */
 }
 
@@ -149,6 +150,7 @@ button:hover {
     display: flex;
     align-items: center;
     gap: 15px; /* Espaçamento entre os elementos */
+    
   }
   
   .form-row input,
@@ -157,6 +159,7 @@ button:hover {
     flex-basis: 30%; /* Cada elemento ocupa 20% da largura */
     border-radius: 8px;
     border-style: none;
+    
   }
 
 .table-container {
@@ -165,19 +168,25 @@ button:hover {
 }
 
 
-
-
-
 .action-buttons {
     display: flex;
     gap: 15px;
    justify-content: center;
 }
 
+.CANCEL_button_USER{
+    background-color: rgb(196, 31, 31);
+    border-radius: 10px;
+
+}
+.CANCEL_button_USER:hover{
+        background-color: rgb(175, 29, 29);
+
+}
 .ADD_button {
     align-self: flex-start;
     height: 50px;
-    width: 200px;
+    width: 150px;
     background-color: #5faa84;
     color: white;
     border: none;
@@ -185,6 +194,13 @@ button:hover {
     cursor: pointer;
     border-radius: 10px;
   }
+  
+.form-buttons {
+  display: flex;
+  gap: 10px; /* Espaço entre os botões */
+  flex-wrap: nowrap; /* Permite quebra em telas pequenas */
+  margin-top: 10px;
+}
 
 .ADD_button:hover {
     background-color: #4c906b;
@@ -214,7 +230,6 @@ button:hover {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
   }
-  
 
 /* Responsividade */
 @media (max-width: 768px) {
@@ -227,5 +242,16 @@ button:hover {
     .form-container input[type="email"], .password-container{
         width: 100%; /* Em telas menores, os inputs ocuparão 100% da largura */
     }
+@media (max-width: 600px) {
+  .form-buttons {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .ADD_button,
+  .CANCEL_button {
+    width: 100%;
+  }
+}
 
 }
