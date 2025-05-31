@@ -17,6 +17,7 @@ import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import CircularProgress from '@mui/material/CircularProgress';
 import backgroundImage from '../../../assets/TesteCalculadora.png'; // ajuste o caminho conforme sua pasta
+import { Receipt } from 'lucide-react';
 
 
 const Alert = React.forwardRef(function Alert(props, ref) {
@@ -40,7 +41,10 @@ const Calculadora = () => {
     complemento: user?.complemento || '',
     bairro: user?.bairro || '',
     cidade: user?.cidade || '',
-
+    itens: [],
+    novaCategoria: '',
+    novaQuantidade: '',
+    categoriasDisponiveis: [],
     estado: user?.estado || '',
     dataColeta: '',
     horaColeta: '',
@@ -49,6 +53,27 @@ const Calculadora = () => {
   const [dateError, setDateError] = useState('');
   const [timeError, setTimeError] = useState('');
   const [disableNextButton, setDisableNextButton] = useState(false); // Estado para desabilitar o botão de próximo
+
+
+  useEffect(() => {
+    // Carrega categorias disponíveis
+    const fetchCategorias = async () => {
+      try {
+        const response = await fetch('https://intellij-neotech.onrender.com/api/v1/categorias');
+        const data = await response.json();
+        setFormData(prev => ({ ...prev, categoriasDisponiveis: data }));
+      } catch (error) {
+        console.error('Erro ao carregar categorias:', error);
+        setSnackbar({
+          open: true,
+          message: 'Erro ao carregar categorias disponíveis',
+          severity: 'error'
+        });
+      }
+    };
+
+    fetchCategorias();
+  }, []);
 
   useEffect(() => {
     if (user) {
@@ -82,8 +107,10 @@ const Calculadora = () => {
       case 4:
         return 'Quando você almeja que a coleta ocorra?:';
       case 5:
-        return 'Verifique se as informações estão corretas';
+        return 'Quais itens você deseja reciclar?';
       case 6:
+        return 'Verifique se as informações estão corretas!';
+      case 7:
         return 'Agendamento Confirmado!';
       default:
         return 'Vamos começar!';
@@ -137,8 +164,8 @@ const Calculadora = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Formulário enviado na etapa:", currentStep); // 🐛 debug
-    if (currentStep != 5) return; // ✅ Garante que só envia no passo 5
+
+    if (currentStep != 6) return; // ✅ Garante que só envia no passo 5
 
 
 
@@ -148,17 +175,25 @@ const Calculadora = () => {
       ? `${formData.horaColeta}:00`
       : `${formData.horaColeta.slice(0, 2)}:${formData.horaColeta.slice(2, 4)}:00`;
 
+
+ const categoriasPayload = formData.itens.map(item => ({ id: item.categoria.id }));
+
     // Preparar dados no formato esperado pelo backend
     const requestData = {
+
+      categorias: categoriasPayload,
       dataColeta: formData.dataColeta,
       horaColeta: horaComSegundos,
       metodoContato: formData.metodoContato,
       aceitaContato: formData.aceitaContato,
-      usuario: { id: user?.id }
+      usuario: { id: user?.id },
+      itens: formData.itens,  // Inclui as categorias selecionadas e quantidades
+
 
     };
 
-
+    console.log('Itens selecionados:', formData.itens);
+    console.log('Categorias para envio:', categoriasPayload);
     // Verifica se todos os campos obrigatórios estão preenchidos
 
     if (!formData.metodoContato) {
@@ -199,7 +234,7 @@ const Calculadora = () => {
       }
 
       console.log('Dados recebidos:', responseText);
-      setCurrentStep(6); // Avança para a tela de sucesso
+      setCurrentStep(7); // Avança para a tela de sucesso
 
     } catch (error) {
       console.error('Erro ao enviar os dados:', error);
@@ -216,7 +251,7 @@ const Calculadora = () => {
     const form = document.querySelector('form');
 
     // Validação do passo atual
-    if (currentStep < 6 && form.checkValidity()) {
+    if (currentStep < 7 && form.checkValidity()) {
       if (currentStep === 4) {
         const selectedDate = dayjs(formData.dataColeta);
         const selectedTime = dayjs(formData.horaColeta, 'HH:mm');
@@ -265,7 +300,7 @@ const Calculadora = () => {
   };
 
   const updateProgress = () => {
-    return (currentStep / 6) * 100;
+    return (currentStep / 7) * 100;
   };
   const handleDateChange = (newValue) => {
     if (newValue) {
@@ -313,16 +348,16 @@ const Calculadora = () => {
   const shouldDisableTime = (time) => {
     const now = dayjs();
     const selectedDate = dayjs(formData.dataColeta);
-
     if (selectedDate.isSame(now, 'day')) {
       return time.isBefore(now, 'minute');
     }
     return false;
   };
 
+
   return (
     <>
-      {currentStep === 6 ? (
+      {currentStep === 7 ? (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -652,7 +687,120 @@ const Calculadora = () => {
                       </LocalizationProvider>
                     </fieldset>
                   )}
+
                   {currentStep === 5 && (
+                    <fieldset className='fieldset-orcamento'>
+                      <legend className='legend-orcamento'>Itens para Reciclagem</legend>
+
+                      <div className="itens-container">
+                        {/* Lista de itens adicionados */}
+                        {formData.itens && formData.itens.length > 0 && (
+                          <div className="itens-list">
+                            <h4>Itens adicionados:</h4>
+                            <ul>
+                              {formData.itens.map((item, index) => (
+                                <li key={index}>
+                                  <span className="item-info">
+                                    {item.quantidade}kg de {item.categoria.nome}
+                                    <span className="item-price">
+                                      (R$ {(item.categoria.precoPorKg * item.quantidade).toFixed(2)})
+                                    </span>
+                                  </span>
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      const newItens = [...formData.itens];
+                                      newItens.splice(index, 1);
+                                      setFormData({ ...formData, itens: newItens });
+                                    }}
+                                    className="remove-item-btn"
+                                  >
+                                    Remover
+                                  </button>
+                                </li>
+                              ))}
+                            </ul>
+                            <div className="total-section" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '1rem' }}>
+                              <div style={{ display: 'flex', alignItems: 'center' }}>
+                                <Receipt size={20} style={{ marginRight: '8px', color: "#2e7d32" }} />
+                                <h4 style={{ margin: 0 }}>Total estimado:</h4>
+                              </div>
+                              <span className="total-value" style={{ fontWeight: 'bold', fontSize: '1.2rem' }}>
+                                R$ {formData.itens.reduce((total, item) =>
+                                  total + (item.categoria.precoPorKg * item.quantidade), 0).toFixed(2)}
+                              </span>
+                            </div>
+
+                          </div>
+                        )}
+
+                        {/* Formulário para adicionar novo item */}
+                        <div className="novo-item-form">
+                          <div className="form-group-orcamento">
+                            <label>Categoria do Item</label>
+                            <select
+                              name="novaCategoria"
+                              value={formData.novaCategoria || ''}
+                              onChange={(e) => setFormData({ ...formData, novaCategoria: e.target.value })}
+                              required
+                              className="form-control-orcamento"
+                            >
+                              <option value="">Selecione uma categoria</option>
+                              {formData.categoriasDisponiveis
+                                .filter(cat => cat.codStatus.trim() === 'ATIVO') // Mostra apenas categorias ativas
+                                .map((categoria) => (
+                                  <option key={categoria.id} value={categoria.id}>
+                                    {categoria.nome} (R$ {categoria.precoPorKg.toFixed(2)}/kg)
+                                  </option>
+                                ))}
+                            </select>
+                          </div>
+
+                          <div className="form-group-orcamento">
+                            <label>Quantidade (kg)</label>
+                            <input
+                              type="number"
+                              name="novaQuantidade"
+                              min="0.1"
+                              step="0.1"
+                              value={formData.novaQuantidade || ''}
+                              onChange={(e) => setFormData({ ...formData, novaQuantidade: e.target.value })}
+                              required
+                              placeholder="Ex: 2.5"
+                              className="form-control-orcamento"
+                            />
+                          </div>
+
+                          <button
+                            type="button"
+                            onClick={() => {
+                              if (formData.novaCategoria && formData.novaQuantidade) {
+                                const categoriaSelecionada = formData.categoriasDisponiveis.find(
+                                  cat => cat.id == formData.novaCategoria
+                                );
+
+                                const novoItem = {
+                                  categoria: categoriaSelecionada,
+                                  quantidade: parseFloat(formData.novaQuantidade)
+                                };
+
+                                setFormData({
+                                  ...formData,
+                                  itens: [...(formData.itens || []), novoItem],
+                                  novaCategoria: '',
+                                  novaQuantidade: ''
+                                });
+                              }
+                            }}
+                            className="add-item-btn"
+                          >
+                            Adicionar Item
+                          </button>
+                        </div>
+                      </div>
+                    </fieldset>
+                  )}
+                  {currentStep === 6 && (
                     <fieldset className='fieldset-orcamento'>
                       <legend className='legend-orcamento'>Confirmação do Agendamento</legend>
                       <div className="ConfirmDesign">
@@ -701,11 +849,11 @@ const Calculadora = () => {
                         Voltar
                       </button>
                     )}
-                    {currentStep <= 4 ? (
+                    {currentStep <= 5 ? (
                       <button type="button" onClick={nextStep} disabled={disableNextButton}>
                         Próximo
                       </button>
-                    ) : currentStep === 5 ? (
+                    ) : currentStep === 6 ? (
                       <button
                         type="button"
                         disabled={loading}

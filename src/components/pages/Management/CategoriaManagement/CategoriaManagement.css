@@ -1,10 +1,10 @@
-.OrcamentoManagement {
+.CategoriaManagement {
     height: 100vh;
     /* background: url(/src/assets/teste4.png) no-repeat; */
     background: linear-gradient(145deg, rgba(255, 255, 255, 0.25), rgba(127, 192, 141, 0.3));
 }
 
-.OrcamentoManagement .container-management {
+.CategoriaManagement .container-management {
     max-width: 1280px;
     margin: 0 auto;
     padding: 20px;
@@ -23,7 +23,7 @@
     margin-bottom: 15px;
 }
 
-.OrcamentoManagement .form-container h2 {
+.CategoriaManagement .form-container h2 {
     color: #3d3d3dea;
     font-size: 24px;
     font-weight: 700;
@@ -31,14 +31,14 @@
 
 }
 
-.OrcamentoManagement .search-container {
+.CategoriaManagement .search-container {
     display: flex;
     align-items: center;
     gap: 10px;
     margin-bottom: 25px;
 }
 
-.OrcamentoManagement .search-container input {
+.CategoriaManagement .search-container input {
     font-size: 14px;
     border-radius: 8px;
     border-style: none;
@@ -62,7 +62,7 @@ button:hover {
     ;
 }
 
-.OrcamentoManagement .botaodeletar {
+.CategoriaManagement .botaodeletar {
     background-color: rgb(247, 71, 71);
 }
 
@@ -88,7 +88,7 @@ button:hover {
 }
 
 /* Ajustes na form-container */
-.OrcamentoManagement .form-container {
+.CategoriaManagement .form-container {
     display: flex;
     align-items: center;
     gap: 20px;
@@ -100,7 +100,7 @@ button:hover {
     /* Distribui os itens de forma uniforme */
 }
 
-.OrcamentoManagement .form-container input {
+.CategoriaManagement .form-container input {
     width: 70%;
     /* Todos os inputs terão 30% da largura */
     padding: 8px;
@@ -108,7 +108,7 @@ button:hover {
     background-color: #ffffff;
 }
 
-.OrcamentoManagement textarea {
+.CategoriaManagement textarea {
     border-radius: 10px;
     border: none;
     width: 400px;
@@ -116,7 +116,7 @@ button:hover {
     padding: 8px;
 }
 
-.OrcamentoManagement .ADD_button {
+.CategoriaManagement .ADD_button {
     align-self: flex-start;
     height: 50px;
     margin-top: 0;
@@ -127,30 +127,32 @@ button:hover {
 
 
 /* Customização dos checkboxes */
-/* Estilos para o Checkbox */
-.MuiCheckbox-root {
-  color: #5faa84 !important;
-  padding: 8px !important;
-  transition: all 0.3s ease !important;
+.CategoriaManagement .MuiCheckbox-root {
+    color: #e9e9e9 !important;
+    margin-left: 20px;
+    transition: all 0.3s ease;
+    /* Transição suave ao interagir com o checkbox */
+    display: flex;
+    flex-wrap: wrap;
+    /* opcional, permite quebra em telas menores */
+
 }
 
-.MuiCheckbox-root.Mui-checked {
-  color: #2f7c37 !important;
+.CategoriaManagement .MuiCheckbox-root.Mui-checked {
+    color: #069647 !important;
+    /* Cor do checkbox quando marcado */
 }
 
-.MuiCheckbox-root:hover {
-  color: #4c906b !important;
-  background-color: rgba(95, 170, 132, 0.1) !important;
+.CategoriaManagement .MuiFormControlLabel-label {
+    font-family: "Lexend";
+    font-weight: 500;
+    color: #fafafa;
+    font-size: 14px;
 }
 
-.MuiFormControlLabel-label {
-  color: #3b3b3b !important;
-  font-family: "Lexend", sans-serif !important;
-  font-weight: 500 !important;
-  font-size: 14px !important;
-}
 
-.OrcamentoManagement .form-row {
+
+.CategoriaManagement .form-row {
     display: flex;
     align-items: center;
     gap: 15px;
@@ -170,7 +172,7 @@ button:hover {
     justify-content: center;
 }
 
-.OrcamentoManagement .ADD_button {
+.CategoriaManagement .ADD_button {
     align-self: flex-end;
     margin-left: -100px;
     height: 50px;
@@ -207,16 +209,19 @@ button:hover {
     height: 0px;
     margin-left: 0px;
 }
-
+.MuiTypography-root .MuiFormControlLabel-label {
+    color: #fafafa!important;
+}
 .spinner {
     width: 50px;
     height: 50px;
     border: 5px solid #f3f3f3;
-    border-top: 5px solid #5faa84!important;
+    border-top: 5px solid #5faa84;
     border-radius: 50%;
     animation: spin 1s linear infinite;
     margin-bottom: 1rem;
 }
+
 @keyframes spin {
     0% {
         transform: rotate(0deg);

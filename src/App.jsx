@@ -8,6 +8,7 @@ import Mapa from './components/pages/mapa/Mapa'
 import Auth from './components/pages/LoginCadastro/Auth'
 import NoPermission from './components/pages/NoPermission/NoPermission'
 import UserManagement from './components/pages/Management/UserManagement/UserManagement'
+import CategoriaManagement from './components/pages/Management/CategoriaManagement/CategoriaManagement'
 import OrcamentoManagement from './components/pages/Management/OrcamentoManagement/OrcamentoManagement'
 import Dashboard from './components/pages/Management/Dashboard/Dashboard'
 import Politica from './components/pages/Politicas/Politica'
@@ -60,11 +61,10 @@ function App() {
           <Route path='/Politica' element={<Politica />} />
           <Route path='/FAQ' element={<FAQ1 />} />
           <Route path='/Dashboard' element={<Dashboard />} />
-          <Route path='/UserManagement' element={<ProtectedRoute><UserManagement /></ProtectedRoute>
-          } />
-           <Route path='/OrcamentoManagement' element={<ProtectedRoute><OrcamentoManagement /></ProtectedRoute>
-          } />
-          <Route path="/NoPermission" element={<NoPermission />} /> 
+          <Route path='/UserManagement' element={<ProtectedRoute><UserManagement /></ProtectedRoute>} />
+          <Route path='/CategoriaManagement' element={<ProtectedRoute><CategoriaManagement /></ProtectedRoute>} />
+          <Route path='/OrcamentoManagement' element={<ProtectedRoute><OrcamentoManagement /></ProtectedRoute>} />
+          <Route path="/NoPermission" element={<NoPermission />} />
           <Route path='/Mapa' element={<Mapa1 />} />
           <Route path='/Auth' element={<Auth />} />
           <Route path='/ResetPassword' element={<ResetPassword />} />

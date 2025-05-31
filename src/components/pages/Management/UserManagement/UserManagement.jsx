@@ -19,6 +19,7 @@ import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import ProfileAvatar from "../../../../assets/camerausericon.png";
 import { Search } from 'lucide-react';
+import Typography from '@mui/material/Typography';
 
 const CustomCheckbox = styled(Checkbox)(({ theme }) => ({
   '&.Mui-checked': {
@@ -534,7 +535,7 @@ function UserManagement() {
                       }}
                     />
                   }
-                  label="Ativo"
+                                 label={<Typography sx={{ color: '#fafafa' }}>Ativo</Typography>}
                 />
                 <FormControlLabel
                   control={
@@ -549,7 +550,7 @@ function UserManagement() {
                       }}
                     />
                   }
-                  label="Administrador"
+                                 label={<Typography sx={{ color: '#fafafa' }}>Administrador</Typography>}
                 />
               </FormGroup>
 

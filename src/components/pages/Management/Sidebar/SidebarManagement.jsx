@@ -34,7 +34,9 @@ const icons = [
   { label: "Retornar", icon: <ArrowLeft size={25} />, path: "/" },
   { label: "Dashboard", icon: <LayoutDashboard size={25} />, path: "/dashboard" },
   { label: "Gerenciar Usuários", icon: <User size={25} />, path: "/UserManagement" },
-  { label: "Gerenciar Categorias", icon: <ChartColumnStacked  size={25} />, path: "/OrcamentoManagement" },
+  { label: "Gerenciar Categorias", icon: <ChartColumnStacked  size={25} />, path: "/CategoriaManagement" },
+  { label: "Gerenciar Orçamentos", icon: <ClipboardList  size={25} />, path: "/OrcamentoManagement" },
+
 ];
 
 const SidebarManagement = () => {

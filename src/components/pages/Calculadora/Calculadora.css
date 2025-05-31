@@ -1,66 +1,78 @@
 .body-orcamento {
   background: url(/src/assets/TesteCalculadora.png);
-  background-size: cover; /* Para garantir que o fundo cubra toda a página */
-  min-height: 100vh; /* Para expandir o fundo até o limite da altura da viewport */
-  display: flex; /* Alinha os elementos ao centro */
-  position:relative;;
-  align-items: center; /* Alinha verticalmente */
-  justify-content: center; /* Alinha horizontalmente */
-}
-.title-orcamento{
-text-align: center;
-margin-top: 20px;
-font-size: 34px;
-margin-bottom: 25px;
-color: #ffffff;
-text-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
-font-weight: 700;
+  background-size: cover;
+  /* Para garantir que o fundo cubra toda a página */
+  min-height: 100vh;
+  /* Para expandir o fundo até o limite da altura da viewport */
+  display: flex;
+  /* Alinha os elementos ao centro */
+  position: relative;
+  ;
+  align-items: center;
+  /* Alinha verticalmente */
+  justify-content: center;
+  /* Alinha horizontalmente */
 }
 
-.form-group-orcamento label{
+.title-orcamento {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 34px;
+  margin-bottom: 25px;
+  color: #ffffff;
+  text-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+  font-weight: 700;
+}
+
+.form-group-orcamento label {
   color: #333333af;
   display: flex;
   font-weight: 500;
   margin-bottom: 5px;
 }
-.form-group-orcamento ::placeholder{
+
+.form-group-orcamento ::placeholder {
   color: #5c5c5c6c;
 }
 
-
 .wrap-orcamento {
   margin: 10px auto;
- max-width: 800px;
- min-width: 600px;
-  box-sizing: border-box; /* Inclui o padding na largura total */
+  max-width: 800px;
+  min-width: 600px;
+  box-sizing: border-box;
+  /* Inclui o padding na largura total */
   background: rgba(255, 255, 255, 0.9);
-  box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
-  backdrop-filter: blur( 10px );
-  -webkit-backdrop-filter: blur( 2px );
-  border: 1px solid rgba( 255, 255, 255, 0.18 );  padding: 30px;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(2px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  padding: 30px;
   border-radius: 8px;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
 }
 
-.contact-orcamento-p{
+.contact-orcamento-p {
   font-size: 23px;
   max-width: 900px;
   word-wrap: break-word;
   padding-top: 8px;
   font-weight: 700;
   color: #f2fff1;
-  
+
 }
-.ConfirmDesign{
+
+.ConfirmDesign {
   background-color: #cecece6c;
   padding: 10px;
   border-radius: 15px;
 }
-.ConfirmDesign label{
+
+.ConfirmDesign label {
   color: #12121270;
   font-weight: 500;
   margin: 10px;
 }
+
 #progress-orcamento {
   margin-bottom: 30px;
   height: 5px;
@@ -94,7 +106,8 @@ font-weight: 700;
   width: 100%;
 }
 
-.form-control-orcamento, input {
+.form-control-orcamento,
+input {
   width: 100%;
   display: flex;
   padding: 10px;
@@ -110,28 +123,33 @@ select.form-control-orcamento {
 
 
 
-textarea{
+textarea {
   resize: none;
 }
-.form-navigation .buttonprevious{
+
+.form-navigation .buttonprevious {
   background-color: #80808085;
   margin-right: 15px;
 }
+
 .MuiFormControlLabel-label {
-  font-family: "Lexend" !important; /* Força o peso da fonte */
+  font-family: "Lexend" !important;
 
 }
-.estimatedPrice input{
-  color: rgb(192, 27, 60) ;
+
+.estimatedPrice input {
+  color: rgb(192, 27, 60);
   font-weight: 600;
   font-size: 20px;
 }
+
 .form-navigation {
   display: flex;
   justify-content: space-between;
 
 }
-.fieldset-orcamento input{
+
+.fieldset-orcamento input {
   border-style: none;
   background-color: #dad7d75d;
   border-radius: 8px;
@@ -153,9 +171,12 @@ textarea{
   display: flex;
   align-items: center;
   gap: 8px;
-  position: absolute; /* Torna a posição independente do layout principal */
-  top: 20px; /* Ajusta a posição do botão em relação ao topo */
-  left: 20px; /* Ajusta a posição do botão em relação à esquerda */
+  position: absolute;
+  /* Torna a posição independente do layout principal */
+  top: 20px;
+  /* Ajusta a posição do botão em relação ao topo */
+  left: 20px;
+  /* Ajusta a posição do botão em relação à esquerda */
   background-color: #99c2aa6e;
   color: #fafafa;
   font-size: 1.1rem;
@@ -172,17 +193,19 @@ textarea{
 }
 
 .MuiOutlinedInput-root {
-  padding-right: 14px; /* espaço pro ícone */
+  padding-right: 14px;
+  /* espaço pro ícone */
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
 .MuiInputAdornment-root {
-  margin-left:80px !important;
+  margin-left: 80px !important;
   display: flex;
   align-items: center;
 }
+
 .success-container {
   display: flex;
   flex-direction: column;
@@ -207,13 +230,27 @@ textarea{
   margin-bottom: 1.5rem;
   animation: flutter 1.8s ease-in-out infinite;
 }
-@keyframes flutter {
-  0%, 100% { transform: translateY(0) rotate(0); }
-  25% { transform: translateY(-7px) rotate(-15deg); }
-  50% { transform: translateY(-7px) rotate(8deg); }
 
-  75% { transform: translateY(8px) rotate(-5deg); }
+@keyframes flutter {
+
+  0%,
+  100% {
+    transform: translateY(0) rotate(0);
+  }
+
+  25% {
+    transform: translateY(-7px) rotate(-15deg);
+  }
+
+  50% {
+    transform: translateY(-7px) rotate(8deg);
+  }
+
+  75% {
+    transform: translateY(8px) rotate(-5deg);
+  }
 }
+
 .success-title {
   color: #2E7D32;
   font-size: 1.8rem;
@@ -266,33 +303,125 @@ textarea{
   color: #666;
   margin-top: 1.5rem;
 }
+
 .form-group-orcamento .MuiSvgIcon-root {
   margin-right: 5px;
-  margin-bottom: 10px; /* ajusta o espaçamento interno */
+  margin-bottom: 10px;
+  /* ajusta o espaçamento interno */
 }
 
-.legend-orcamento{
+
+.itens-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  margin-top: 10px;
+}
+
+.itens-container h4 {
+  color: #333333b9;
+  display: flex;
+  font-weight: 500;
+  margin-bottom: 5px;
+}
+
+.itens-container .total-section h4 {
+  font-weight: 600;
+  color: #121212ea;
+}
+
+.itens-list {
+  background-color: #ffffff;
+  padding: 15px;
+  border-radius: 8px;
+  border: 0.5px solid #e0e0e0a8;
+}
+
+.itens-list ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.itens-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #c2c2c2;
+}
+
+.item-info{
+  color: #333333d7;
+  font-size: 15px;
+}
+.item-price {
+  color: #2e7d32;
+  font-weight: 500;
+  margin-left: 10px;
+}
+.novo-item-form select{
+  border: 0.2px solid #12121223 ;
+  border-radius: 10px;
+}
+.novo-item-form option:hover{
+background-color: #2E7D32;
+}
+
+
+.remove-item-btn {
+  background-color: #ff4444;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: background-color 0.2s;
+}
+
+
+.remove-item-btn:hover {
+  background-color: #cc0000;
+}
+
+.total-section {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 25px;
+  padding-top: 0px;
+  font-size: 1.1rem;
+}
+
+.total-value {
+  color: #2e7d32;
+  font-weight: bold;
+}
+
+.legend-orcamento {
   font-size: 24px;
   margin-bottom: 5px;
   color: #2f7c37;
   font-weight: 700;
 }
 
-@media(max-width: 785px){
-  .wrap-orcamento{
+@media(max-width: 785px) {
+  .wrap-orcamento {
     max-width: fit-content;
   }
 }
 
-@media(max-width: 625px){
-  .upper-orcamento h2{
+@media(max-width: 625px) {
+  .upper-orcamento h2 {
     display: flex;
     flex-direction: column;
   }
-  .col-lg-12-orcamento{
+
+  .col-lg-12-orcamento {
     max-width: 500px;
   }
-  .wrap-orcamento{
+
+  .wrap-orcamento {
     max-width: 600px;
     min-width: 200px;
   }
