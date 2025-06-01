@@ -236,97 +236,108 @@ function OrcamentoManagement() {
     };
 
 
-const generatePDF = () => {
-  setLoadingPDF(true);
+    const generatePDF = () => {
+        setLoadingPDF(true);
 
-  const doc = new jsPDF();
-  const img = new Image();
-  img.src = NeotechLogo;
+        const doc = new jsPDF();
+        const img = new Image();
+        img.src = NeotechLogo;
 
-  img.onload = function () {
-    const pageWidth = doc.internal.pageSize.width;
+        img.onload = function () {
+            const pageWidth = doc.internal.pageSize.width;
 
-    // Ajusta o tamanho do logo proporcionalmente
-    const imgWidth = 40;
-    const imgHeight = (img.height / img.width) * imgWidth;
-    const imgX = (pageWidth - imgWidth) / 2;
+            // Ajusta o tamanho do logo proporcionalmente
+            const imgWidth = 40;
+            const imgHeight = (img.height / img.width) * imgWidth;
+            const imgX = (pageWidth - imgWidth) / 2;
 
-    // Adiciona o logo centralizado
-    doc.addImage(img, 'PNG', imgX, 10, imgWidth, imgHeight);
+            // Adiciona o logo centralizado
+            doc.addImage(img, 'PNG', imgX, 10, imgWidth, imgHeight);
 
-    // Título do documento
-    doc.setTextColor(47, 124, 55);
-    doc.setFont('Helvetica', 'bold');
-    doc.setFontSize(20);
-    doc.text('Relatório de Orçamentos de Reciclagem', pageWidth / 2, imgHeight + 25, { align: 'center' });
+            // Título do documento
+            doc.setTextColor(47, 124, 55);
+            doc.setFont('Helvetica', 'bold');
+            doc.setFontSize(20);
+            doc.text('Relatório de Orçamentos de Reciclagem', pageWidth / 2, imgHeight + 25, { align: 'center' });
 
-    // Data de geração do relatório
-    doc.setTextColor(18, 54, 21);
-    doc.setFont('Helvetica', 'italic');
-    doc.setFontSize(10);
-    doc.text(`Gerado em: ${new Date().toLocaleString()}`, pageWidth / 2, imgHeight + 35, { align: 'center' });
+            // Data de geração do relatório
+            doc.setTextColor(18, 54, 21);
+            doc.setFont('Helvetica', 'italic');
+            doc.setFontSize(10);
+            doc.text(`Gerado em: ${new Date().toLocaleString()}`, pageWidth / 2, imgHeight + 35, { align: 'center' });
 
-    // Define as colunas da tabela
-    const tableColumn = [
-      'ID',
-      'Usuário',
-      'Categoria',
-      'Data Coleta',
-      'Hora Coleta',
-      'Método Contato',
-      'Aceita Contato',
-    ];
+            // Define as colunas da tabela
+            const tableColumn = [
+                'ID',
+                'Usuário',
+                'Categoria',
+                'Data Coleta',
+                'Hora Coleta',
+                'Método Contato',
+                'Aceita Contato',
+                'CEP',
+                'Endereço',
+                'Bairro',
+                'Número',
 
-    // Mapeia os dados para as linhas da tabela
-    const tableRows = orcamentos.map((orc) => [
-      orc.id,
-      orc.usuario?.nome || '-',
-      orc.categoria?.nome || '-',
-      orc.dataColeta ? new Date(orc.dataColeta).toLocaleDateString() : '-',
-      orc.horaColeta ? orc.horaColeta.substring(0, 5) : '-',
-      orc.metodoContato || '-',
-      orc.aceitaContato ? 'Sim' : 'Não',
-    ]);
+            ];
 
-    // Adiciona a tabela ao documento
-    doc.autoTable({
-      head: [tableColumn],
-      body: tableRows,
-      startY: imgHeight + 45,
-      headStyles: { fillColor: [127, 192, 141], textColor: 255 },
-      bodyStyles: { fontSize: 9 },
-      alternateRowStyles: { fillColor: [240, 240, 240] },
-      margin: { left: 10, right: 10 },
-      didDrawPage: (data) => {
-        // Rodapé com número da página
-        const str = `Página ${doc.internal.getNumberOfPages()}`;
-        doc.setFontSize(8);
-        const pageHeight = doc.internal.pageSize.height;
-        doc.text(str, pageWidth / 2, pageHeight - 10, { align: 'center' });
-      },
-    });
+            // Mapeia os dados para as linhas da tabela
+            const tableRows = orcamentos.map((orc) => [
+                orc.id,
+                orc.usuario?.nome || '-',
+                orc.categorias?.map(cat => cat.nome).join(', ') || '-',
+                orc.dataColeta ? new Date(orc.dataColeta).toLocaleDateString() : '-',
+                orc.horaColeta ? orc.horaColeta.substring(0, 5) : '-',
+                orc.metodoContato || '-',
+                orc.aceitaContato ? 'Sim' : 'Não',
+                orc.cep || '-',
+                orc.endereco || '-',
+                orc.bairro || '-',
+                orc.numero || '-',
 
-    // Linha separadora no rodapé
-    const pageHeight = doc.internal.pageSize.height;
-    doc.setDrawColor(127, 192, 141);
-    doc.setLineWidth(0.8);
-    doc.line(15, pageHeight - 20, pageWidth - 15, pageHeight - 20);
 
-    // Texto do rodapé
-    doc.setFontSize(10);
-    doc.setTextColor(47, 124, 55);
-    doc.text('Neotech', pageWidth / 2, pageHeight - 12, { align: 'center' });
+            ]);
 
-    // Salva o PDF
-    doc.save('relatorio_orcamentos_reciclagem.pdf');
-    setLoadingPDF(false);
-  };
+            // Adiciona a tabela ao documento
+            doc.autoTable({
+                head: [tableColumn],
+                body: tableRows,
+                startY: imgHeight + 45,
+                headStyles: { fillColor: [127, 192, 141], textColor: 255 },
+                bodyStyles: { fontSize: 9 },
+                alternateRowStyles: { fillColor: [240, 240, 240] },
+                margin: { left: 10, right: 10 },
+                didDrawPage: (data) => {
+                    // Rodapé com número da página
+                    const str = `Página ${doc.internal.getNumberOfPages()}`;
+                    doc.setFontSize(8);
+                    const pageHeight = doc.internal.pageSize.height;
+                    doc.text(str, pageWidth / 2, pageHeight - 10, { align: 'center' });
+                },
+            });
 
-  img.onerror = () => {
-    setSnackbar({ open: true, message: 'Erro ao carregar o logo para o PDF.', severity: 'error' });
-    setLoadingPDF(false);
-  };
-};
+            // Linha separadora no rodapé
+            const pageHeight = doc.internal.pageSize.height;
+            doc.setDrawColor(127, 192, 141);
+            doc.setLineWidth(0.8);
+            doc.line(15, pageHeight - 20, pageWidth - 15, pageHeight - 20);
+
+            // Texto do rodapé
+            doc.setFontSize(10);
+            doc.setTextColor(47, 124, 55);
+            doc.text('Neotech', pageWidth / 2, pageHeight - 12, { align: 'center' });
+
+            // Salva o PDF
+            doc.save('relatorio_orcamentos_reciclagem.pdf');
+            setLoadingPDF(false);
+        };
+
+        img.onerror = () => {
+            setSnackbar({ open: true, message: 'Erro ao carregar o logo para o PDF.', severity: 'error' });
+            setLoadingPDF(false);
+        };
+    };
 
     const handleDateChange = (newDate) => {
         const now = dayjs();
@@ -467,6 +478,26 @@ const generatePDF = () => {
             },
         },
         {
+            accessorKey: 'cep',
+            header: 'Cep',
+            Cell: ({ cell }) => cell.getValue() || '-'
+        },
+        {
+            accessorKey: 'endereco',
+            header: 'Endereço',
+            Cell: ({ cell }) => cell.getValue() || '-'
+        },
+        {
+            accessorKey: 'bairro',
+            header: 'Bairro',
+            Cell: ({ cell }) => cell.getValue() || '-'
+        },
+        {
+            accessorKey: 'numero',
+            header: 'Número',
+            Cell: ({ cell }) => cell.getValue() || '-'
+        },
+        {
             accessorKey: 'dataColeta',
             header: 'Data Coleta',
             Cell: ({ cell }) => new Date(cell.getValue()).toLocaleDateString()
@@ -476,8 +507,9 @@ const generatePDF = () => {
             header: 'Hora Coleta',
             Cell: ({ cell }) => cell.getValue().substring(0, 5),
         },
-        { accessorKey: 'metodoContato', header: 'Método/Contato',            size: 10
-},
+        {
+            accessorKey: 'metodoContato', header: 'Método/Contato', size: 10
+        },
         {
             accessorKey: 'aceitaContato',
             header: 'Aceita Contato',
@@ -502,7 +534,7 @@ const generatePDF = () => {
         },
 
         {
-            header: 'Ações',AlignLeft,
+            header: 'Ações', AlignLeft,
             Cell: ({ row }) => (
                 <div className="action-buttons">
                     <Tooltip title="Editar">
