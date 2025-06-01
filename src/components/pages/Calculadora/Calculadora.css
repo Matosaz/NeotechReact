@@ -131,6 +131,10 @@ textarea {
   background-color: #80808085;
   margin-right: 15px;
 }
+.form-navigation .buttonprevious:hover {
+  background-color: #69696985;
+  margin-right: 15px;
+}
 
 .MuiFormControlLabel-label {
   font-family: "Lexend" !important;
@@ -148,13 +152,17 @@ textarea {
   justify-content: space-between;
 
 }
+
 /* Estilo para o botão desabilitado */
 .disabled-button {
   background-color: #cccccc !important;
   color: #666666 !important;
   cursor: not-allowed !important;
 }
-
+.disabled-button:hover{
+  background-color: #cccccc !important;
+  color: #535353 !important;
+}
 
 
 /* Estilos base do botão (opcional, ajuste conforme seu layout) */
@@ -162,8 +170,10 @@ button {
   padding: 10px 20px;
   border: none;
   border-radius: 8px;
-  font-weight: 600;
   transition: background-color 0.3s ease;
+}
+.enabled-button:hover {
+    background-color: #4c906b!important;
 }
 .fieldset-orcamento input {
   border-style: none;
@@ -174,9 +184,9 @@ button {
 .form-navigation button {
   width: 100%;
   padding: .75rem;
-  font-size: 1.1rem;
+  font-size: 1rem;
   background-color: #5faa84;
-  color: white;
+  color: #fafafa;
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -301,22 +311,27 @@ button {
   display: flex;
   margin-bottom: 0.8rem;
   font-size: 1rem;
+  justify-content: space-between;
+
 }
 
 .resume-label {
   font-weight: 600;
   color: #555;
-  min-width: 70px;
+  
 }
 
 .resume-value {
   color: #333;
-  margin-left: 1rem;
-}
+  font-size: 15px;
+  text-align: right;
+  max-width: 300px;
+  }
 
 .success-note {
   font-size: 0.95rem;
   color: #666;
+
   margin-top: 1.5rem;
 }
 
@@ -367,23 +382,186 @@ button {
   border-bottom: 1px solid #c2c2c2;
 }
 
-.item-info{
+.item-info {
   color: #333333d7;
   font-size: 15px;
 }
+
 .item-price {
   color: #2e7d32;
   font-weight: 500;
   margin-left: 10px;
 }
-.novo-item-form select{
-  border: 0.2px solid #12121223 ;
+
+.novo-item-form select {
+  border: 0.2px solid #6b6b6b23;
   border-radius: 10px;
-}
-.novo-item-form option:hover{
-background-color: #2E7D32;
+  background-color: #dad7d75d;
+  color: #121212;
+
 }
 
+
+.novo-item-form option:hover {
+  background-color: #2E7D32;
+}
+
+/* Estilos para o recibo */
+.receipt-container {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  padding: 25px;
+  max-width: 550px;
+  margin: 0 auto;
+  font-family: 'Lexend';
+  color: #333;
+}
+
+.receipt-header {
+  text-align: center;
+  margin-bottom: 20px;
+
+}
+
+.receipt-logo img {
+  height: 50px;
+  margin-bottom: 10px;
+}
+
+.receipt-title {
+  color: #2E7D32;
+  font-size: 24px;
+  margin: 10px 0;
+  font-weight: 600;
+}
+
+.receipt-meta {
+  display: flex;
+  justify-content: center;
+  font-size: 14px;
+  color: #666;
+  margin-top: 5px;
+}
+
+.receipt-divider {
+  height: 1px;
+  background: linear-gradient(to right, transparent, #d9d9d9, transparent);
+  margin: 20px 0;
+}
+
+.receipt-section {
+  margin-bottom: 15px;
+
+}
+
+.receipt-section-title {
+  color: #2E7D32;
+  font-size: 16px;
+  margin-bottom: 12px;
+  font-weight: 500;
+}
+
+.receipt-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 15px;
+}
+
+.receipt-label {
+  font-weight: 500;
+  color: #555;
+}
+
+.receipt-value {
+  color: #444;
+  text-align: right;
+  max-width: 80%;
+
+}
+
+.receipt-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px dashed #c0c0c0;
+}
+
+.item-name {
+  flex: 2;
+  font-size: 15px;
+  color: #333;
+}
+
+.item-quantity {
+  flex: 1;
+  text-align: center;
+  color: #666;
+}
+
+.item-price {
+  flex: 1;
+  text-align: right;
+  color: #2E7D32;
+  font-weight: 500;
+}
+
+.receipt-total {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  font-weight: 600;
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+
+.total-value {
+  color: #2E7D32;
+  font-weight: 700;
+}
+
+.receipt-footer {
+  margin-top: 25px;
+  text-align: center;
+  font-size: 14px;
+  color: #666;
+  line-height: 1.5;
+}
+
+.receipt-footer p:first-child {
+  font-weight: 500;
+  color: #2E7D32;
+}
+
+/* Efeito de recibo cortado */
+.receipt-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.receipt-container::before,
+.receipt-container::after {
+  content: "";
+  position: absolute;
+  height: 20px;
+  width: 100%;
+  background: repeating-linear-gradient(to right,
+      transparent,
+      transparent 10px,
+      #eeeeee 10px,
+      #f5f5f5 20px);
+  left: 0;
+}
+
+.receipt-container::before {
+  top: 0;
+}
+
+.receipt-container::after {
+  bottom: 0;
+}
 
 .remove-item-btn {
   background-color: #ff4444;
@@ -420,7 +598,13 @@ background-color: #2E7D32;
   color: #2f7c37;
   font-weight: 700;
 }
-
+.legend-orcamento-confirmar{
+ font-size: 24px;
+  margin-bottom: 5px;
+  color: #2f7c37;
+  font-weight: 600;
+  text-align: center;
+}
 @media(max-width: 785px) {
   .wrap-orcamento {
     max-width: fit-content;

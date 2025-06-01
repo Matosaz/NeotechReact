@@ -97,7 +97,7 @@ const Calculadora = () => {
         return (
           <>
             Como podemos te retornar?
-            <p className='contact-orcamento-p'>Essas informações são importantes para enviarmos um resumo do agendamento e lhe ajudarmos se possuir alguma dúvida :)</p>
+            <p className='contact-orcamento-p'>Essas informações são importantes para enviarmos um resumo do orçamento e lhe ajudarmos se possuir alguma dúvida :)</p>
           </>
         );
       case 3:
@@ -108,7 +108,7 @@ const Calculadora = () => {
       case 5:
         return 'Quais itens você deseja reciclar?';
       case 6:
-        return 'Verifique se as informações estão corretas!';
+        return '';
       case 7:
         return 'Agendamento Confirmado!';
       default:
@@ -116,7 +116,7 @@ const Calculadora = () => {
     }
   };
 
-
+// Verifique se as informações estão corretas!'
   const getCountries = async () => {
     const response = await fetch('https://restcountries.com/v3.1/all');
     const data = await response.json();
@@ -426,7 +426,7 @@ const Calculadora = () => {
 
             <div className="success-details">
               <p className="success-message">
-                Seu agendamento foi confirmado e em breve entraremos em contato para confirmar os detalhes.
+                Seu orçamento foi confirmado e em breve entraremos em contato para confirmar os detalhes.
               </p>
 
               <div className="resume-card">
@@ -795,7 +795,8 @@ const Calculadora = () => {
                               name="novaCategoria"
                               value={formData.novaCategoria || ''}
                               onChange={(e) => setFormData({ ...formData, novaCategoria: e.target.value })}
-                              required
+                              required={formData.itens.length === 0} // Só é required quando não há itens
+
                               className="form-control-orcamento"
                             >
                               <option value="">Selecione uma categoria</option>
@@ -818,7 +819,8 @@ const Calculadora = () => {
                               step="0.1"
                               value={formData.novaQuantidade || ''}
                               onChange={(e) => setFormData({ ...formData, novaQuantidade: e.target.value })}
-                              required
+                              required={formData.itens.length === 0} // Só é required quando não há itens
+
                               placeholder="Ex: 2.5"
                               className="form-control-orcamento"
                             />
@@ -855,45 +857,93 @@ const Calculadora = () => {
                   )}
                   {currentStep === 6 && (
                     <fieldset className='fieldset-orcamento'>
-                      <legend className='legend-orcamento'>Confirmação do Agendamento</legend>
-                      <div className="ConfirmDesign">
-                        <div className="form-group-orcamento">
-                          <label>Nome: {formData.nome}</label>
-                        </div>
-                        <div className="form-group-orcamento">
-                          <label>Email: {formData.email}</label>
-                        </div>
-                        <div className="form-group-orcamento">
-                          <label>Telefone: {formData.telefone}</label>
-                        </div>
-
-                        <div className="form-group-orcamento">
-                          <label>Bairro: {formData.bairro}</label>
+                      <legend className='legend-orcamento-confirmar'>Confirme todos os seus dados!</legend>
+                      <div className="receipt-container">
+                        <div className="receipt-header">
+                          <div className="receipt-logo">
+                          </div>
+                          <h3 className="receipt-title">Orçamento</h3>
+                          <div className="receipt-meta">
+                            <span>{new Date().toLocaleDateString('pt-BR')}</span>
+                          </div>
                         </div>
 
-                        <div className="form-group-orcamento">
-                          <label>CEP: {formData.cep}</label>
+                        <div className="receipt-divider"></div>
+
+                        <div className="receipt-section">
+                          <h4 className="receipt-section-title">Informações Pessoais</h4>
+                          <div className="receipt-row">
+                            <span className="receipt-label">Nome:</span>
+                            <span className="receipt-value">{formData.nome}</span>
+                          </div>
+                          <div className="receipt-row">
+                            <span className="receipt-label">Contato:</span>
+                            <span className="receipt-value">{formData.telefone} | {formData.email}</span>
+                          </div>
                         </div>
 
-                        <div className="form-group-orcamento">
-                          <label>Cidade: {formData.cidade}</label>
+                        <div className="receipt-divider"></div>
+
+                        <div className="receipt-section">
+                          <h4 className="receipt-section-title">Local da Coleta</h4>
+                          <div className="receipt-row">
+                            <span className="receipt-label">Endereço:</span>
+                            <span className="receipt-value">{formData.endereco}, {formData.numero}</span>
+                          </div>
+                          <div className="receipt-row">
+                            <span className="receipt-label">Bairro:</span>
+                            <span className="receipt-value">{formData.bairro}</span>
+                          </div>
+                          <div className="receipt-row">
+                            <span className="receipt-label">Cidade/Estado:</span>
+                            <span className="receipt-value">{formData.cidade}/{formData.estado}</span>
+                          </div>
+                          <div className="receipt-row">
+                            <span className="receipt-label">CEP:</span>
+                            <span className="receipt-value">{formData.cep}</span>
+                          </div>
                         </div>
-                        <div className="form-group-orcamento">
-                          <label>Número: {formData.numero}</label>
+
+                        <div className="receipt-divider"></div>
+
+                        <div className="receipt-section">
+                          <h4 className="receipt-section-title">Detalhes da Coleta</h4>
+                          <div className="receipt-row">
+                            <span className="receipt-label">Data:</span>
+                            <span className="receipt-value">{dayjs(formData.dataColeta).format('DD/MM/YYYY')}</span>
+                          </div>
+                          <div className="receipt-row">
+                            <span className="receipt-label">Horário:</span>
+                            <span className="receipt-value">{formData.horaColeta}</span>
+                          </div>
                         </div>
-                        <div className="form-group-orcamento">
-                          <label>Endereço: {formData.endereco}</label>
-                        </div>
-                        <div className="form-group-orcamento">
-                          <label>Data da Coleta: {formData.dataColeta}</label>
-                        </div>
-                        <div className="form-group-orcamento">
-                          <label>Horário da Coleta: {formData.horaColeta}</label>
-                        </div>
+
+                        {formData.itens.length > 0 && (
+                          <>
+                            <div className="receipt-divider"></div>
+                            <div className="receipt-section">
+                              <h4 className="receipt-section-title">Itens para Reciclagem</h4>
+                              {formData.itens.map((item, index) => (
+                                <div className="receipt-item" key={index}>
+                                  <span className="item-name">{item.categoria.nome}</span>
+                                  <span className="item-quantity">{item.quantidade} kg</span>
+                                  <span className="item-price">R$ {(item.categoria.precoPorKg * item.quantidade).toFixed(2)}</span>
+                                </div>
+                              ))}
+                              <div className="receipt-total" >
+                               
+                                <span> <Receipt size={20} style={{ marginRight: '5px', marginBottom:'-px',color: "#2e7d32" }} />Total Estimado:</span>
+                                <span className="total-value">R$ {formData.itens.reduce((total, item) =>
+                                  total + (item.categoria.precoPorKg * item.quantidade), 0).toFixed(2)}</span>
+                              </div>
+                            </div>
+                          </>
+                        )}
+
+
                       </div>
                     </fieldset>
                   )}
-
 
                   {/* Navegação */}
                   <div className="form-navigation">
@@ -926,10 +976,10 @@ const Calculadora = () => {
                                 marginLeft: '-12px',
                               }}
                             />
-                            <span style={{ opacity: 0 }}>Confirmar agendamento</span>
+                            <span style={{ opacity: 0 }}>Confirmar orçamento</span>
                           </>
                         ) : (
-                          'Confirmar agendamento'
+                          'Confirmar orçamento'
                         )}
                       </button>
                     ) : null}
