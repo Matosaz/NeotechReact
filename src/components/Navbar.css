@@ -106,9 +106,9 @@
 
 .sub-menu hr{
  border-radius: 8px;
-  height: 3px;
+  height: 1px;
   width: 95%;
-  background: #121212;
+  background: #90ca96;
   margin: 15px 10px;
 }
 .sub-menu-link{

@@ -32,20 +32,19 @@ const Calculadora = () => {
     id: user?.id || '',
     nome: user?.nome || '',
     email: user?.email || '',
-    telefone: user?.telefone || '',
-    cep: user?.cep || '',
+    telefone: '',
+    cep: '',
     endereco: user?.endereco || '',
     metodoContato: '',
     aceitaContato: false,
-    numero: user?.numero || '',
-    complemento: user?.complemento || '',
-    bairro: user?.bairro || '',
-    cidade: user?.cidade || '',
+    numero: '',
+    bairro: '',
+    cidade: '',
     itens: [],
     novaCategoria: '',
     novaQuantidade: '',
     categoriasDisponiveis: [],
-    estado: user?.estado || '',
+    estado: '',
     dataColeta: '',
     horaColeta: '',
   });
@@ -176,7 +175,7 @@ const Calculadora = () => {
       : `${formData.horaColeta.slice(0, 2)}:${formData.horaColeta.slice(2, 4)}:00`;
 
 
- const categoriasPayload = formData.itens.map(item => ({ id: item.categoria.id }));
+    const categoriasPayload = formData.itens.map(item => ({ id: item.categoria.id }));
 
     // Preparar dados no formato esperado pelo backend
     const requestData = {
@@ -188,7 +187,12 @@ const Calculadora = () => {
       aceitaContato: formData.aceitaContato,
       usuario: { id: user?.id },
       itens: formData.itens,  // Inclui as categorias selecionadas e quantidades
-
+      cep: formData.cep,
+      endereco: formData.endereco,
+      numero: formData.numero,
+      bairro: formData.bairro,
+      cidade: formData.cidade,
+      estado: formData.estado,
 
     };
 
@@ -250,43 +254,11 @@ const Calculadora = () => {
   const nextStep = () => {
     const form = document.querySelector('form');
 
-    // Validação do passo atual
     if (currentStep < 7 && form.checkValidity()) {
-      if (currentStep === 4) {
-        const selectedDate = dayjs(formData.dataColeta);
-        const selectedTime = dayjs(formData.horaColeta, 'HH:mm');
-        const now = dayjs();
-
-        if (!selectedDate.isValid()) {
-          setDateError('Por favor, selecione uma data válida.');
-          setTimeError('');
-          setDisableNextButton(true);
-          return;
-        }
-
-        if (!selectedTime.isValid()) {
-          setTimeError('Por favor, selecione um horário válido.');
-          setDateError('');
-          setDisableNextButton(true);
-          return;
-        }
-
-        // Verifica se a data e o horário são anteriores às atuais
-        if (selectedDate.isBefore(now, 'day') || (selectedDate.isSame(now, 'day') && selectedTime.isBefore(now, 'minute'))) {
-          setDateError('A data e/ou o horário selecionado é anterior ao horário atual.');
-          setTimeError('A data e/ou o horário selecionado é anterior ao horário atual.');
-          setDisableNextButton(true);
-          return;
-        }
-
-        // Se passou nas validações, limpa os erros e habilita o botão
-        setDateError('');
-        setTimeError('');
-        setDisableNextButton(false);
-        setCurrentStep(currentStep + 1);
-      } else {
-        setCurrentStep(currentStep + 1);
+      if (currentStep === 4 && !validateDateTime()) {
+        return;
       }
+      setCurrentStep(currentStep + 1);
     } else {
       form.reportValidity();
     }
@@ -301,59 +273,129 @@ const Calculadora = () => {
 
   const updateProgress = () => {
     return (currentStep / 7) * 100;
-  };
-  const handleDateChange = (newValue) => {
-    if (newValue) {
-      const selectedDate = dayjs(newValue);
-      const now = dayjs();
+  }; const handleDateChange = (newDate) => {
+    const now = dayjs();
+    const selectedDate = dayjs(newDate);
 
-      if (selectedDate.isBefore(now, 'day')) {
-        setDateError('A data deve ser posterior à data atual.');
-        setDisableNextButton(true); // Desabilita o botão
+    setDateError('');
+    setTimeError('');
+
+    if (selectedDate.isBefore(now, 'day')) {
+      setDateError('Não é possível selecionar uma data passada');
+      setDisableNextButton(true);
+    } else {
+      // Se a data é válida (hoje ou futuro), verifica o horário
+      if (formData.horaColeta) {
+        const horaSemSegundos = formData.horaColeta.split(':').slice(0, 2).join(':');
+        const selectedTime = dayjs(horaSemSegundos, 'HH:mm');
+
+        if (selectedDate.isSame(now, 'day') && selectedTime.isBefore(now)) {
+          setTimeError('Selecione um horário futuro para hoje');
+          setDisableNextButton(true);
+        } else {
+          setDisableNextButton(false);
+        }
       } else {
-        setDateError('');
-        setDisableNextButton(false); // Habilita o botão
-      }
-
-      setFormData({ ...formData, dataColeta: newValue.format('YYYY-MM-DD') });
-    }
-  };
-
-  const handleTimeChange = (newValue) => {
-    if (newValue) {
-      const selectedTime = dayjs(newValue, 'HH:mm');
-      const now = dayjs();
-      const selectedDate = dayjs(formData.dataColeta);
-
-      if (selectedDate.isSame(now, 'day') && selectedTime.isBefore(now, 'minute')) {
-        setTimeError('O horário deve ser posterior ao horário atual.');
-        setDisableNextButton(true);
-      } else {
-        setTimeError('');
         setDisableNextButton(false);
       }
-
-      const hours = String(newValue.hour()).padStart(2, '0');
-      const minutes = String(newValue.minute()).padStart(2, '0');
-      setFormData({ ...formData, horaColeta: `${hours}:${minutes}` });
     }
+
+    setFormData(prev => ({
+      ...prev,
+      dataColeta: selectedDate.format('YYYY-MM-DD')
+    }));
   };
 
-  // Função para desabilitar datas anteriores à data de hoje
+  // E modifique a função validateDateTime para:
+  const validateDateTime = () => {
+    const now = dayjs();
+    const selectedDate = dayjs(formData.dataColeta);
+    const selectedTime = formData.horaColeta ? dayjs(formData.horaColeta, 'HH:mm') : null;
+
+    // Resetar erros
+    setDateError('');
+    setTimeError('');
+    setDisableNextButton(false);
+
+    if (!selectedDate.isValid()) {
+      setDateError('Selecione uma data válida');
+      setDisableNextButton(true);
+      return false;
+    }
+
+    if (selectedDate.isBefore(now, 'day')) {
+      setDateError('Não é possível selecionar uma data passada');
+      setDisableNextButton(true);
+      return false;
+    }
+
+    if (!selectedTime || !selectedTime.isValid()) {
+      setTimeError('Selecione um horário válido');
+      setDisableNextButton(true);
+      return false;
+    }
+
+    if (selectedDate.isSame(now, 'day') && selectedTime.isBefore(now)) {
+      setTimeError('Selecione um horário futuro para hoje');
+      setDisableNextButton(true);
+      return false;
+    }
+
+    return true;
+  };
   const shouldDisableDate = (date) => {
     return date.isBefore(dayjs(), 'day');
   };
 
-  // Função para desabilitar horários passados para o dia de hoje
-  const shouldDisableTime = (time) => {
+
+  const handleTimeChange = (newTime) => {
     const now = dayjs();
     const selectedDate = dayjs(formData.dataColeta);
-    if (selectedDate.isSame(now, 'day')) {
-      return time.isBefore(now, 'minute');
+    const selectedTime = dayjs(newTime);
+
+    setTimeError('');
+
+    if (!selectedDate.isValid()) {
+      setTimeError('Selecione uma data primeiro');
+      setDisableNextButton(true);
+      return;
     }
-    return false;
+
+    const hours = String(selectedTime.hour()).padStart(2, '0');
+    const minutes = String(selectedTime.minute()).padStart(2, '0');
+
+    setFormData(prev => ({
+      ...prev,
+      horaColeta: `${hours}:${minutes}`
+    }));
+
+    if (selectedDate.isSame(now, 'day') && selectedTime.isBefore(now)) {
+      setTimeError('Selecione um horário futuro para hoje');
+      setDisableNextButton(true);
+    } else {
+      setDisableNextButton(false);
+    }
   };
 
+
+  const shouldDisableTime = (timeValue, view) => {
+    const now = dayjs();
+    const selectedDate = dayjs(formData.dataColeta);
+
+    if (selectedDate.isSame(now, 'day')) {
+      const selectedTime = dayjs(timeValue);
+
+      if (view === 'hours') {
+        return selectedTime.hour() < now.hour();
+      }
+
+      if (view === 'minutes' && selectedTime.hour() === now.hour()) {
+        return selectedTime.minute() < now.minute();
+      }
+    }
+
+    return false;
+  };
 
   return (
     <>
@@ -637,7 +679,13 @@ const Calculadora = () => {
                             value={formData.dataColeta ? dayjs(formData.dataColeta) : null}
                             onChange={handleDateChange}
                             shouldDisableDate={shouldDisableDate}// Bloqueia datas anteriores
-                            slotProps={{ textField: { fullWidth: true } }}
+                            slotProps={{
+                              textField: {
+                                fullWidth: true, margin: 'dense',
+                                error: !!dateError,
+                                helperText: dateError,
+                              }
+                            }}
 
                             renderInput={(params) => (
                               <TextField
@@ -664,7 +712,12 @@ const Calculadora = () => {
                             value={formData.horaColeta ? dayjs(formData.horaColeta, 'HH:mm') : null}
                             onChange={handleTimeChange}
                             shouldDisableTime={shouldDisableTime}
-                            slotProps={{ textField: { fullWidth: true } }}
+                            slotProps={{
+                              textField: {
+                                error: !!timeError,
+                                helperText: timeError, fullWidth: true, margin: 'dense',
+                              }
+                            }}
                             renderInput={(params) => (
                               <TextField
                                 {...params}
@@ -850,13 +903,14 @@ const Calculadora = () => {
                       </button>
                     )}
                     {currentStep <= 5 ? (
-                      <button type="button" onClick={nextStep} disabled={disableNextButton}>
+                      <button type="button" onClick={nextStep} className={disableNextButton ? "disabled-button" : "enabled-button"}
+                        disabled={disableNextButton}>
                         Próximo
                       </button>
                     ) : currentStep === 6 ? (
                       <button
                         type="button"
-                        disabled={loading}
+                        disabled={loading || disableNextButton}
                         onClick={handleSubmit} // Explicitamente chama o handleSubmit no clique
 
                         style={{ position: 'relative' }}

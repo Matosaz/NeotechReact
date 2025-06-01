@@ -148,7 +148,23 @@ textarea {
   justify-content: space-between;
 
 }
+/* Estilo para o botão desabilitado */
+.disabled-button {
+  background-color: #cccccc !important;
+  color: #666666 !important;
+  cursor: not-allowed !important;
+}
 
+
+
+/* Estilos base do botão (opcional, ajuste conforme seu layout) */
+button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+}
 .fieldset-orcamento input {
   border-style: none;
   background-color: #dad7d75d;

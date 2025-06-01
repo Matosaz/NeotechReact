@@ -25,7 +25,7 @@ import {
     Snackbar
 } from '@mui/material';
 import { Alert as MuiAlert } from '@mui/material';
-import { Search } from 'lucide-react';
+import { AlignLeft, Search } from 'lucide-react';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import { DesktopDatePicker, DesktopTimePicker } from '@mui/x-date-pickers';
@@ -467,12 +467,6 @@ const generatePDF = () => {
             },
         },
         {
-            accessorKey: 'quantidades',
-            header: 'Quantidade',
-            Cell: ({ cell }) => cell.getValue() || '-'
-
-        },
-        {
             accessorKey: 'dataColeta',
             header: 'Data Coleta',
             Cell: ({ cell }) => new Date(cell.getValue()).toLocaleDateString()
@@ -480,9 +474,10 @@ const generatePDF = () => {
         {
             accessorKey: 'horaColeta',
             header: 'Hora Coleta',
-            Cell: ({ cell }) => cell.getValue().substring(0, 5)
+            Cell: ({ cell }) => cell.getValue().substring(0, 5),
         },
-        { accessorKey: 'metodoContato', header: 'Método Contato' },
+        { accessorKey: 'metodoContato', header: 'Método/Contato',            size: 10
+},
         {
             accessorKey: 'aceitaContato',
             header: 'Aceita Contato',
@@ -505,8 +500,9 @@ const generatePDF = () => {
                 );
             }
         },
+
         {
-            header: 'Ações',
+            header: 'Ações',AlignLeft,
             Cell: ({ row }) => (
                 <div className="action-buttons">
                     <Tooltip title="Editar">
