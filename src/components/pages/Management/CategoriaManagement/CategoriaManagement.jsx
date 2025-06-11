@@ -274,6 +274,7 @@ function CategoriaManagement() {
             headerStyle: { fontWeight: 'bold' },
         },
         {
+
             accessorKey: 'descricao',
             header: 'Descrição',
             Cell: ({ cell }) => (
@@ -302,7 +303,7 @@ function CategoriaManagement() {
                             padding: '4px 12px',
                             borderRadius: '20px',
                             fontSize: '0.875rem',
-                            fontWeight: '500',
+                            fontWeight: '600',
                             display: 'inline-block',
                             minWidth: '60px',
                             textAlign: 'center',
@@ -315,8 +316,11 @@ function CategoriaManagement() {
         },
         {
             header: 'Ações',
+            muiTableBodyCellProps: {
+                align: 'left',
+            },
             Cell: ({ row }) => (
-                <div className="action-buttons">
+                <div style={{ display: 'flex', justifyContent: 'flex-start', gap: '0.5rem' }}>
                     <Tooltip title="Editar">
                         <IconButton onClick={() => handleEditCategory(row.original)}>
                             <EditIcon />
@@ -328,8 +332,8 @@ function CategoriaManagement() {
                         </IconButton>
                     </Tooltip>
                 </div>
-            ),
-        },
+            )
+        }
     ];
 
     return (
@@ -473,21 +477,17 @@ function CategoriaManagement() {
                                     }));
                                 }}
                             />
-                            <FormControlLabel
-
-                                control={
-                                    <Checkbox
-                                        checked={newCategory.codStatus === 'ATIVO'}
-                                        onChange={(e) => setNewCategory(prev => ({
-                                            ...prev,
-                                            codStatus: e.target.checked ? 'ATIVO' : 'INATIVO'
-                                        }))}
-                                        color="primary"
-                                    />
-                                }
-                                 label={<Typography sx={{ color: '#fafafa' }}>Ativo</Typography>}
-
-                            />
+                            <div className="status-select-container">
+                                <select
+                                    name="codStatus"
+                                    value={newCategory.codStatus}
+                                    onChange={handleInputChange}
+                                    className="status-select"
+                                >
+                                    <option value="ATIVO">Ativo</option>
+                                    <option value="INATIVO">Inativo</option>
+                                </select>
+                            </div>
 
                             <button className='ADD_button' type="submit" disabled={loadingSubmit}>
                                 {loadingSubmit ? (
@@ -519,7 +519,9 @@ function CategoriaManagement() {
                         <MaterialReactTable
                             columns={columns}
                             data={filteredCategories}
-                            initialState={{ pagination: { pageSize: 5 } }}
+                            initialState={{
+                                pagination: { pageSize: 5 }, density: 'compact' // <- densidade mínima padronizada
+                            }}
                             muiTablePaginationProps={{
                                 rowsPerPageOptions: [5, 10, 20],
                             }}

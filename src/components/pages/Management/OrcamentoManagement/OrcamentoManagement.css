@@ -167,6 +167,8 @@ button:hover {
 .action-buttons {
     display: flex;
     gap: 15px;
+    align-content: left;
+    margin-left: -20px!important;
     justify-content: center;
 }
 

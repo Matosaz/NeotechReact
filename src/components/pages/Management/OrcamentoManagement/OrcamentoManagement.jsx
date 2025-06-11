@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { MaterialReactTable } from 'material-react-table';
 import './OrcamentoManagement.css';
 import NeotechLogo from "../../../../assets/Logo7png.png";
@@ -46,7 +46,8 @@ function OrcamentoManagement() {
         horaColeta: '',
         dataColeta: '',
         metodoContato: '',
-        aceitaContato: true
+        aceitaContato: true,
+        codStatus: 'AGENDADA' // Valor padrão
 
     });
     const [isEditing, setIsEditing] = useState(false);
@@ -96,14 +97,25 @@ function OrcamentoManagement() {
         setSearchTerm(event.target.value);
     };
 
+    const [pagination, setPagination] = useState({
+        pageIndex: 0,
+        pageSize: 5,
+    });
+    useEffect(() => {
+        setPagination((prev) => ({ ...prev, pageIndex: 0 }));
+    }, [searchTerm]);
 
-    const lowerSearchTerm = searchTerm.toLowerCase();
+    const filteredOrcamentos = useMemo(() => {
+        const lowerSearchTerm = searchTerm.toLowerCase();
+        return orcamentos.filter((orcamento) =>
+            orcamento.categorias?.some((cat) =>
+                cat.nome?.toLowerCase().includes(lowerSearchTerm)
+            ) ||
+            orcamento.metodoContato?.toLowerCase().includes(lowerSearchTerm) ||
+            orcamento.usuario?.nome?.toLowerCase().includes(lowerSearchTerm)
+        );
+    }, [orcamentos, searchTerm]);
 
-    const filteredOrcamentos = orcamentos.filter(orcamento =>
-        orcamento.categoria?.nome?.toLowerCase().includes(lowerSearchTerm) ||
-        orcamento.metodoContato?.toLowerCase().includes(lowerSearchTerm) ||
-        orcamento.usuario?.nome?.toLowerCase().includes(lowerSearchTerm)
-    );
     const handleCloseDeleteDialog = () => {
         setDeleteDialogOpen(false);
         setCategoryToDelete(null);
@@ -113,48 +125,43 @@ function OrcamentoManagement() {
         setSnackbar({ open: false, message: '', severity: 'info' }); // <-- Fecha snackbar antigo
         setCurrentOrcamento(orcamento);
         setEditOrcamento({
-            categoria: orcamento.categoria,
             horaColeta: orcamento.horaColeta.substring(0, 5),
             dataColeta: orcamento.dataColeta,
             metodoContato: orcamento.metodoContato,
-            aceitaContato: orcamento.aceitaContato
+            codStatus: orcamento.codStatus || 'AGENDADA'
+
         });
         setEditDialogOpen(true);
     };
-
     const handleUpdateOrcamento = async (e) => {
         e.preventDefault();
-        setDateError('');
-        setTimeError('');
 
-
-
-        if (!editOrcamento.categoria?.id || !editOrcamento.dataColeta || !editOrcamento.horaColeta) {
-            setSnackbar({ open: true, message: 'Preencha todos os campos obrigatórios', severity: 'error' });
+        if (disableSaveButton) {
+            setSnackbar({ open: true, message: 'Corrija os erros antes de salvar', severity: 'error' });
             return;
         }
 
         setLoadingSubmit(true);
 
-
         try {
-            const formattedHoraColeta = editOrcamento.horaColeta.length === 5
-                ? editOrcamento.horaColeta + ':00'
-                : editOrcamento.horaColeta;
-
             const payload = {
                 id: currentOrcamento.id,
-                categoria: { id: editOrcamento.categoria.id },
-                dataColeta: editOrcamento.dataColeta,
-                horaColeta: formattedHoraColeta,
-                metodoContato: editOrcamento.metodoContato,
-                aceitaContato: editOrcamento.aceitaContato,
-                usuario: {
-                    id: currentOrcamento.usuario.id
-                }
+                // Campos editáveis:
+                dataColeta: editOrcamento.dataColeta || currentOrcamento.dataColeta,
+                horaColeta: editOrcamento.horaColeta
+                    ? (editOrcamento.horaColeta.length === 5 ? editOrcamento.horaColeta + ':00' : editOrcamento.horaColeta)
+                    : currentOrcamento.horaColeta,
+                metodoContato: editOrcamento.metodoContato || currentOrcamento.metodoContato,
+                codStatus: editOrcamento.codStatus || currentOrcamento.codStatus,
+                // Campos não editáveis (mantidos do original):
+                cep: currentOrcamento.cep,
+                endereco: currentOrcamento.endereco,
+                bairro: currentOrcamento.bairro,
+                numero: currentOrcamento.numero,
+                aceitaContato: currentOrcamento.aceitaContato,
+                categorias: currentOrcamento.categorias,
+                usuario: { id: currentOrcamento.usuario.id }
             };
-
-
             const response = await fetch(`${API_BASE_URL}/${currentOrcamento.id}`, {
                 method: 'PUT',
                 headers: {
@@ -183,9 +190,10 @@ function OrcamentoManagement() {
             // Atualização bem-sucedida
             setOrcamentos(prevOrcamentos =>
                 prevOrcamentos.map(orcamento =>
-                    orcamento.id === currentOrcamento.id ? responseData : orcamento
+                    orcamento.id === currentOrcamento.id ? { ...orcamento, ...responseData } : orcamento
                 )
             );
+
             setSnackbar({
                 open: true,
                 message: 'Orçamento atualizado com sucesso!',
@@ -273,12 +281,12 @@ function OrcamentoManagement() {
                 'Categoria',
                 'Data Coleta',
                 'Hora Coleta',
-                'Método Contato',
-                'Aceita Contato',
                 'CEP',
                 'Endereço',
                 'Bairro',
                 'Número',
+                'Status'
+
 
             ];
 
@@ -289,13 +297,14 @@ function OrcamentoManagement() {
                 orc.categorias?.map(cat => cat.nome).join(', ') || '-',
                 orc.dataColeta ? new Date(orc.dataColeta).toLocaleDateString() : '-',
                 orc.horaColeta ? orc.horaColeta.substring(0, 5) : '-',
-                orc.metodoContato || '-',
-                orc.aceitaContato ? 'Sim' : 'Não',
                 orc.cep || '-',
                 orc.endereco || '-',
                 orc.bairro || '-',
                 orc.numero || '-',
-
+                orc.codStatus === 'AGENDADA' ? 'Agendada' :
+                    orc.codStatus === 'EM_ANDAMENTO' ? 'Em andamento' :
+                        orc.codStatus === 'CONCLUIDA' ? 'Concluída' :
+                            orc.codStatus === 'INATIVO' ? 'Inativo' : orc.codStatus || '-'
 
             ]);
 
@@ -346,31 +355,30 @@ function OrcamentoManagement() {
         setDateError('');
         setTimeError('');
 
-        // Resetar o horário se a data mudar para hoje e o horário atual for inválido
-        if (selectedDate.isSame(now, 'day')) {
-            const currentTime = dayjs(editOrcamento.horaColeta, 'HH:mm');
-            if (currentTime.isValid() && currentTime.isBefore(now)) {
-                setEditOrcamento(prev => ({
-                    ...prev,
-                    horaColeta: '',
-                }));
-                setTimeError('Selecione um horário futuro para hoje');
-                setDisableSaveButton(true);
-            }
-        }
         if (selectedDate.isBefore(now, 'day')) {
             setDateError('Não é possível selecionar uma data passada');
             setDisableSaveButton(true);
         } else {
-            // Se a data é válida (hoje ou futuro), verifica o horário
-            const currentTime = dayjs(editOrcamento.horaColeta, 'HH:mm');
-            if (selectedDate.isSame(now, 'day') && currentTime.isValid() && currentTime.isBefore(now)) {
-                setTimeError('Selecione um horário futuro para hoje');
-                setDisableSaveButton(true);
+            // Verifica se o horário precisa ser revalidado
+            if (editOrcamento.horaColeta) {
+                const horaSemSegundos = editOrcamento.horaColeta.split(':').slice(0, 2).join(':');
+                const selectedTime = dayjs(horaSemSegundos, 'HH:mm');
+
+                if (selectedDate.isSame(now, 'day')) {
+                    if (selectedTime.isBefore(now)) {
+                        setTimeError('Selecione um horário futuro para hoje');
+                        setDisableSaveButton(true);
+                    } else {
+                        setDisableSaveButton(false);
+                    }
+                } else {
+                    setDisableSaveButton(false);
+                }
             } else {
                 setDisableSaveButton(false);
             }
         }
+
         setEditOrcamento(prev => ({
             ...prev,
             dataColeta: selectedDate.format('YYYY-MM-DD')
@@ -379,66 +387,72 @@ function OrcamentoManagement() {
 
     const handleTimeChange = (newTime) => {
         const now = dayjs();
-        const selectedDate = dayjs(editOrcamento.dataColeta);
         const selectedTime = dayjs(newTime);
+        const selectedDate = dayjs(editOrcamento.dataColeta || currentOrcamento?.dataColeta);
 
         setTimeError('');
 
-        if (!selectedDate.isValid()) {
-            setTimeError('Selecione uma data primeiro');
-            setDisableSaveButton(true);
-            return;
+        if (selectedDate.isSame(now, 'day')) {
+            if (selectedTime.isBefore(now)) {
+                setTimeError('Selecione um horário futuro para hoje');
+                setDisableSaveButton(true);
+                return;
+            }
         }
 
-        if (selectedDate.isSame(now, 'day') && selectedTime.isBefore(now)) {
-            setTimeError('Selecione um horário futuro para hoje');
-            setDisableSaveButton(true);
-        } else {
-            setDisableSaveButton(false);
-        }
+        setDisableSaveButton(false);
         const hours = String(selectedTime.hour()).padStart(2, '0');
         const minutes = String(selectedTime.minute()).padStart(2, '0');
         setEditOrcamento(prev => ({
             ...prev,
-            horaColeta: `${hours}:${minutes}:00` // Adiciona os segundos
+            horaColeta: `${hours}:${minutes}`
         }));
     };
+
     const shouldDisableDate = (date) => {
         return date.isBefore(dayjs(), 'day');
     };
 
+
     useEffect(() => {
         const now = dayjs();
-        const selectedDate = dayjs(editOrcamento.dataColeta);
-        const horaSemSegundos = editOrcamento.horaColeta.split(':').slice(0, 2).join(':');
-        const selectedTime = dayjs(horaSemSegundos, 'HH:mm');
+        let hasError = false;
 
-        if (!selectedDate.isValid()) {
-            setDisableSaveButton(true);
-            return;
+        // Verifica se há data e se é diferente da original
+        if (editOrcamento.dataColeta && editOrcamento.dataColeta !== currentOrcamento?.dataColeta) {
+            const selectedDate = dayjs(editOrcamento.dataColeta);
+
+            if (selectedDate.isBefore(now, 'day')) {
+                setDateError('Não é possível selecionar uma data passada');
+                hasError = true;
+            }
         }
-        if (selectedDate.isBefore(now, 'day')) {
-            setDateError('Não é possível selecionar uma data passada');
-            setDisableSaveButton(true);
-            return;
+
+        // Verifica se há hora e se é diferente da original
+        if (editOrcamento.horaColeta &&
+            editOrcamento.horaColeta !== currentOrcamento?.horaColeta?.substring(0, 5)) {
+
+            const horaSemSegundos = editOrcamento.horaColeta.split(':').slice(0, 2).join(':');
+            const selectedTime = dayjs(horaSemSegundos, 'HH:mm');
+            const selectedDate = dayjs(editOrcamento.dataColeta || currentOrcamento?.dataColeta);
+
+            if (selectedDate.isSame(now, 'day') && selectedTime.isBefore(now)) {
+                setTimeError('Selecione um horário futuro para hoje');
+                hasError = true;
+            }
         }
-        if (!selectedTime.isValid()) {
-            setDisableSaveButton(true);
-            return;
+
+        if (!hasError) {
+            setDateError('');
+            setTimeError('');
         }
-        if (selectedDate.isSame(now, 'day') && selectedTime.isBefore(now)) {
-            setTimeError('Selecione um horário futuro para hoje');
-            setDisableSaveButton(true);
-            return;
-        }
-        setDateError('');
-        setTimeError('');
-        setDisableSaveButton(false);
-    }, [editOrcamento.dataColeta, editOrcamento.horaColeta]);
+
+        setDisableSaveButton(hasError);
+    }, [editOrcamento.dataColeta, editOrcamento.horaColeta, currentOrcamento]);
 
     const shouldDisableTime = (timeValue, view) => {
         const now = dayjs();
-        const selectedDate = dayjs(editOrcamento.dataColeta);
+        const selectedDate = dayjs(editOrcamento.dataColeta || currentOrcamento?.dataColeta);
 
         if (selectedDate.isSame(now, 'day')) {
             const selectedTime = dayjs(timeValue);
@@ -508,6 +522,61 @@ function OrcamentoManagement() {
             Cell: ({ cell }) => cell.getValue().substring(0, 5),
         },
         {
+            accessorKey: 'codStatus',
+            header: 'Status',
+            Cell: ({ cell }) => {
+                const status = cell.getValue()?.trim().toUpperCase();
+                let statusText, bgColor, textColor;
+
+                switch (status) {
+                    case 'AGENDADA':
+                        statusText = 'Agendada';
+                        bgColor = '#BBDEFB'; // Azul pastel
+                        textColor = '#0D47A1'; // Azul forte
+
+                        break;
+                    case 'EM_ANDAMENTO':
+                        statusText = 'Em andamento';
+                        bgColor = '#FFE0B2'; // Laranja pastel
+                        textColor = '#BF360C'; // Laranja queimado
+                        break;
+                    case 'CONCLUIDA':
+                        statusText = 'Concluída';
+                        bgColor = '#C8E6C9'; // Verde pastel
+                        textColor = '#1B5E20'; // Verde forte
+                        break;
+                    case 'INATIVO':
+                        statusText = 'Inativo';
+                        bgColor = '#FFCDD2'; // Vermelho pastel
+                        textColor = '#B71C1C'; // Vermelho escuro
+                        break;
+                    default:
+                        statusText = 'Agendada';
+                        bgColor = '#BBDEFB'; // Azul pastel
+                        textColor = '#0D47A1'; // Azul forte
+                }
+
+                return (
+                    <span
+                        style={{
+                            backgroundColor: bgColor,
+                            color: textColor,
+                            padding: '6px 14px',
+                            borderRadius: '16px',
+                            fontSize: '0.85rem',
+                            fontWeight: 600,
+                            display: 'inline-block',
+                            minWidth: '110px',
+                            textAlign: 'center',
+                            boxShadow: 'inset 0 0 2px rgba(0,0,0,0.1)',
+                        }}
+                    >
+                        {statusText}
+                    </span>
+                );
+            },
+        },
+        {
             accessorKey: 'metodoContato', header: 'Método/Contato', size: 10
         },
         {
@@ -518,11 +587,11 @@ function OrcamentoManagement() {
                 return (
                     <span style={{
                         backgroundColor: aceita ? '#C8E6C9' : '#FFCDD2',
-                        color: aceita ? '#2e7d32' : '#c62828',
+                        color: aceita ? '#1B5E20' : '#c62828',
                         padding: '4px 12px',
                         borderRadius: '20px',
                         fontSize: '0.875rem',
-                        fontWeight: '500',
+                        fontWeight: '600',
                         display: 'inline-block',
                         minWidth: '60px',
                         textAlign: 'center'
@@ -532,11 +601,13 @@ function OrcamentoManagement() {
                 );
             }
         },
-
         {
-            header: 'Ações', AlignLeft,
+            header: 'Ações',
+            muiTableBodyCellProps: {
+                align: 'left',
+            },
             Cell: ({ row }) => (
-                <div className="action-buttons">
+                <div style={{ display: 'flex', justifyContent: 'flex-start', gap: '0.5rem' }}>
                     <Tooltip title="Editar">
                         <IconButton onClick={() => handleEditOrcamento(row.original)}>
                             <EditIcon />
@@ -550,6 +621,9 @@ function OrcamentoManagement() {
                 </div>
             )
         }
+
+
+
     ];
 
     return (
@@ -587,37 +661,7 @@ function OrcamentoManagement() {
 
                     <DialogContent sx={{ mt: 2 }}>
                         <form onSubmit={handleUpdateOrcamento}>
-                            {/* Campo Categoria */}
-                            <TextField
-                                select
-                                label="Categoria"
-                                value={editOrcamento.categoria?.id || ''}
-                                onChange={(e) => {
-                                    const selectedCategory = categories.find(c => c.id === e.target.value);
-                                    setEditOrcamento({ ...editOrcamento, categoria: selectedCategory });
-                                }}
-                                fullWidth
-                                margin="dense"
 
-                                sx={{
-                                    '& .MuiOutlinedInput-root': {
-                                        backgroundColor: '	#ECECEC',
-                                        borderRadius: '8px',
-                                    },
-                                    '& .MuiSelect-icon': {
-                                        color: '#2f7c37',
-                                        right: '8px',
-                                    }
-                                }}
-                            >
-                                {categories.map((category) => (
-                                    <MenuItem key={category.id} value={category.id}>
-                                        {category.nome} (R$ {category.precoPorKg?.toFixed(2)}/kg)
-                                    </MenuItem>
-                                ))}
-                            </TextField>
-
-                            {/* Campo Data */}
                             {/* Campo Data */}
                             <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="pt-br">
 
@@ -673,19 +717,16 @@ function OrcamentoManagement() {
                                     ampm={false}
                                 />
                             </LocalizationProvider>
-
-                            {/* Campo Método de Contato */}
                             <TextField
                                 select
                                 label="Método de Contato"
-                                value={editOrcamento.metodoContato}
+                                value={editOrcamento.metodoContato || ''}
                                 onChange={(e) => setEditOrcamento({ ...editOrcamento, metodoContato: e.target.value })}
                                 fullWidth
                                 margin="dense"
-
                                 sx={{
                                     '& .MuiOutlinedInput-root': {
-                                        backgroundColor: '	#ECECEC',
+                                        backgroundColor: '#ECECEC',
                                         borderRadius: '8px',
                                     },
                                     '& .MuiSelect-icon': {
@@ -697,8 +738,34 @@ function OrcamentoManagement() {
                                 <MenuItem value="WhatsApp">WhatsApp</MenuItem>
                                 <MenuItem value="Email">Email</MenuItem>
                             </TextField>
+                            {/* Campo Status */}
+                            <TextField
+                                select
+                                label="Status"
+                                value={editOrcamento.codStatus}
+                                onChange={(e) => setEditOrcamento({ ...editOrcamento, codStatus: e.target.value })}
+                                fullWidth
+                                margin="dense"
+                                helperText={`Status atual: ${currentOrcamento?.codStatus || 'Agendada'}`}
 
-                            {/* Checkbox Aceita Contato */}
+                                sx={{
+                                    '& .MuiOutlinedInput-root': {
+                                        backgroundColor: '#ECECEC',
+                                        borderRadius: '8px',
+                                    },
+                                    '& .MuiSelect-icon': {
+                                        color: '#2f7c37',
+                                        right: '8px',
+                                    }
+                                }}
+                            >
+                                <MenuItem value="AGENDADA">Agendada</MenuItem>
+                                <MenuItem value="EM_ANDAMENTO">Em andamento</MenuItem>
+                                <MenuItem value="CONCLUIDA">Concluída</MenuItem>
+                                <MenuItem value="INATIVO">Inativo</MenuItem>
+                            </TextField>
+                            {/* Campo Método de Contato */}
+
                             <FormControlLabel
                                 control={
                                     <Checkbox
@@ -707,8 +774,7 @@ function OrcamentoManagement() {
                                         color="primary"
                                     />
                                 }
-                                label="Aceita ser contatado"
-
+                                label="Aceita ser contactado"
                             />
                         </form>
                     </DialogContent>
@@ -853,7 +919,7 @@ function OrcamentoManagement() {
                                 }}
                                 fullWidth
                                 margin="normal"
-                                required
+
                             >
                                 {categories.map((category) => (
                                     <MenuItem key={category.id} value={category.id}>
@@ -869,7 +935,7 @@ function OrcamentoManagement() {
                                 onChange={(e) => setEditOrcamento({ ...editOrcamento, dataColeta: e.target.value })}
                                 fullWidth
                                 margin="normal"
-                                required
+
                                 InputLabelProps={{ shrink: true }}
                             />
 
@@ -880,7 +946,7 @@ function OrcamentoManagement() {
                                 onChange={(e) => setEditOrcamento({ ...editOrcamento, horaColeta: e.target.value })}
                                 fullWidth
                                 margin="normal"
-                                required
+
                                 InputLabelProps={{ shrink: true }}
                             />
 
@@ -891,7 +957,7 @@ function OrcamentoManagement() {
                                 onChange={(e) => setEditOrcamento({ ...editOrcamento, metodoContato: e.target.value })}
                                 fullWidth
                                 margin="normal"
-                                required
+
                             >
                                 <MenuItem value="WhatsApp">WhatsApp</MenuItem>
                                 <MenuItem value="Telefone">Telefone</MenuItem>
@@ -932,14 +998,14 @@ function OrcamentoManagement() {
                         <MaterialReactTable
                             columns={columns}
                             data={filteredOrcamentos}
-                            initialState={{ pagination: { pageSize: 5 } }}
+                            state={{ pagination }}
+                            onPaginationChange={setPagination}
                             muiTablePaginationProps={{
                                 rowsPerPageOptions: [5, 10, 20],
                             }}
-                            enableColumnResizing={false} // <- remove barra de ajuste
+                            enableColumnResizing={false}
                             enableStickyHeader
                             enableFullScreenToggle={false}
-
                         />
                     )}
                 </div>

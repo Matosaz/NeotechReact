@@ -316,7 +316,7 @@ function UserManagement() {
       Cell: ({ cell }) => {
         const status = cell.getValue();
         const isActive = status === 'ATIVO';
-    
+
         return (
           <span
             style={{
@@ -325,7 +325,7 @@ function UserManagement() {
               padding: '4px 12px',
               borderRadius: '20px',
               fontSize: '0.875rem',
-              fontWeight: '500',
+              fontWeight: '600',
               display: 'inline-block',
               minWidth: '60px',
               textAlign: 'center'
@@ -338,40 +338,43 @@ function UserManagement() {
       headerClassName: 'column-status-header',
       cellClassName: 'column-status-cell',
     },
-    
-   {
-  accessorKey: 'admin',
-  header: 'Administrador',
-  Cell: ({ cell }) => {
-    const isAdmin = cell.getValue();
-    const color = isAdmin ? '#C8E6C9' : '#FFCDD2'; // Verde ou Vermelho
-    const label = isAdmin ? 'Sim' : 'Não';
 
-    return (
-      <span
-        style={{
-          backgroundColor: color,
-          color: isAdmin? '#2e7d32' : '#c62828',
-          padding: '4px 10px',
-          borderRadius: '20px',
-          fontSize: '0.8rem',
-          fontWeight: '600',
-          display: 'inline-block',
-          textAlign: 'center',
-          minWidth: '60px',
-        }}
-      >
-        {label}
-      </span>
-    );
-  }
-},
+    {
+      accessorKey: 'admin',
+      header: 'Administrador',
+      Cell: ({ cell }) => {
+        const isAdmin = cell.getValue();
+        const color = isAdmin ? '#C8E6C9' : '#FFCDD2'; // Verde ou Vermelho
+        const label = isAdmin ? 'Sim' : 'Não';
+
+        return (
+          <span
+            style={{
+              backgroundColor: color,
+              color: isAdmin ? '#2e7d32' : '#c62828',
+              padding: '4px 10px',
+              borderRadius: '20px',
+              fontSize: '0.8rem',
+              fontWeight: '600',
+              display: 'inline-block',
+              textAlign: 'center',
+              minWidth: '60px',
+            }}
+          >
+            {label}
+          </span>
+        );
+      }
+    },
 
     { accessorKey: 'email', header: 'Email' },
     {
       header: 'Ações',
+      muiTableBodyCellProps: {
+        align: 'left',
+      },
       Cell: ({ row }) => (
-        <div className="action-buttons">
+        <div style={{ display: 'flex', justifyContent: 'flex-start', gap: '0.5rem' }}>
           <Tooltip title="Editar">
             <IconButton onClick={() => handleEditUser(row.original)}>
               <EditIcon />
@@ -456,30 +459,30 @@ function UserManagement() {
 
         <h1 className='titleManag'>Gerenciar usuários</h1>
         <div className="search-container" style={{ position: 'relative', width: '100%', maxWidth: '410px' }}>
-  <input
-    type="text"
-    placeholder="Pesquisar Usuários"
-    value={searchTerm}
-    onChange={handleSearch}
-    style={{
-      width: '100%',
-      padding: '10px 12px',
-      borderRadius: '10px',
-      fontSize: '14px'
-    }}
-  />
-  <Search
-    size={20}
-    style={{
-      position: 'absolute',
-      right: '12px',
-      top: '50%',
-      transform: 'translateY(-50%)',
-      color: '#999',
-      pointerEvents: 'none'
-    }}
-  />
-</div>
+          <input
+            type="text"
+            placeholder="Pesquisar Usuários"
+            value={searchTerm}
+            onChange={handleSearch}
+            style={{
+              width: '100%',
+              padding: '10px 12px',
+              borderRadius: '10px',
+              fontSize: '14px'
+            }}
+          />
+          <Search
+            size={20}
+            style={{
+              position: 'absolute',
+              right: '12px',
+              top: '50%',
+              transform: 'translateY(-50%)',
+              color: '#999',
+              pointerEvents: 'none'
+            }}
+          />
+        </div>
 
 
 
@@ -516,27 +519,24 @@ function UserManagement() {
                 </IconButton>
               </div>
               <FormGroup row sx={{
-                marginLeft: "-40px",
+                marginLeft: isEditing ? "10px" : "-60px", // Ajuste condicional
                 display: "flex",
-                flexWrap: "nowrap", // impede quebra de linha
-                gap: "20px", // espaçamento entre os itens
+                flexWrap: "nowrap",
+                gap: isEditing ? "5px" : "15px", // Espaçamento menor no modo edição
                 alignItems: "center",
               }}>
 
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={newUser.ativo}
-                      onChange={() => setNewUser(prevState => ({ ...prevState, ativo: !prevState.ativo }))}
-                      sx={{
-                        '&.Mui-checked': {
-                          color: '#5faa84', // Cor do checkbox selecionado
-                        },
-                      }}
-                    />
-                  }
-                                 label={<Typography sx={{ color: '#fafafa' }}>Ativo</Typography>}
-                />
+                <div className="status-user-select-container">
+                  <select
+                    name="codStatus"
+                    value={newUser.ativo || 'ATIVO'}
+                    onChange={(e) => setNewUser({ ...newUser, ativo: e.target.value })}
+                    className="status-user-select"
+                  >
+                    <option value="ATIVO">Ativo</option>
+                    <option value="INATIVO">Inativo</option>
+                  </select>
+                </div>
                 <FormControlLabel
                   control={
                     <Checkbox
@@ -550,40 +550,40 @@ function UserManagement() {
                       }}
                     />
                   }
-                                 label={<Typography sx={{ color: '#fafafa' }}>Administrador</Typography>}
+                  label={<Typography sx={{ color: '#fafafa' }}>Administrador</Typography>}
                 />
               </FormGroup>
 
-            <div className="form-buttons">
-  <button className='ADD_button' type="submit" disabled={loadingUserSubmit}>
-    {loadingUserSubmit ? (
-      <CircularProgress size={24} color="inherit" />
-    ) : (
-      isEditing ? 'Atualizar Usuário' : 'Adicionar Usuário'
-    )}
-  </button>
-  
-  {isEditing && (
-    <button
-      type="button"
-      onClick={resetForm}
-      className='CANCEL_button_USER'>
-      Cancelar
-    </button>
-  )}
-</div>
+              <div className="form-buttons">
+                <button className='ADD_button' type="submit" disabled={loadingUserSubmit}>
+                  {loadingUserSubmit ? (
+                    <CircularProgress size={24} color="inherit" />
+                  ) : (
+                    isEditing ? 'Atualizar Usuário' : 'Adicionar Usuário'
+                  )}
+                </button>
+
+                {isEditing && (
+                  <button
+                    type="button"
+                    onClick={resetForm}
+                    className='CANCEL_button_USER'>
+                    Cancelar
+                  </button>
+                )}
+              </div>
 
             </div>
           </form>
         </div>
 
         <div className="table-container">
-        {isLoading ? (
-          <div className="loading-container">
-            <div className="spinner"></div>
-            <p>Carregando dados...</p>
-          </div>
-        ) :  (
+          {isLoading ? (
+            <div className="loading-container">
+              <div className="spinner"></div>
+              <p>Carregando dados...</p>
+            </div>
+          ) : (
             <MaterialReactTable
               columns={columns}
               data={filteredUsers}
