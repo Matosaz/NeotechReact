@@ -302,7 +302,7 @@ function OrcamentoManagement() {
                 orc.bairro || '-',
                 orc.numero || '-',
                 orc.codStatus === 'AGENDADA' ? 'Agendada' :
-                    orc.codStatus === 'EM_ANDAMENTO' ? 'Em andamento' :
+                    orc.codStatus === 'EM ANDAMENTO' ? 'Em andamento' :
                         orc.codStatus === 'CONCLUIDA' ? 'Concluída' :
                             orc.codStatus === 'INATIVO' ? 'Inativo' : orc.codStatus || '-'
 
@@ -535,7 +535,7 @@ function OrcamentoManagement() {
                         textColor = '#0D47A1'; // Azul forte
 
                         break;
-                    case 'EM_ANDAMENTO':
+                    case 'EM ANDAMENTO':
                         statusText = 'Em andamento';
                         bgColor = '#FFE0B2'; // Laranja pastel
                         textColor = '#BF360C'; // Laranja queimado
@@ -760,7 +760,7 @@ function OrcamentoManagement() {
                                 }}
                             >
                                 <MenuItem value="AGENDADA">Agendada</MenuItem>
-                                <MenuItem value="EM_ANDAMENTO">Em andamento</MenuItem>
+                                <MenuItem value="EM ANDAMENTO">Em andamento</MenuItem>
                                 <MenuItem value="CONCLUIDA">Concluída</MenuItem>
                                 <MenuItem value="INATIVO">Inativo</MenuItem>
                             </TextField>
