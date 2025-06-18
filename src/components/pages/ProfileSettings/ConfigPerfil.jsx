@@ -87,6 +87,12 @@ const ConfigPerfil = () => {
     }
 
     setLoading(true);
+    
+    // Salva os valores de administrador antes da atualização
+    const isAdminValue = user.isAdmin;
+    const adminValue = user.admin;
+    
+    // Cria uma cópia do usuário sem incluir os campos de administrador
     const updatedUser = {
       cpf: Cpf,
       telefone: telefone,
@@ -96,8 +102,7 @@ const ConfigPerfil = () => {
       bairro: Bairro,
       estado: selectedState,
       data_nascimento: birthDate,
-      genero: genero, 
-
+      genero: genero
     };
 
     try {
@@ -108,6 +113,7 @@ const ConfigPerfil = () => {
         formData.append("avatar", avatar);
       }
 
+      console.log("Enviando para o backend:", updatedUser);
       const response = await fetch(`${API_BASE_URL}/${user.id}`, {
         method: "PUT",
         body: formData,
@@ -119,13 +125,17 @@ const ConfigPerfil = () => {
       }
 
       const newUserData = await response.json();
-      console.log("Dados retornados do backend:", newUserData);
-
-      setUser((prevUser) => {
-        const updatedUser = { ...prevUser, ...newUserData };
-        localStorage.setItem("user", JSON.stringify(updatedUser));
-        return updatedUser;
-      });
+      
+      // Cria um novo objeto com os dados atualizados
+      const updatedUserData = {
+        ...newUserData,
+        isAdmin: isAdminValue,  // Restaura o valor original de isAdmin
+        admin: adminValue       // Restaura o valor original de admin
+      };
+      
+      // Atualiza o estado e o localStorage
+      setUser(updatedUserData);
+      localStorage.setItem("user", JSON.stringify(updatedUserData));
 
       setSnackbar({
         open: true,

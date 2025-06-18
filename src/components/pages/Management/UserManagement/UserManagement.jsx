@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { MaterialReactTable } from 'material-react-table';
 import './UserManagement.css';
 import NeotechLogo from "../../../../assets/Logo7png.png"
@@ -12,13 +12,13 @@ import CircularProgress from '@mui/material/CircularProgress';
 import 'jspdf-autotable';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import { Checkbox, FormControlLabel, FormGroup, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button } from '@mui/material';  // Importando Checkbox do MUI
+import { Checkbox, FormControlLabel, FormGroup, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button, Tabs, Tab, Box, Fade } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import PrintIcon from '@mui/icons-material/Print';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import ProfileAvatar from "../../../../assets/camerausericon.png";
-import { Search } from 'lucide-react';
+import { Search, RefreshCw, UserPlus, FileText } from 'lucide-react';
 import Typography from '@mui/material/Typography';
 
 const CustomCheckbox = styled(Checkbox)(({ theme }) => ({
@@ -52,26 +52,51 @@ function UserManagement() {
 
     const doc = new jsPDF();
     const img = new Image();
-    img.src = NeotechLogo; // Caminho correto para a imagem importada
+    img.src = NeotechLogo;
 
     img.onload = function () {
       const pageWidth = doc.internal.pageSize.width;
+      const pageHeight = doc.internal.pageSize.height;
 
+      // Adicionar fundo sutil
+      doc.setFillColor(250, 250, 250);
+      doc.rect(0, 0, pageWidth, pageHeight, 'F');
+      
+      // Adicionar borda decorativa
+      doc.setDrawColor(127, 192, 141);
+      doc.setLineWidth(0.5);
+      doc.rect(5, 5, pageWidth - 10, pageHeight - 10);
+
+      // Adicionar logo
       const imgWidth = 30;
       const imgHeight = (img.height / img.width) * imgWidth;
-
       const imgX = (pageWidth - imgWidth) / 2;
       doc.addImage(img, 'PNG', imgX, 10, imgWidth, imgHeight);
 
-      doc.setTextColor(47, 124, 55)
+      // Título do relatório
+      doc.setTextColor(47, 124, 55);
       doc.setFont('Helvetica', 'bold');
       doc.setFontSize(22);
       doc.text('Relatório de Usuários', pageWidth / 2, imgHeight + 20, { align: 'center' });
 
+      // Data de geração
+      const dataAtual = new Date().toLocaleString();
       doc.setTextColor(18, 54, 21);
       doc.setFontSize(12);
       doc.setFont('Helvetica', 'italic');
-      doc.text(`Gerado em: ${new Date().toLocaleString()}`, pageWidth / 2, imgHeight + 30, { align: 'center' });
+      doc.text(`Gerado em: ${dataAtual}`, pageWidth / 2, imgHeight + 30, { align: 'center' });
+
+      // Informações do relatório
+      doc.setFont('Helvetica', 'normal');
+      doc.setFontSize(10);
+      doc.setTextColor(80, 80, 80);
+      doc.text(`Total de usuários: ${users.length}`, 14, imgHeight + 40);
+      
+      const usuariosAtivos = users.filter(user => user.codStatus === 'ATIVO').length;
+      const usuariosAdmins = users.filter(user => user.admin).length;
+      
+      doc.text(`Usuários ativos: ${usuariosAtivos}`, 14, imgHeight + 46);
+      doc.text(`Administradores: ${usuariosAdmins}`, 14, imgHeight + 52);
 
       // Configuração da tabela
       const tableColumn = ['ID', 'Nome', 'Email', 'Status', 'Administrador'];
@@ -79,48 +104,114 @@ function UserManagement() {
         user.id,
         user.nome,
         user.email,
-        user.codStatus,
+        user.codStatus === 'ATIVO' ? 'Ativo' : 'Inativo',
         user.admin ? 'Sim' : 'Não',
       ]);
 
       doc.autoTable({
         head: [tableColumn],
         body: tableRows,
-        startY: imgHeight + 38,
-        headStyles: { fillColor: [127, 192, 141], textColor: 255 },
-        bodyStyles: { fontSize: 10 },
-        alternateRowStyles: { fillColor: [240, 240, 240] },
-        didDrawPage: function (data) {
-          const str = `Página ${doc.internal.getNumberOfPages()}`;
-          doc.setFontSize(8);
-          const pageHeight = doc.internal.pageSize.height;
-          doc.text(str, pageWidth / 2, pageHeight - 10, { align: 'center' });
+        startY: imgHeight + 60,
+        headStyles: { 
+          fillColor: [95, 170, 132], 
+          textColor: 255,
+          fontStyle: 'bold'
         },
+        bodyStyles: { 
+          fontSize: 10,
+          cellPadding: 3
+        },
+        alternateRowStyles: { 
+          fillColor: [240, 250, 240] 
+        },
+        columnStyles: {
+          0: { cellWidth: 20 },
+          2: { cellWidth: 'auto' },
+          3: { halign: 'center' },
+          4: { halign: 'center' }
+        },
+        didDrawPage: function (data) {
+          // Adicionar cabeçalho em cada página
+          if (data.pageNumber > 1) {
+            doc.setFillColor(250, 250, 250);
+            doc.rect(0, 0, pageWidth, 20, 'F');
+            doc.setDrawColor(127, 192, 141);
+            doc.setLineWidth(0.5);
+            doc.line(0, 20, pageWidth, 20);
+            
+            doc.setTextColor(47, 124, 55);
+            doc.setFont('Helvetica', 'bold');
+            doc.setFontSize(12);
+            doc.text('Relatório de Usuários', pageWidth / 2, 15, { align: 'center' });
+          }
+          
+          // Adicionar rodapé em cada página
+          const str = `Página ${data.pageNumber} de ${doc.internal.getNumberOfPages()}`;
+          doc.setFontSize(8);
+          doc.setTextColor(100, 100, 100);
+          doc.text(str, pageWidth / 2, pageHeight - 10, { align: 'center' });
+          
+          // Adicionar data no rodapé
+          doc.text(dataAtual, pageWidth - 15, pageHeight - 10, { align: 'right' });
+        },
+        margin: { top: 25, bottom: 25 }
       });
 
       // Espaço para assinatura no final da página
-      const pageHeight = doc.internal.pageSize.height;
-      doc.line((pageWidth - 180) / 2, pageHeight - 20, (pageWidth + 180) / 2, pageHeight - 20);
-      doc.text('Neotech', pageWidth / 2, pageHeight - 15, { align: 'center' });
+      const finalY = doc.lastAutoTable.finalY + 20;
+      
+      if (finalY < pageHeight - 40) {
+        doc.line((pageWidth - 180) / 2, finalY, (pageWidth + 180) / 2, finalY);
+        doc.setFontSize(10);
+        doc.setTextColor(80, 80, 80);
+        doc.text('Neotech', pageWidth / 2, finalY + 5, { align: 'center' });
+        doc.setFontSize(8);
+        doc.text('Documento gerado automaticamente pelo sistema', pageWidth / 2, finalY + 12, { align: 'center' });
+      }
 
-      // Salvar PDF
-
-      doc.save('relatorio_usuarios.pdf');
-      setLoadingPDF(false);  // Finaliza o carregamento do PDF após o download
-
+      // Salvar PDF com nome personalizado incluindo a data
+      const dataFormatada = new Date().toISOString().split('T')[0];
+      doc.save(`relatorio_usuarios_${dataFormatada}.pdf`);
+      
+      setSnackbar({ open: true, message: 'Relatório gerado com sucesso!', severity: 'success' });
+      setLoadingPDF(false);
     };
 
     img.onerror = function () {
       setSnackbar({ open: true, message: 'Erro ao carregar o logotipo do PDF.', severity: 'error' });
       setLoadingPDF(false);
-
     };
   };
   const [isLoading, setIsLoading] = useState(true);
   const [loadingUserSubmit, setLoadingUserSubmit] = useState(false);
   const [loadingPDF, setLoadingPDF] = useState(false);
+  const [tabValue, setTabValue] = useState(0);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const handleTabChange = (event, newValue) => {
+    setTabValue(newValue);
+  };
+
+  const refreshData = () => {
+    setIsRefreshing(true);
+    fetch(API_BASE_URL)
+      .then(response => response.json())
+      .then(data => {
+        setUsers(data);
+        setSnackbar({ open: true, message: 'Dados atualizados com sucesso!', severity: 'success' });
+      })
+      .catch(error => {
+        console.error('Erro ao atualizar dados:', error);
+        setSnackbar({ open: true, message: 'Erro ao atualizar dados', severity: 'error' });
+      })
+      .finally(() => {
+        setIsRefreshing(false);
+      });
+  };
 
   useEffect(() => {
+    setIsLoading(true);
     fetch(API_BASE_URL)
       .then(response => response.json())
       .then(data => {
@@ -130,63 +221,109 @@ function UserManagement() {
       .catch(error => {
         console.error('Erro ao buscar usuários:', error);
         setIsLoading(false);
+        setSnackbar({ open: true, message: 'Erro ao carregar usuários', severity: 'error' });
       });
-  }, []);
+  }, [refreshTrigger]);
 
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
   };
-  const filteredUsers = users.filter(user =>
-    user.nome.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  
+  const filteredUsers = useMemo(() => {
+    if (!searchTerm.trim()) return users;
+    
+    const searchTermLower = searchTerm.toLowerCase().trim();
+    return users.filter(user => 
+      user.nome.toLowerCase().includes(searchTermLower) || 
+      user.email.toLowerCase().includes(searchTermLower) ||
+      (user.codStatus && user.codStatus.toLowerCase().includes(searchTermLower))
+    );
+  }, [users, searchTerm]);
 
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
   };
   const handleInputChange = (event) => {
     const { name, value, type, checked } = event.target;
+    
+    // Limpar mensagem de erro quando o usuário começa a digitar
+    if (errorMessage) {
+      setErrorMessage('');
+    }
+    
     setNewUser(prevState => ({
       ...prevState,
       [name]: type === 'checkbox' ? checked : value
     }));
   };
 
+  // Função para validar o formulário
+  const validateForm = () => {
+    // Validar nome
+    if (!newUser.nome || newUser.nome.trim().length < 3) {
+      setErrorMessage('O nome deve ter pelo menos 3 caracteres');
+      return false;
+    }
+    
+    // Validar email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!newUser.email || !emailRegex.test(newUser.email)) {
+      setErrorMessage('Por favor, insira um email válido');
+      return false;
+    }
+    
+    // Validar senha (apenas para novos usuários)
+    if (!isEditing && (!newUser.senha || newUser.senha.length < 6)) {
+      setErrorMessage('A senha deve ter pelo menos 6 caracteres');
+      return false;
+    }
+    
+    setErrorMessage('');
+    return true;
+  };
+
   const handleAddUser = async () => {
-    if (newUser.email && newUser.senha && newUser.nome) {
-      setLoadingUserSubmit(true);
+    if (!validateForm()) return;
+    
+    setLoadingUserSubmit(true);
 
-      try {
-        const response = await fetch(API_BASE_URL, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            nome: newUser.nome,
-            email: newUser.email,
-            senha: newUser.senha,
-            admin: newUser.administrador,
-            codStatus: newUser.ativo ? 'ATIVO' : 'INATIVO'
-          }),
+    try {
+      const response = await fetch(API_BASE_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          nome: newUser.nome.trim(),
+          email: newUser.email.trim(),
+          senha: newUser.senha,
+          admin: newUser.administrador,
+          codStatus: newUser.ativo ? 'ATIVO' : 'INATIVO'
+        }),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        setSnackbar({ 
+          open: true, 
+          message: `Erro ao adicionar o usuário: ${response.statusText || errorText}`, 
+          severity: 'error' 
         });
-
-        if (!response.ok) {
-          setSnackbar({ open: true, message: 'Erro ao adicionar o usuário:.' + response.statusText, severity: 'error' });
-          return;
-        }
-
-        const data = await response.json();
-        setUsers(prevUsers => [...prevUsers, data]);
-        setSnackbar({ open: true, message: 'Usuário adicionado com sucesso!', severity: 'success' });
-        resetForm();
-      } catch (error) {
-
-        const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido ao adicionar o usuário';
-        setSnackbar({ open: true, message: `Erro ao adicionar o usuário: ${errorMessage}`, severity: 'error' });
-
-      } finally {
-        setLoadingUserSubmit(false);
+        return;
       }
+
+      const data = await response.json();
+      setUsers(prevUsers => [...prevUsers, data]);
+      setSnackbar({ open: true, message: 'Usuário adicionado com sucesso!', severity: 'success' });
+      resetForm();
+      
+      // Voltar para a aba de listagem após adicionar
+      setTabValue(0);
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido ao adicionar o usuário';
+      setSnackbar({ open: true, message: `Erro ao adicionar o usuário: ${errorMessage}`, severity: 'error' });
+    } finally {
+      setLoadingUserSubmit(false);
     }
   };
 
@@ -198,17 +335,30 @@ function UserManagement() {
       ativo: user.codStatus === 'ATIVO',
       administrador: user.admin,
       email: user.email,
-      senha: user.senha
+      senha: user.senha || ''
+    });
+    
+    // Mudar para a aba de edição
+    setTabValue(1);
+    
+    // Feedback visual
+    setSnackbar({ 
+      open: true, 
+      message: `Editando usuário: ${user.nome}`, 
+      severity: 'info' 
     });
   };
   const handleUpdateUser = async () => {
     if (!currentUser || typeof currentUser.id !== 'number') return;
+    
+    if (!validateForm()) return;
+    
     setLoadingUserSubmit(true);
 
     const formData = new FormData();
     formData.append("data", JSON.stringify({
-      nome: newUser.nome,
-      email: newUser.email,
+      nome: newUser.nome.trim(),
+      email: newUser.email.trim(),
       admin: newUser.administrador,
       codStatus: newUser.ativo ? "ATIVO" : "INATIVO",
       senha: newUser.senha || ""
@@ -221,18 +371,29 @@ function UserManagement() {
       });
 
       if (!response.ok) {
-        setSnackbar({ open: true, message: 'Erro ao atualizar o usuário:.' + response.statusText, severity: 'error' });
+        const errorText = await response.text();
+        setSnackbar({ 
+          open: true, 
+          message: `Erro ao atualizar o usuário: ${response.statusText || errorText}`, 
+          severity: 'error' 
+        });
         return;
       }
 
       const updatedUser = await response.json();
       setUsers(users.map(user => (user.id === currentUser.id ? updatedUser : user)));
-      setSnackbar({ open: true, message: 'Usuário atualizado com sucesso!', severity: 'success' });
+      setSnackbar({ 
+        open: true, 
+        message: `Usuário ${updatedUser.nome} atualizado com sucesso!`, 
+        severity: 'success' 
+      });
       resetForm();
+      
+      // Voltar para a aba de listagem após atualizar
+      setTabValue(0);
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido ao atualizar o usuário';
       setSnackbar({ open: true, message: `Erro ao atualizar o usuário: ${errorMessage}`, severity: 'error' });
-
     } finally {
       setLoadingUserSubmit(false);
     }
@@ -275,12 +436,13 @@ function UserManagement() {
     setErrorMessage('');
   };
 
-  const columns = [
-
+  const columns = useMemo(() => [
     {
       accessorKey: 'avatar',
       header: 'Foto',
       size: 60,
+      enableSorting: false,
+      enableColumnFilter: false,
       Cell: ({ row }) => {
         const avatar = row.original.avatar;
         const nome = row.original.nome;
@@ -290,29 +452,61 @@ function UserManagement() {
           : ProfileAvatar;
 
         return (
-          <img
-            src={imageSrc}
-            alt={`Avatar de ${nome}`}
-            style={{
-              width: 50,
-              height: 50,
-              borderRadius: '50%',
-              objectFit: 'cover',
-              border: '0.5px solid #e3e3e3'
-            }}
-          />
+          <Tooltip title={`Foto de ${nome}`} arrow placement="right">
+            <img
+              src={imageSrc}
+              alt={`Avatar de ${nome}`}
+              style={{
+                width: 50,
+                height: 50,
+                borderRadius: '50%',
+                objectFit: 'cover',
+                border: '0.5px solid #e3e3e3',
+                transition: 'transform 0.2s ease',
+                cursor: 'pointer',
+                '&:hover': {
+                  transform: 'scale(1.1)',
+                  boxShadow: '0 0 10px rgba(0,0,0,0.2)'
+                }
+              }}
+            />
+          </Tooltip>
         );
       }
     },
     {
       accessorKey: 'nome',
       header: 'Usuário',
-      headerStyle: { color: '#3498db', fontWeight: 'bold', textAlign: 'center' },
-      cellStyle: { color: '#3498db', textAlign: 'center', fontSize: '16px' }
+      size: 150,
+      filterVariant: 'text',
+      Cell: ({ cell, row }) => (
+        <div style={{ 
+          fontWeight: 500, 
+          color: '#555', 
+          cursor: 'pointer',
+          transition: 'color 0.2s ease'
+        }}
+        onClick={() => handleEditUser(row.original)}
+        >
+          {cell.getValue()}
+        </div>
+      ),
+      muiTableHeadCellProps: {
+        sx: {
+          color: '#555',
+          fontWeight: 'bold',
+        }
+      }
     },
     {
       accessorKey: 'codStatus',
       header: 'Status',
+      size: 100,
+      filterVariant: 'select',
+      filterSelectOptions: [
+        { text: 'Ativo', value: 'ATIVO' },
+        { text: 'Inativo', value: 'INATIVO' }
+      ],
       Cell: ({ cell }) => {
         const status = cell.getValue();
         const isActive = status === 'ATIVO';
@@ -328,23 +522,34 @@ function UserManagement() {
               fontWeight: '600',
               display: 'inline-block',
               minWidth: '60px',
-              textAlign: 'center'
+              textAlign: 'center',
+              transition: 'all 0.2s ease',
+              boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
             }}
           >
             {isActive ? 'Ativo' : 'Inativo'}
           </span>
         );
       },
-      headerClassName: 'column-status-header',
-      cellClassName: 'column-status-cell',
+      muiTableHeadCellProps: {
+        sx: {
+          color: '#555',
+          fontWeight: 'bold',
+        }
+      }
     },
-
     {
       accessorKey: 'admin',
       header: 'Administrador',
+      size: 120,
+      filterVariant: 'select',
+      filterSelectOptions: [
+        { text: 'Sim', value: true },
+        { text: 'Não', value: false }
+      ],
       Cell: ({ cell }) => {
         const isAdmin = cell.getValue();
-        const color = isAdmin ? '#C8E6C9' : '#FFCDD2'; // Verde ou Vermelho
+        const color = isAdmin ? '#C8E6C9' : '#FFCDD2';
         const label = isAdmin ? 'Sim' : 'Não';
 
         return (
@@ -359,36 +564,76 @@ function UserManagement() {
               display: 'inline-block',
               textAlign: 'center',
               minWidth: '60px',
+              transition: 'all 0.2s ease',
+              boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
             }}
           >
             {label}
           </span>
         );
+      },
+      muiTableHeadCellProps: {
+        sx: {
+          color: '#555',
+          fontWeight: 'bold',
+        }
       }
     },
-
-    { accessorKey: 'email', header: 'Email' },
+    { 
+      accessorKey: 'email', 
+      header: 'Email',
+      size: 200,
+      filterVariant: 'text',
+      muiTableHeadCellProps: {
+        sx: {
+          color: '#555',
+          fontWeight: 'bold',
+        }
+      }
+    },
     {
       header: 'Ações',
+      size: 100,
+      enableSorting: false,
+      enableColumnFilter: false,
       muiTableBodyCellProps: {
-        align: 'left',
+        align: 'center',
       },
       Cell: ({ row }) => (
-        <div style={{ display: 'flex', justifyContent: 'flex-start', gap: '0.5rem' }}>
-          <Tooltip title="Editar">
-            <IconButton onClick={() => handleEditUser(row.original)}>
-              <EditIcon />
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '0.5rem' }}>
+          <Tooltip title="Editar usuário" arrow>
+            <IconButton 
+              onClick={() => handleEditUser(row.original)}
+              sx={{
+                backgroundColor: 'rgba(12, 243, 128, 0.1)',
+                '&:hover': {
+                  backgroundColor: 'rgba(95, 170, 132, 0.2)',
+                },
+                transition: 'all 0.2s ease'
+              }}
+            >
+              <EditIcon sx={{ color: '#5faa84' }} />
             </IconButton>
           </Tooltip>
-          <Tooltip title="Excluir">
-            <IconButton color="error" onClick={() => handleOpenDeleteDialog(row.original.id)}>
-              <DeleteIcon />
+          <Tooltip title="Excluir usuário" arrow>
+            <IconButton 
+              onClick={() => handleOpenDeleteDialog(row.original.id)}
+              sx={{
+                backgroundColor: 'rgba(244, 67, 54, 0.1)',
+                '&:hover': {
+                  backgroundColor: 'rgba(244, 67, 54, 0.2)',
+                },
+                transition: 'all 0.2s ease'
+              }}
+            >
+              <DeleteIcon color="error" />
             </IconButton>
           </Tooltip>
         </div>
       )
     }
-  ];
+  ], []);
+  ;
 
   return (
     <div className='bodyManagement'>
@@ -405,7 +650,7 @@ function UserManagement() {
             sx: {
               borderRadius: '15px',
               padding: 2,
-              backgroundColor: '#f9f9f9', // ajuste conforme sua paleta
+              backgroundColor: '#f9f9f9',
               boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)'
             }
           }}
@@ -414,7 +659,7 @@ function UserManagement() {
             id="alert-dialog-title"
             sx={{
               fontWeight: 'bold',
-              color: '#2f7c37', // cor que remete ao verde da identidade visual
+              color: '#2f7c37',
               fontSize: '20px'
             }}
           >
@@ -457,11 +702,14 @@ function UserManagement() {
           </DialogActions>
         </Dialog>
 
-        <h1 className='titleManag'>Gerenciar usuários</h1>
-        <div className="search-container" style={{ position: 'relative', width: '100%', maxWidth: '410px' }}>
+        <div className="header-container">
+          <h1 className='titleManag'>Gerenciar usuários</h1>
+        </div>
+        
+        <div className="search-container" style={{ position: 'relative', width: '100%', maxWidth: '410px', marginBottom: '20px' }}>
           <input
             type="text"
-            placeholder="Pesquisar Usuários"
+            placeholder="Pesquisar por nome, email ou status..."
             value={searchTerm}
             onChange={handleSearch}
             style={{
@@ -484,127 +732,216 @@ function UserManagement() {
           />
         </div>
 
+        <Box sx={{ 
+          backgroundColor:"#fafafa", 
+          borderRadius: "16px", 
+          padding: "0 15px",
+          display: "flex", 
+          alignItems: "center",
+          justifyContent: "space-between"
+        }}>
+          <Tabs 
+            value={tabValue} 
+            onChange={handleTabChange} 
+            aria-label="gerenciamento de usuários"
+            sx={{
+              '& .MuiTab-root': {
+                textTransform: 'none',
+                fontSize: '15px',
+                fontWeight: 500,
+                color: '#555',
+                '&.Mui-selected': {
+                  color: '#2f7c37',
+                  fontWeight: 600,
+                }
+              },
+              '& .MuiTabs-indicator': {
+                backgroundColor: '#2f7c37',
+              }
+            }}
+          >
+            <Tab label="Lista de Usuários" icon={<Search size={18} />} iconPosition="start" />
+            <Tab label="Adicionar/Editar Usuário" icon={<UserPlus size={18} />} iconPosition="start" />
+          </Tabs>
+          
+          <div style={{ display: "flex", gap: "10px", alignItems: "center", backgroundColor: "#fafafa" }}>
+            <button 
+              onClick={refreshData} 
+              className="refresh-data-button" 
+              disabled={isRefreshing}
+              style={{ backgroundColor: "#fafafa", color: "#2f7c37", border: "1px solid rgba(95, 170, 132, 0.3)" }}
+            >
+              {isRefreshing ? (
+                <CircularProgress size={24} color="inherit" />
+              ) : (
+                <>
+                  <RefreshCw size={18} style={{ marginRight: "8px" }} className={isRefreshing ? "rotating" : ""} />
+                  Atualizar Dados
+                </>
+              )}
+            </button>
+            
+            <button 
+              onClick={generatePDF} 
+              className="generate-pdf-button" 
+              disabled={loadingPDF}
+              style={{ backgroundColor: "#fafafa", color: "#2f7c37", border: "1px solid rgba(95, 170, 132, 0.3)" }}
+            >
+              {loadingPDF ? (
+                <CircularProgress size={24} color="inherit" />
+              ) : (
+                <>
+                  <PrintIcon sx={{ marginRight: "8px" }} />
+                  Gerar Relatório
+                </>
+              )}
+            </button>
+          </div>
+        </Box>
 
+        <Fade in={tabValue === 0} timeout={300}>
+          <div style={{ display: tabValue === 0 ? 'block' : 'none' }}>
 
-        <div className="form-container">
-          <form onSubmit={(event) => {
-            event.preventDefault();
-            if (isEditing) {
-              handleUpdateUser();
-            } else {
-              handleAddUser();
-            }
-          }}>
-            <h2>{isEditing ? 'Editar Usuário' : 'Adicionar Novo Usuário'}</h2>
-            <div className="form-row">
-              <input className='nome' type="text" name="nome" placeholder="Nome do Usuário" value={newUser.nome} onChange={handleInputChange} required />
-              <input className='email' type="email" name="email" placeholder="Email" value={newUser.email} onChange={handleInputChange} required />
-              <div className="password-container">
-                <input
-                  type={showPassword ? 'text' : 'password'}
-                  autoComplete="current-password"
-                  name="senha"
-                  placeholder="Senha"
-                  value={newUser.senha}
-                  onChange={handleInputChange}
-                />
-                <IconButton
-                  onClick={toggleShowPassword}
-                  className="toggle-password"
-                  edge="start"
-                  size="small"
-                  aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
-                >
-                  {showPassword ? <VisibilityOff fontSize="small" /> : <Visibility fontSize="small" />}
-                </IconButton>
-              </div>
-              <FormGroup row sx={{
-                marginLeft: isEditing ? "10px" : "-60px", // Ajuste condicional
-                display: "flex",
-                flexWrap: "nowrap",
-                gap: isEditing ? "5px" : "15px", // Espaçamento menor no modo edição
-                alignItems: "center",
-              }}>
-
-                <div className="status-user-select-container">
-                  <select
-                    name="codStatus"
-                    value={newUser.ativo || 'ATIVO'}
-                    onChange={(e) => setNewUser({ ...newUser, ativo: e.target.value })}
-                    className="status-user-select"
-                  >
-                    <option value="ATIVO">Ativo</option>
-                    <option value="INATIVO">Inativo</option>
-                  </select>
+            <div className="table-container">
+              {isLoading ? (
+                <div className="loading-container">
+                  <div className="spinner"></div>
+                  <p>Carregando dados...</p>
                 </div>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      className='checkbox'
-                      checked={newUser.administrador}
-                      onChange={() => setNewUser(prevState => ({ ...prevState, administrador: !prevState.administrador }))}
-                      sx={{
-                        '&.Mui-checked': {
-                          color: '#5faa84', // Cor do checkbox selecionado
-                        },
-                      }}
-                    />
-                  }
-                  label={<Typography sx={{ color: '#fafafa' }}>Administrador</Typography>}
+              ) : (
+                <MaterialReactTable
+                  columns={columns}
+                  data={filteredUsers}
+                  initialState={{ 
+                    pagination: { pageSize: 5 },
+                    density: 'compact'
+                  }}
+                  muiTablePaginationProps={{
+                    rowsPerPageOptions: [5, 10, 20],
+                    labelRowsPerPage: "Linhas por página:",
+                    showFirstButton: true,
+                    showLastButton: true,
+                  }}
+                  enableColumnFilters
+                  enableGlobalFilter={false}
+                  positionFilterRow="top"
+                  muiFilterTextFieldProps={{
+                    sx: { 
+                      '& .MuiInputBase-root': { 
+                        justifyContent: 'flex-start' 
+                      } 
+                    }
+                  }}
+                  muiTableBodyProps={{
+                    sx: {
+                      '& tr:nth-of-type(odd)': {
+                        backgroundColor: 'rgb(255, 255, 255)',
+                      },
+                    }
+                  }}
                 />
-              </FormGroup>
+              )}
+            </div>
+          </div>
+        </Fade>
 
-              <div className="form-buttons">
-                <button className='ADD_button' type="submit" disabled={loadingUserSubmit}>
-                  {loadingUserSubmit ? (
-                    <CircularProgress size={24} color="inherit" />
-                  ) : (
-                    isEditing ? 'Atualizar Usuário' : 'Adicionar Usuário'
-                  )}
-                </button>
-
-                {isEditing && (
-                  <button
-                    type="button"
-                    onClick={resetForm}
-                    className='CANCEL_button_USER'>
-                    Cancelar
-                  </button>
+        <Fade in={tabValue === 1} timeout={300}>
+          <div style={{ display: tabValue === 1 ? 'block' : 'none' }}>
+            <div className="form-container">
+              <form onSubmit={(event) => {
+                event.preventDefault();
+                if (isEditing) {
+                  handleUpdateUser();
+                } else {
+                  handleAddUser();
+                }
+              }}>
+                <h2 style={{ marginTop: "10px" }}>{isEditing ? 'Editar Usuário' : 'Adicionar Novo Usuário'}</h2>
+                {errorMessage && (
+                  <div className="error-message">
+                    {errorMessage}
+                  </div>
                 )}
-              </div>
+                <div className="form-row">
+                  <input className='nome' type="text" name="nome" placeholder="Nome do Usuário" value={newUser.nome} onChange={handleInputChange} required />
+                  <input className='email' type="email" name="email" placeholder="Email" value={newUser.email} onChange={handleInputChange} required />
+                  <div className="password-container">
+                    <input
+                      type={showPassword ? 'text' : 'password'}
+                      autoComplete="current-password"
+                      name="senha"
+                      placeholder="Senha"
+                      value={newUser.senha}
+                      onChange={handleInputChange}
+                    />
+                    <IconButton
+                      onClick={toggleShowPassword}
+                      className="toggle-password"
+                      edge="start"
+                      size="small"
+                      aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
+                    >
+                      {showPassword ? <VisibilityOff fontSize="small" /> : <Visibility fontSize="small" />}
+                    </IconButton>
+                  </div>
+                  <FormGroup row sx={{
+                    marginLeft: isEditing ? "10px" : "-60px",
+                    display: "flex",
+                    flexWrap: "nowrap",
+                    gap: isEditing ? "5px" : "15px",
+                    alignItems: "center",
+                  }}>
+                    <div className="status-user-select-container">
+                      <select
+                        name="codStatus"
+                        value={newUser.ativo || 'ATIVO'}
+                        onChange={(e) => setNewUser({ ...newUser, ativo: e.target.value })}
+                        className="status-user-select"
+                      >
+                        <option value="ATIVO">Ativo</option>
+                        <option value="INATIVO">Inativo</option>
+                      </select>
+                    </div>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          className='checkbox'
+                          checked={newUser.administrador}
+                          onChange={() => setNewUser(prevState => ({ ...prevState, administrador: !prevState.administrador }))}
+                          sx={{
+                            '&.Mui-checked': {
+                              color: '#5faa84',
+                            },
+                          }}
+                        />
+                      }
+                      label={<Typography sx={{ color: '#fafafa' }}>Administrador</Typography>}
+                    />
+                  </FormGroup>
 
+                  <div className="form-buttons">
+                    <button className='ADD_button' type="submit" disabled={loadingUserSubmit}>
+                      {loadingUserSubmit ? (
+                        <CircularProgress size={24} color="inherit" />
+                      ) : (
+                        isEditing ? 'Atualizar Usuário' : 'Adicionar Usuário'
+                      )}
+                    </button>
+
+                    {isEditing && (
+                      <button
+                        type="button"
+                        onClick={resetForm}
+                        className='CANCEL_button_USER'>
+                        Cancelar
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </form>
             </div>
-          </form>
-        </div>
-
-        <div className="table-container">
-          {isLoading ? (
-            <div className="loading-container">
-              <div className="spinner"></div>
-              <p>Carregando dados...</p>
-            </div>
-          ) : (
-            <MaterialReactTable
-              columns={columns}
-              data={filteredUsers}
-              initialState={{ pagination: { pageSize: 5 } }}
-              muiTablePaginationProps={{
-                rowsPerPageOptions: [5, 10, 20],
-              }}
-            />
-          )}
-        </div>
-
-        <button onClick={generatePDF} className="generate-pdf-button" disabled={loadingPDF}>
-          {loadingPDF ? (
-            <CircularProgress size={24} color="inherit" />
-          ) : (
-            <>
-              <PrintIcon sx={{ marginRight: "8px" }} />
-              Gerar Relatório
-            </>
-          )}
-        </button>
+          </div>
+        </Fade>
 
         <Snackbar
           open={snackbar.open}
