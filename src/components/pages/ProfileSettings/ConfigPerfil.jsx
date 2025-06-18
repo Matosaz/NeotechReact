@@ -46,7 +46,7 @@ const ConfigPerfil = () => {
       setBirthDate(user.data_nascimento || "");
       setAvatar(user.avatar || null);
       setCpf(user.cpf || "");
-    setGenero(user.genero || "");
+      setGenero(user.genero || "");
 
     }
   }, [user]);
@@ -87,14 +87,12 @@ const ConfigPerfil = () => {
     }
 
     setLoading(true);
-    
+
     // Salva os valores de administrador antes da atualização
-    const isAdminValue = user.isAdmin;
-    const adminValue = user.admin;
     
     // Cria uma cópia do usuário sem incluir os campos de administrador
     const updatedUser = {
-      ...user,
+
       cpf: Cpf,
       telefone: telefone,
       cep: Cep,
@@ -103,13 +101,14 @@ const ConfigPerfil = () => {
       bairro: Bairro,
       estado: selectedState,
       data_nascimento: birthDate,
-      genero: genero
+      genero: genero,
     };
-
     try {
       const formData = new FormData();
-      formData.append("data", JSON.stringify(updatedUser));
-
+      formData.append("data", JSON.stringify({
+        ...updatedUser,
+        // Força o envio dos campos de admin mesmo se forem null/undefined
+      }));
       if (previewAvatar && avatar instanceof File) {
         formData.append("avatar", avatar);
       }
@@ -126,14 +125,11 @@ const ConfigPerfil = () => {
       }
 
       const newUserData = await response.json();
-      
+
       // Cria um novo objeto com os dados atualizados
-      const updatedUserData = {
-        ...newUserData,
-        isAdmin: isAdminValue,  // Restaura o valor original de isAdmin
-        admin: adminValue       // Restaura o valor original de admin
-      };
-      
+     
+      console.log("Dados recebidos:", updatedUserData);
+
       // Atualiza o estado e o localStorage
       setUser(updatedUserData);
       localStorage.setItem("user", JSON.stringify(updatedUserData));
@@ -382,19 +378,19 @@ const ConfigPerfil = () => {
                 <span className="profile-email-age">{user?.ultimaModificacao ? new Date(user.ultimaModificacao).toLocaleDateString() : 'Nunca'}</span>
               </p>
               <div className="save-button-container">
-              <button
-                className="profile-salvar-alteracoes"
-                disabled={loading}
-                onClick={handleSaveChanges}
-              >
-                {loading ? (
-                  <>
-                    <CircularProgress size={16} style={{ color: '#fff', strokeWidth:"2px"}} />
-                  </>
-                ) : (
-                  'Salvar alterações'
-                )}
-              </button>
+                <button
+                  className="profile-salvar-alteracoes"
+                  disabled={loading}
+                  onClick={handleSaveChanges}
+                >
+                  {loading ? (
+                    <>
+                      <CircularProgress size={16} style={{ color: '#fff', strokeWidth: "2px" }} />
+                    </>
+                  ) : (
+                    'Salvar alterações'
+                  )}
+                </button>
               </div>
               <p className="invisivel">insivível</p>
 
