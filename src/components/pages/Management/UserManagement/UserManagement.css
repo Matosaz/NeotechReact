@@ -1,7 +1,8 @@
-.bodyManagement{
+.bodyManagement {
     height: 100vh;
     background: linear-gradient(145deg, rgba(255, 255, 255, 0.25), rgba(127, 192, 141, 0.3));
 }
+
 .container-management {
     max-width: 1280px;
     margin: 0 auto;
@@ -32,8 +33,13 @@
 }
 
 @keyframes rotate {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 .refresh-data-button {
@@ -45,27 +51,29 @@
     text-align: center;
     font-family: "Lexend";
     min-width: 160px;
-    height: 38px;
+    height: 40px;
+    margin-top: 10px;
     transition: all 0.3s ease;
     border-radius: 6px;
     border: 1px solid rgba(95, 170, 132, 0.3);
     color: #2f7c37;
 }
 
-.titleManag{
+.titleManag {
     color: #3b3b3b;
     font-size: 2.7rem;
     font-weight: 600;
     margin-bottom: 0;
 }
 
-.form-container h2{
-    color:  #3d3d3dea;
+.form-container h2 {
+    color: #3d3d3dea;
     font-size: 24px;
     font-weight: 700;
     margin-bottom: 5px;
-   
+
 }
+
 .search-container {
     display: flex;
     align-items: center;
@@ -105,31 +113,46 @@ button:hover {
 }
 
 /* Sobrescrever estilos para botões específicos */
-.refresh-data-button, .generate-pdf-button {
-    background-color: transparent;
-}
-.botaodeletar{
+
+.botaodeletar {
     background-color: rgb(247, 71, 71);
 }
 
-.botaodeletar:hover{
+.botaodeletar:hover {
     background-color: rgb(214, 60, 60);
 }
+
 .generate-pdf-button {
+    margin-left: auto;
     position: relative;
-    padding: 8px 16px;
+    margin-top: 10px;
+    padding: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
     text-align: center;
     font-family: "Lexend";
     min-width: 160px;
-    height: 38px;
-    transition: all 0.3s ease;
-    border-radius: 6px;
-    border: 1px solid rgba(95, 170, 132, 0.3);
-    color: #2f7c37;
+    /* Reservar espaço mínimo */
+    height: 40px;
+    /* Altura fixa opcional para evitar "pulos" */
+    transition: background-color 0.3s ease;
 }
+
+.generate-pdf-button:hover {
+    background-color: #4c906b;
+
+}
+
+.headerButtons {
+    display: flex;
+    position: relative;
+    gap: 10px;
+    padding-bottom: 5px;
+    align-items: center;
+
+}
+
 /* Ajustes na form-container */
 .form-container {
     display: flex;
@@ -143,7 +166,9 @@ button:hover {
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
 }
 
-.form-container .nome, .form-container .email, .password-container input{
+.form-container .nome,
+.form-container .email,
+.password-container input {
     width: 60%;
     padding: 12px;
     font-size: 14px;
@@ -154,8 +179,8 @@ button:hover {
     box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
-.form-container .nome:focus, 
-.form-container .email:focus, 
+.form-container .nome:focus,
+.form-container .email:focus,
 .password-container input:focus {
     border-color: #5faa84;
     box-shadow: 0 0 0 2px rgba(95, 170, 132, 0.2);
@@ -165,12 +190,13 @@ button:hover {
 .ADD_button {
     align-self: flex-start;
     height: 50px;
-    margin-top: 0;
+    margin-top: -10px;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: all 0.3s ease;
 }
+
 .password-container {
     display: flex;
     position: relative;
@@ -178,35 +204,35 @@ button:hover {
 }
 
 .password-container input {
-    width: 400px; 
+    width: 400px;
 }
 
 
 .toggle-password {
     position: absolute;
-    margin-left: -35px!important;
+    margin-left: -35px !important;
 }
 
 
 
 /* Customização dos checkboxes */
 .bodyManagement .MuiCheckbox-root {
-    color: #e9e9e9 !important;
+    color: #ffffff !important;
     transition: all 0.3s ease;
     display: flex;
     flex-wrap: wrap;
-  
+
 }
 
 .bodyManagement .MuiCheckbox-root.Mui-checked {
     color: #069647 !important;
 }
 
-.bodyManagement .MuiFormControlLabel-label {
+.bodyManagement .MuiTypography-root {
     font-family: "Lexend";
     font-weight: 500;
-    color: #fafafa;
-    font-size: 14px;
+    color: #ffffff!important;
+    font-size: 15px;
 }
 
 
@@ -215,16 +241,16 @@ button:hover {
     display: flex;
     align-items: center;
     gap: 15px;
-    
+
 }
-  
+
 .form-row input,
 .form-row .password-container,
 .form-row label {
     flex-basis: 30%;
     border-radius: 8px;
     border-style: none;
-    
+
 }
 
 .table-container {
@@ -275,7 +301,7 @@ button:hover {
 
 .status-user-select:focus {
     outline: none;
-    border-color: #5faa84;
+    border-color: rgba(71, 126, 99, 0.568);
     box-shadow: 0 0 0 2px rgba(95, 170, 132, 0.2);
 }
 
@@ -288,33 +314,38 @@ button:hover {
 
 /* Estilo para a opção selecionada */
 .status-user-select option:checked {
-    background-color: #5faa84;
+    background-color: #289451c7;
     color: white;
 }
 
 /* Ajuste para o hover nas opções */
 .status-user-select option:hover {
-    background-color: #e9f5ee;
+    background-color: #ffffff;
 }
+
 .action-buttons {
     display: flex;
     gap: 15px;
-   justify-content: center;
+    justify-content: center;
 }
 
-.CANCEL_button_USER{
+.CANCEL_button_USER {
     background-color: rgb(196, 31, 31);
     border-radius: 10px;
+    margin-top: -10px;
 
 }
-.CANCEL_button_USER:hover{
+
+.CANCEL_button_USER:hover {
     background-color: rgb(175, 29, 29);
     transform: translateY(-1px);
 }
+
 .ADD_button {
     align-self: flex-start;
     height: 50px;
     width: 150px;
+    font-weight: 500;
     background-color: #5faa84;
     color: white;
     border: none;
@@ -322,19 +353,19 @@ button:hover {
     cursor: pointer;
     border-radius: 10px;
 }
-  
+
 .form-buttons {
-  display: flex;
-  gap: 10px;
-  flex-wrap: nowrap;
-  margin-top: 10px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: nowrap;
+    margin-top: 10px;
 }
 
 .ADD_button:hover {
     background-color: #4c906b;
     transform: translateY(-1px);
 }
-  
+
 /* Loading spinner */
 .loading-container {
     display: flex;
@@ -344,7 +375,7 @@ button:hover {
     height: 0px;
     margin-left: 0px;
 }
-  
+
 .spinner {
     width: 50px;
     height: 50px;
@@ -354,18 +385,23 @@ button:hover {
     animation: spin 1s linear infinite;
     margin-bottom: 1rem;
 }
-  
+
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 /* Estilos para as abas */
 .MuiTabs-root {
-    margin-bottom: 20px;
-    background-color: rgba(255, 255, 255, 0.7);
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    margin-bottom: 18px;
+    background-color: #fafafa!important;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.105);
 }
 
 .MuiTab-root {
@@ -373,7 +409,7 @@ button:hover {
 }
 
 .MuiTab-root:hover {
-    background-color: rgba(95, 170, 132, 0.1);
+    background-color: rgba(182, 182, 182, 0.288);
 }
 
 /* Animações de transição */
@@ -401,9 +437,10 @@ button:hover {
         flex-direction: column;
     }
 
-    .form-container input[type="text"], 
-    .form-container input[type="password"], 
-    .form-container input[type="email"], .password-container{
+    .form-container input[type="text"],
+    .form-container input[type="password"],
+    .form-container input[type="email"],
+    .password-container {
         width: 100%;
     }
 
@@ -449,81 +486,86 @@ button:hover {
         padding: 15px;
     }
 }
+
 .error-message {
-  background-color: rgba(244, 67, 54, 0.1);
-  color: #d32f2f;
-  padding: 8px 12px;
-  border-radius: 6px;
-  margin-bottom: 10px;
-  font-size: 14px;
-  border-left: 3px solid #d32f2f;
-  animation: fadeIn 0.3s ease;
+    background-color: rgba(244, 67, 54, 0.1);
+    color: #d32f2f;
+    padding: 8px 12px;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    font-size: 14px;
+    border-left: 3px solid #d32f2f;
+    animation: fadeIn 0.3s ease;
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-5px); }
-  to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
+
 .table-actions {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  margin-bottom: 20px;
-  flex-wrap: wrap;
-  gap: 15px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 15px;
 }
 
-.add-user-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #5faa84;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  padding: 10px 16px;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+button {
+    padding: 8px 12px;
+    background-color: rgb(95, 170, 132);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+
 }
 
-.add-user-button:hover {
-  background-color: #4c906b;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+button:hover {
+    background-color: #4c906b;
+    ;
 }
+
+
 .form-header {
-  display: flex;
-  align-items: center;
-  margin-bottom: 15px;
-  position: relative;
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    position: relative;
 }
 
 .form-header h2 {
-  margin: 0 auto;
+    margin: 0 auto;
 }
 
 .back-button {
-  position: absolute;
-  left: 0;
-  background-color: transparent;
-  color: #5faa84;
-  border: 1px solid #5faa84;
-  border-radius: 6px;
-  padding: 6px 12px;
-  font-size: 13px;
-  cursor: pointer;
-  transition: all 0.2s ease;
+    position: absolute;
+    left: 0;
+    background-color: transparent;
+    color: #5faa84;
+    border: 1px solid #5faa84;
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s ease;
 }
 
 .back-button:hover {
-  background-color: rgba(95, 170, 132, 0.1);
-  transform: translateX(-2px);
+    background-color: rgba(95, 170, 132, 0.1);
+    transform: translateX(-2px);
 }
-.refresh-data-button:hover, .generate-pdf-button:hover {
+
+.refresh-data-button:hover {
     background-color: rgba(95, 170, 132, 0.1) !important;
     border-color: rgba(95, 170, 132, 0.5);
-    transform: translateY(0);
 }

@@ -618,14 +618,14 @@ function UserManagement() {
             <IconButton 
               onClick={() => handleEditUser(row.original)}
               sx={{
-                backgroundColor: 'rgba(12, 243, 128, 0.1)',
+                backgroundColor: 'rgba(105, 167, 136, 0.1)',
                 '&:hover': {
                   backgroundColor: 'rgba(95, 170, 132, 0.2)',
                 },
                 transition: 'all 0.2s ease'
               }}
             >
-              <EditIcon sx={{ color: '#5faa84' }} />
+              <EditIcon sx={{ color: '#4c906b' }} />
             </IconButton>
           </Tooltip>
           <Tooltip title="Excluir usuário" arrow>
@@ -716,10 +716,11 @@ function UserManagement() {
         </Dialog>
 
         <div className="header-container">
+          
           <h1 className='titleManag'>Gerenciar usuários</h1>
         </div>
         
-        <div className="search-container" style={{ position: 'relative', width: '100%', maxWidth: '410px', marginBottom: '20px' }}>
+        <div className="search-container" style={{ position: 'relative', width: '100%', maxWidth: '435px', marginBottom: '20px' }}>
           <input
             type="text"
             placeholder="Pesquisar por nome, email ou status..."
@@ -745,72 +746,75 @@ function UserManagement() {
           />
         </div>
 
-        <Box sx={{ 
-          backgroundColor:"#fafafa", 
-          borderRadius: "16px", 
-          padding: "0 15px",
-          display: "flex", 
-          alignItems: "center",
-          justifyContent: "space-between"
-        }}>
-          <Tabs 
-            value={tabValue} 
-            onChange={handleTabChange} 
-            aria-label="gerenciamento de usuários"
-            sx={{
-              '& .MuiTab-root': {
-                textTransform: 'none',
-                fontSize: '15px',
-                fontWeight: 500,
-                color: '#555',
-                '&.Mui-selected': {
-                  color: '#2f7c37',
-                  fontWeight: 600,
-                }
-              },
-              '& .MuiTabs-indicator': {
-                backgroundColor: '#2f7c37',
-              }
-            }}
-          >
-            <Tab label="Lista de Usuários" icon={<Search size={18} />} iconPosition="start" />
-            <Tab label="Adicionar/Editar Usuário" icon={<UserPlus size={18} />} iconPosition="start" />
-          </Tabs>
-          
-          <div style={{ display: "flex", gap: "10px", alignItems: "center", backgroundColor: "#fafafa" }}>
-            <button 
-              onClick={refreshData} 
-              className="refresh-data-button" 
-              disabled={isRefreshing}
-              style={{ backgroundColor: "#fafafa", color: "#2f7c37", border: "1px solid rgba(95, 170, 132, 0.3)" }}
-            >
-              {isRefreshing ? (
-                <CircularProgress size={24} color="inherit" />
-              ) : (
-                <>
-                  <RefreshCw size={18} style={{ marginRight: "8px" }} className={isRefreshing ? "rotating" : ""} />
-                  Atualizar Dados
-                </>
-              )}
-            </button>
-            
-            <button 
-              onClick={generatePDF} 
-              className="generate-pdf-button" 
-              disabled={loadingPDF}
-              style={{ backgroundColor: "#fafafa", color: "#2f7c37", border: "1px solid rgba(95, 170, 132, 0.3)" }}
-            >
-              {loadingPDF ? (
-                <CircularProgress size={24} color="inherit" />
-              ) : (
-                <>
-                  <PrintIcon sx={{ marginRight: "8px" }} />
-                  Gerar Relatório
-                </>
-              )}
-            </button>
-          </div>
-        </Box>
+    <Box 
+  sx={{ 
+    backgroundColor: "transparent", 
+    borderRadius: "16px", 
+    display: 'flex',
+    alignItems: "center",
+    justifyContent: "space-between",
+  }}
+>
+  {/* Tabs à esquerda */}
+  <Tabs 
+    value={tabValue} 
+    onChange={handleTabChange} 
+    sx={{
+      '& .MuiTab-root': {
+        padding: '10px 20px',
+        textTransform: 'none',
+        fontSize: '14px',
+        fontWeight: 500,
+        color: '#555',
+        '&.Mui-selected': {
+          color: '#2f7c37',
+          fontWeight: 600,
+        }
+      },
+      '& .MuiTabs-indicator': {
+        backgroundColor: '#2f7c37',
+      }
+    }}
+  >
+    <Tab label="Lista de Usuários" icon={<Search size={18} />} iconPosition="start" />
+    <Tab label="Adicionar/Editar Usuário" icon={<UserPlus size={18} />} iconPosition="start" />
+  </Tabs>
+
+  {/* Botões à direita */}
+  <div className='headerButtons'>
+    <button 
+      onClick={refreshData} 
+      className="refresh-data-button" 
+      disabled={isRefreshing}
+      style={{ backgroundColor: "#fafafa", color: "#2f7c37", border: "1px solid rgba(95, 170, 132, 0.3)" }}
+    >
+      {isRefreshing ? (
+        <CircularProgress size={24} color="inherit" />
+      ) : (
+        <>
+          <RefreshCw size={18} style={{ marginRight: "8px" }} className={isRefreshing ? "rotating" : ""} />
+          Atualizar Dados
+        </>
+      )}
+    </button>
+
+    <button 
+      onClick={generatePDF} 
+      className="generate-pdf-button" 
+      disabled={loadingPDF}
+    >
+      {loadingPDF ? (
+        <CircularProgress size={24} color="inherit" />
+      ) : (
+        <>
+          <PrintIcon sx={{ marginRight: "8px" }} />
+          Gerar Relatório
+        </>
+      )}
+    </button>
+  </div>
+</Box>
+
 
         <Fade in={tabValue === 0} timeout={300}>
           <div style={{ display: tabValue === 0 ? 'block' : 'none' }}>

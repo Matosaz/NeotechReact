@@ -94,6 +94,7 @@ const ConfigPerfil = () => {
     
     // Cria uma cópia do usuário sem incluir os campos de administrador
     const updatedUser = {
+      ...user,
       cpf: Cpf,
       telefone: telefone,
       cep: Cep,
