@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  LineChart, 
-  BarChart, 
-  PieChart, 
-  Line, 
-  Bar, 
-  Pie, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  Legend, 
+import {
+  LineChart,
+  BarChart,
+  PieChart,
+  Line,
+  Bar,
+  Pie,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
   ResponsiveContainer,
   Cell
 } from 'recharts';
@@ -20,13 +20,16 @@ import './Dashboard.css';
 function Dashboard() {
   const [users, setUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [timeRange, setTimeRange] = useState('monthly');
   const API_BASE_URL = "https://intellij-neotech.onrender.com/api/v1/users";
 
   useEffect(() => {
     fetch(API_BASE_URL)
       .then(response => response.json())
       .then(data => {
+        const filteredUsers = data.filter(user => {
+        const userDate = new Date(user.dataCriacao);
+        return userDate.getFullYear() > 2000; // Ajuste o ano conforme necessário
+      });
         setUsers(data);
         setIsLoading(false);
       })
@@ -35,63 +38,198 @@ function Dashboard() {
         setIsLoading(false);
       });
   }, []);
+  const calculateNewUsersLast30Days = () => {
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
+    return users.filter(user => {
+      const userDate = new Date(user.dataCriacao);
+      return userDate > thirtyDaysAgo;
+    }).length;
+  };
+  const calculateNewUsersGrowth = () => {
+    const now = new Date();
+    const currentMonthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+    const prevMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+    const prevMonthEnd = new Date(now.getFullYear(), now.getMonth(), 0);
+
+    const currentMonthNewUsers = users.filter(user => {
+      const userDate = new Date(user.dataCriacao);
+      return userDate >= currentMonthStart;
+    }).length;
+
+    const prevMonthNewUsers = users.filter(user => {
+      const userDate = new Date(user.dataCriacao);
+      return userDate >= prevMonthStart && userDate <= prevMonthEnd;
+    }).length;
+
+    if (prevMonthNewUsers === 0) return '+0%';
+
+    const growth = ((currentMonthNewUsers - prevMonthNewUsers) / prevMonthNewUsers) * 100;
+    return `${growth > 0 ? '+' : ''}${growth.toFixed(1)}%`;
+  };
+  const processUserGrowth = () => {
+    if (!users.length) return [];
+
+    // Agrupa usuários por mês de criação
+    const usersByMonth = users.reduce((acc, user) => {
+      const date = new Date(user.dataCriacao); // Assumindo que existe dataCriacao na API
+      const monthYear = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+
+      if (!acc[monthYear]) {
+        acc[monthYear] = 0;
+      }
+      acc[monthYear]++;
+      return acc;
+    }, {});
+
+    // Adicione esta função para calcular a variação em relação ao mês anterior
+
+    // Converte para formato de dados do gráfico
+    const monthNames = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+    const result = Object.entries(usersByMonth).map(([monthYear, count]) => {
+      const [year, month] = monthYear.split('-');
+      return {
+        name: `${monthNames[parseInt(month) - 1]}/${year.slice(2)}`,
+        users: count
+      };
+    });
+
+    // Ordena por data
+    return result.sort((a, b) => {
+      const [aMonth, aYear] = a.name.split('/');
+      const [bMonth, bYear] = b.name.split('/');
+      return (
+        parseInt(aYear) - parseInt(bYear) ||
+        monthNames.indexOf(aMonth) - monthNames.indexOf(bMonth)
+      );
+    });
+  };
+
+  const calculateGrowthRate = (data) => {
+    if (data.length < 2) return '0%';
+
+    const lastMonth = data[data.length - 1].users;
+    const prevMonth = data[data.length - 2].users;
+    const growth = ((lastMonth - prevMonth) / prevMonth) * 100;
+
+    return `${growth > 0 ? '+' : ''}${growth.toFixed(1)}%`;
+  };
   // Dados mockados para demonstração (substitua com seus dados reais)
-  const userGrowthData = [
-    { name: 'Jan', users: 120 },
-    { name: 'Fev', users: 210 },
-    { name: 'Mar', users: 350 },
-    { name: 'Abr', users: 480 },
-    { name: 'Mai', users: 600 },
-    { name: 'Jun', users: 780 },
-  ];
- const processLocationData = () => {
-  const stateCounts = users.reduce((acc, user) => {
-    // Se não houver estado, agrupar como "Não selecionado"
-    const state = user.estado && user.estado.trim() !== '' ? user.estado.toUpperCase() : 'Não selecionado';
 
-    if (!acc[state]) {
-      acc[state] = 0;
+  const processLocationData = () => {
+    const stateCounts = users.reduce((acc, user) => {
+      // Se não houver estado, agrupar como "Não selecionado"
+      const state = user.estado && user.estado.trim() !== '' ? user.estado.toUpperCase() : 'Não selecionado';
+
+      if (!acc[state]) {
+        acc[state] = 0;
+      }
+      acc[state]++;
+      return acc;
+    }, {});
+
+    // Ordena por quantidade e limita aos top 5 (excluindo "Não selecionado" do limite)
+    const entries = Object.entries(stateCounts);
+    const filtered = entries.filter(([state]) => state !== 'Não selecionado');
+    const sortedStates = filtered
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 5);
+
+    // Conta quantos são "outros", ignorando os top 5 e "Não selecionado"
+    const otherStatesCount = filtered.length > 5
+      ? filtered.slice(5).reduce((sum, [, count]) => sum + count, 0)
+      : 0;
+
+    const result = sortedStates.map(([state, count]) => ({
+      name: state,
+      value: count
+    }));
+
+    if (otherStatesCount > 0) {
+      result.push({ name: 'Outros', value: otherStatesCount });
     }
-    acc[state]++;
-    return acc;
-  }, {});
 
-  // Ordena por quantidade e limita aos top 5 (excluindo "Não selecionado" do limite)
-  const entries = Object.entries(stateCounts);
-  const filtered = entries.filter(([state]) => state !== 'Não selecionado');
-  const sortedStates = filtered
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 5);
+    // Adiciona "Não selecionado" no fim, se houver
+    if (stateCounts['Não selecionado']) {
+      result.push({ name: 'Não selecionado', value: stateCounts['Não selecionado'] });
+    }
 
-  // Conta quantos são "outros", ignorando os top 5 e "Não selecionado"
-  const otherStatesCount = filtered.length > 5
-    ? filtered.slice(5).reduce((sum, [, count]) => sum + count, 0)
-    : 0;
-
-  const result = sortedStates.map(([state, count]) => ({
-    name: state,
-    value: count
-  }));
-
-  if (otherStatesCount > 0) {
-    result.push({ name: 'Outros', value: otherStatesCount });
-  }
-
-  // Adiciona "Não selecionado" no fim, se houver
-  if (stateCounts['Não selecionado']) {
-    result.push({ name: 'Não selecionado', value: stateCounts['Não selecionado'] });
-  }
-
-  return result;
-};
+    return result;
+  };
 
   const userStatusData = [
     { name: 'Ativos', value: users.filter(user => user.codStatus === 'ATIVO').length },
     { name: 'Inativos', value: users.filter(user => user.codStatus !== 'ATIVO').length },
   ];
+  const getRecentActivities = () => {
+    if (!users.length) return [];
+
+    // Ordena usuários pelos mais recentes
+    const sortedUsers = [...users].sort((a, b) =>
+      new Date(b.dataCriacao) - new Date(a.dataCriacao)
+    );
+
+    // Pega os últimos 5 usuários cadastrados
+    const recentSignups = sortedUsers.slice(0, 5).map(user => ({
+      type: 'signup',
+      name: user.nome,
+      date: new Date(user.dataCriacao),
+      email: user.email
+    }));
+
+    // Calcula usuários inativos (supondo que temos data do último login)
+    const inactiveUsers = users.filter(user => {
+      // Adapte conforme seu modelo de dados
+      const lastLogin = user.ultimoLogin ? new Date(user.ultimoLogin) : new Date(0);
+      const thirtyDaysAgo = new Date();
+      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+      return lastLogin < thirtyDaysAgo;
+    }).slice(0, 3).map(user => ({
+      type: 'inactive',
+      name: user.nome,
+      date: new Date(user.ultimoLogin || user.dataCriacao),
+      email: user.email
+    }));
+
+    // Formata as atividades
+    const activities = [
+      ...recentSignups.map(user => ({
+        icon: 'success',
+        iconClass: 'fa-user-plus',
+        text: `Novo usuário cadastrado: ${user.name}`,
+        date: user.date.toLocaleString('pt-BR', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })
+      })),
+      ...inactiveUsers.map(user => ({
+        icon: 'warning',
+        iconClass: 'fa-user-clock',
+        text: `Usuário inativo: ${user.name}`,
+        date: user.date.toLocaleString('pt-BR', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })
+      }))
+    ];
+
+    return activities.sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 4);
+  };
+
+  const calculateEngagement = () => {
+    // Supondo que temos dados de login
+    const activeUsers = users.filter(user => user.codStatus === 'ATIVO').length;
+    const totalUsers = users.length;
+
+    const engagementRate = totalUsers > 0 ? (activeUsers / totalUsers * 100).toFixed(0) : 0;
+
+    // Calcula média de logins (adaptar conforme seus dados)
+    const totalLogins = users.reduce((sum, user) => sum + (user.loginCount || 0), 0);
+    const avgLogins = totalUsers > 0 ? (totalLogins / totalUsers / 4).toFixed(1) : 0; // Dividido por 4 para simular semanas
+
+    return {
+      rate: engagementRate,
+      avgLogins: avgLogins
+    };
+  };
 
   const userLocationData = processLocationData();
+  const userGrowthData = processUserGrowth();
 
 
   const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8'];
@@ -107,7 +245,7 @@ function Dashboard() {
       <div className="dashboard-content">
         <header className="dashboard-header">
           <h1>Dashboard de Usuários</h1>
-         
+
         </header>
 
         {isLoading ? (
@@ -121,25 +259,23 @@ function Dashboard() {
               <div className="metric-card primary">
                 <h3>Total de Usuários</h3>
                 <p>{totalUsuarios}</p>
-                <span>+12% em relação ao mês anterior</span>
+                <span>{calculateGrowthRate(userGrowthData)} em relação ao mês anterior</span>
               </div>
-              
+
               <div className="metric-card success">
                 <h3>Usuários Ativos</h3>
                 <p>{usuariosAtivos}</p>
                 <span>{taxaAtivacao}% de taxa de ativação</span>
               </div>
-              
               <div className="metric-card warning">
                 <h3>Novos (últimos 30 dias)</h3>
-                <p>84</p>
-                <span>+8% em relação ao mês anterior</span>
+                <p>{calculateNewUsersLast30Days(users)}</p>
+                <span>{calculateNewUsersGrowth(users)} em relação ao mês anterior</span>
               </div>
-              
               <div className="metric-card info">
                 <h3>Engajamento</h3>
-                <p>68%</p>
-                <span>Média de 4.2 logins/semana</span>
+                <p>{calculateEngagement().rate}%</p>
+                <span>Média de {calculateEngagement().avgLogins} logins/semana</span>
               </div>
             </div>
 
@@ -152,7 +288,7 @@ function Dashboard() {
                       <CartesianGrid strokeDasharray="3 3" stroke="#e3e3e3" />
                       <XAxis dataKey="name" stroke="#888" />
                       <YAxis stroke="#888" />
-                      <Tooltip 
+                      <Tooltip
                         contentStyle={{
                           backgroundColor: '#fff',
                           borderRadius: '8px',
@@ -160,10 +296,10 @@ function Dashboard() {
                         }}
                       />
                       <Legend />
-                      <Line 
-                        type="monotone" 
-                        dataKey="users" 
-                        stroke="#4c906b" 
+                      <Line
+                        type="monotone"
+                        dataKey="users"
+                        stroke="#4c906b"
                         strokeWidth={2}
                         dot={{ r: 4 }}
                         activeDot={{ r: 6 }}
@@ -193,11 +329,11 @@ function Dashboard() {
                           <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                         ))}
                       </Pie>
-                      <Tooltip 
+                      <Tooltip
                         contentStyle={{
                           backgroundColor: '#fafafa',
-                          fontWeight:"600",
-                          fontSize:"14px",
+                          fontWeight: "600",
+                          fontSize: "14px",
                           borderRadius: '8px',
                           boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
                         }}
@@ -216,7 +352,7 @@ function Dashboard() {
                       <CartesianGrid strokeDasharray="3 3" stroke="#e3e3e3" />
                       <XAxis dataKey="name" stroke="#888" />
                       <YAxis stroke="#888" />
-                      <Tooltip 
+                      <Tooltip
                         contentStyle={{
                           backgroundColor: '#fff',
                           borderRadius: '8px',
@@ -224,8 +360,8 @@ function Dashboard() {
                         }}
                       />
                       <Legend />
-                      <Bar 
-                        dataKey="value" 
+                      <Bar
+                        dataKey="value"
                         fill="#36b9cc"
                         radius={[15, 15, 0, 0]}
                         name="Quantidade"
@@ -238,42 +374,17 @@ function Dashboard() {
               <div className="chart-card">
                 <h3>Atividade Recente</h3>
                 <div className="activity-list">
-                  <div className="activity-item">
-                    <div className="activity-icon success">
-                      <i className="fas fa-user-plus"></i>
+                  {getRecentActivities().map((activity, index) => (
+                    <div className="activity-item" key={index}>
+                      <div className={`activity-icon ${activity.icon}`}>
+                        <i className={`fas ${activity.iconClass}`}></i>
+                      </div>
+                      <div className="activity-details">
+                        <p>{activity.text}</p>
+                        <span>{activity.date}</span>
+                      </div>
                     </div>
-                    <div className="activity-details">
-                      <p>25 novos usuários cadastrados</p>
-                      <span>Hoje, 10:45 AM</span>
-                    </div>
-                  </div>
-                  <div className="activity-item">
-                    <div className="activity-icon warning">
-                      <i className="fas fa-user-clock"></i>
-                    </div>
-                    <div className="activity-details">
-                      <p>12 usuários inativos há 30 dias</p>
-                      <span>Ontem, 3:30 PM</span>
-                    </div>
-                  </div>
-                  <div className="activity-item">
-                    <div className="activity-icon primary">
-                      <i className="fas fa-chart-line"></i>
-                    </div>
-                    <div className="activity-details">
-                      <p>Pico de acessos - 1,240 logins</p>
-                      <span>15 Mai, 9:15 AM</span>
-                    </div>
-                  </div>
-                  <div className="activity-item">
-                    <div className="activity-icon info">
-                      <i className="fas fa-map-marker-alt"></i>
-                    </div>
-                    <div className="activity-details">
-                      <p>Maior crescimento: Região Nordeste (+18%)</p>
-                      <span>14 Mai, 5:20 PM</span>
-                    </div>
-                  </div>
+                  ))}
                 </div>
               </div>
             </div>

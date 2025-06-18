@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import './Auth.css';
 import { UserContext } from '../../UserContext';
 import LogoNeotech2 from './Logo7.svg';
@@ -36,6 +36,32 @@ const Auth = () => {
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'info' });
   const navigate = useNavigate();
 
+
+
+  const getBrasiliaDateTime = () => {
+    const now = new Date();
+    // Ajusta para UTC-3 (Brasília) e formata como ISO string
+    const offset = -3 * 60 * 60 * 1000; // UTC-3 em milissegundos
+    const brasiliaTime = new Date(now.getTime() + offset);
+    return brasiliaTime.toISOString();
+  };
+  // Verificar se a sessão expirou (parâmetro na URL)
+  useEffect(() => {
+    const queryParams = new URLSearchParams(window.location.search);
+    const expired = queryParams.get('expired');
+
+    if (expired === 'true') {
+      setSnackbar({
+        open: true,
+        message: 'Sua sessão expirou. Por favor, faça login novamente.',
+        severity: 'warning'
+      });
+
+      // Limpar o parâmetro da URL
+      navigate('/Auth', { replace: true });
+    }
+  }, [navigate]);
+
   const toggleMode = () => {
     setIsLoginMode(!isLoginMode);
     setFormData({ name: '', email: '', password: '', confirmPassword: '' });
@@ -68,13 +94,20 @@ const Auth = () => {
 
   const fetchUserDetails = async (userId) => {
     try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('Token não encontrado');
+      }
+
       const response = await fetch(`${API_BASE_URL}/${userId}`, {
         method: 'GET',
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         }
       });
+
+      // Não tratar erro 401 aqui, pois estamos no processo de login
 
       if (!response.ok) {
         throw new Error('Erro ao buscar detalhes do usuário');
@@ -123,7 +156,9 @@ const Auth = () => {
     const payload = {
       email: formData.email,
       senha: formData.password,
-      ...(isLoginMode ? {} : { nome: formData.name }),
+      ...(isLoginMode ? {} : {
+        nome: formData.name, dataCriacao: getBrasiliaDateTime() // Adiciona a data atual automaticamente
+      }),
     };
 
     try {
@@ -134,6 +169,11 @@ const Auth = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
+console.log(getBrasiliaDateTime());
+      // Tratamento específico para erro 401 (Unauthorized)
+      if (response.status === 401) {
+        throw new Error('Credenciais inválidas. Verifique seu email e senha.');
+      }
 
       if (!response.ok) throw new Error(isLoginMode ? 'Erro no login' : 'Erro no cadastro');
 
@@ -142,6 +182,7 @@ const Auth = () => {
       if (isLoginMode) {
         const userId = parseInt(data.id, 10);
         localStorage.setItem('token', data.token);
+        localStorage.setItem('userId', userId); // Salvar o ID do usuário para referência
 
         const userData = await fetchUserDetails(userId);
 
@@ -151,7 +192,7 @@ const Auth = () => {
           localStorage.setItem('user', JSON.stringify(userData));
         }
 
-        setSnackbar({ open: true, message: data.message, severity: 'success' });
+        setSnackbar({ open: true, message: 'Login realizado com sucesso!', severity: 'success' });
         setTimeout(() => navigate('/#'), 1000);
       } else {
         setSnackbar({ open: true, message: 'Cadastro realizado com sucesso!', severity: 'success' });
@@ -289,7 +330,8 @@ const Auth = () => {
         <Alert
           onClose={handleCloseSnackbar}
           severity={snackbar.severity}
-          sx={{ width: '100%',      borderRadius: '8px',
+          sx={{
+            width: '100%', borderRadius: '8px',
           }}
         >
           {snackbar.message}

@@ -272,8 +272,14 @@ function UserManagement() {
       return false;
     }
     
-    // Validar senha (apenas para novos usuários)
+    // Validar senha (apenas para novos usuários ou se foi preenchida durante edição)
     if (!isEditing && (!newUser.senha || newUser.senha.length < 6)) {
+      setErrorMessage('A senha deve ter pelo menos 6 caracteres');
+      return false;
+    }
+    
+    // Se estiver editando e a senha foi preenchida, verificar o comprimento
+    if (isEditing && newUser.senha && newUser.senha.length > 0 && newUser.senha.length < 6) {
       setErrorMessage('A senha deve ter pelo menos 6 caracteres');
       return false;
     }
@@ -335,7 +341,7 @@ function UserManagement() {
       ativo: user.codStatus === 'ATIVO',
       administrador: user.admin,
       email: user.email,
-      senha: user.senha || ''
+      senha: '' // Deixar o campo de senha vazio na edição
     });
     
     // Mudar para a aba de edição
@@ -355,14 +361,21 @@ function UserManagement() {
     
     setLoadingUserSubmit(true);
 
-    const formData = new FormData();
-    formData.append("data", JSON.stringify({
+    // Criar objeto com apenas os campos que foram alterados
+    const updateData = {
       nome: newUser.nome.trim(),
       email: newUser.email.trim(),
       admin: newUser.administrador,
-      codStatus: newUser.ativo ? "ATIVO" : "INATIVO",
-      senha: newUser.senha || ""
-    }));
+      codStatus: newUser.ativo ? "ATIVO" : "INATIVO"
+    };
+    
+    // Adicionar senha apenas se foi alterada
+    if (newUser.senha && newUser.senha.trim() !== '') {
+      updateData.senha = newUser.senha;
+    }
+
+    const formData = new FormData();
+    formData.append("data", JSON.stringify(updateData));
 
     try {
       const response = await fetch(`${API_BASE_URL}/${currentUser.id}`, {
@@ -870,9 +883,10 @@ function UserManagement() {
                       type={showPassword ? 'text' : 'password'}
                       autoComplete="current-password"
                       name="senha"
-                      placeholder="Senha"
+                      placeholder={isEditing ? "Senha (deixe em branco para não alterar)" : "Senha"}
                       value={newUser.senha}
                       onChange={handleInputChange}
+                      required={!isEditing} // Senha é obrigatória apenas para novos usuários
                     />
                     <IconButton
                       onClick={toggleShowPassword}

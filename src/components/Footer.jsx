@@ -23,7 +23,6 @@ const Footer = () => {
     </section>
     <div className="conteudofooter">
       <h4>Institucional</h4>
-      <li><a href='#'>Sobre nós</a></li>
       <li><a href='/Politica'>Política de Segurança e Privacidade</a></li>
       <li><a href='#'></a></li>
 
@@ -31,10 +30,8 @@ const Footer = () => {
 
     <div className="conteudofooter">
       <h4>Ajuda</h4>
-      <li><a href='#'>Formas de pagamento</a></li>
-      <li><a href='#'>Orientações</a></li>
+     
       <li><a href='/FAQ'>Perguntas frequentes</a></li>
-      <li><a href='#'>Atendimento ao cliente</a></li>
     </div>
 
     <div class="conteudofooter">
