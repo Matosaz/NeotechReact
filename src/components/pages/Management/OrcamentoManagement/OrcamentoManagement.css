@@ -129,25 +129,25 @@ button:hover {
 /* Customização dos checkboxes */
 /* Estilos para o Checkbox */
 .MuiCheckbox-root {
-  color: #5faa84 !important;
-  padding: 8px !important;
-  transition: all 0.3s ease !important;
+    color: #5faa84 !important;
+    padding: 8px !important;
+    transition: all 0.3s ease !important;
 }
 
 .MuiCheckbox-root.Mui-checked {
-  color: #2f7c37 !important;
+    color: #2f7c37 !important;
 }
 
 .MuiCheckbox-root:hover {
-  color: #4c906b !important;
-  background-color: rgba(95, 170, 132, 0.1) !important;
+    color: #4c906b !important;
+    background-color: rgba(95, 170, 132, 0.1) !important;
 }
 
 .MuiFormControlLabel-label {
-  color: #3b3b3b !important;
-  font-family: "Lexend", sans-serif !important;
-  font-weight: 500 !important;
-  font-size: 14px !important;
+    color: #3b3b3b !important;
+    font-family: "Lexend", sans-serif !important;
+    font-weight: 500 !important;
+    font-size: 14px !important;
 }
 
 .OrcamentoManagement .form-row {
@@ -157,7 +157,47 @@ button:hover {
     /* Espaçamento entre os elementos */
 }
 
+.headerButtons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+.headerButtons button {
+    margin: 0; /* remove quaisquer margens padrão */
+}
 
+.refresh-data-button,
+.generate-pdf-button {
+    margin-top: 10px!important;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 16px;
+    font-family: "Lexend";
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.generate-pdf-button {
+    background-color: rgb(95, 170, 132);
+    color: white;
+    border: none;
+}
+
+.generate-pdf-button:hover {
+    background-color: #4c906b;
+}
+
+.refresh-data-button {
+    background-color: #ffffff;
+    color: #2f7c37;
+    border: 1px solid rgba(95, 170, 132, 0.3);
+}
+
+.refresh-data-button:hover {
+    background-color: rgba(95, 170, 132, 0.1);
+}
 
 .table-container {
     overflow-x: auto;
@@ -168,7 +208,7 @@ button:hover {
     display: flex;
     gap: 15px;
     align-content: left;
-    margin-left: -20px!important;
+    margin-left: -20px !important;
     justify-content: center;
 }
 
@@ -196,10 +236,12 @@ button:hover {
 
     width: 150px;
 }
-.CANCEL_button:hover{
-        background-color: rgb(175, 29, 29);
+
+.CANCEL_button:hover {
+    background-color: rgb(175, 29, 29);
 
 }
+
 /* Loading spinner */
 .loading-container {
     display: flex;
@@ -214,11 +256,12 @@ button:hover {
     width: 50px;
     height: 50px;
     border: 5px solid #f3f3f3;
-    border-top: 5px solid #5faa84!important;
+    border-top: 5px solid #5faa84 !important;
     border-radius: 50%;
     animation: spin 1s linear infinite;
     margin-bottom: 1rem;
 }
+
 @keyframes spin {
     0% {
         transform: rotate(0deg);

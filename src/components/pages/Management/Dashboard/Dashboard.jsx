@@ -14,29 +14,38 @@ import {
   ResponsiveContainer,
   Cell
 } from 'recharts';
+import { User, Calendar, RotateCcw, CheckCircle, XCircle } from 'lucide-react';
 import Sidebar1 from '../Sidebar/SidebarManagement';
 import './Dashboard.css';
 
 function Dashboard() {
   const [users, setUsers] = useState([]);
+  const [orcamentos, setOrcamentos] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const API_BASE_URL = "https://intellij-neotech.onrender.com/api/v1/users";
+  const ORCAMENTOS_API_URL = "https://intellij-neotech.onrender.com/api/v1/orcamentos";
 
   useEffect(() => {
-    fetch(API_BASE_URL)
-      .then(response => response.json())
-      .then(data => {
-        const filteredUsers = data.filter(user => {
-        const userDate = new Date(user.dataCriacao);
-        return userDate.getFullYear() > 2000; // Ajuste o ano conforme necessário
-      });
-        setUsers(data);
+    const fetchData = async () => {
+      try {
+        const [usersResponse, orcamentosResponse] = await Promise.all([
+          fetch(API_BASE_URL),
+          fetch(ORCAMENTOS_API_URL)
+        ]);
+        
+        const usersData = await usersResponse.json();
+        const orcamentosData = await orcamentosResponse.json();
+        
+        setUsers(usersData);
+        setOrcamentos(orcamentosData);
         setIsLoading(false);
-      })
-      .catch(error => {
-        console.error('Erro ao buscar usuários:', error);
+      } catch (error) {
+        console.error('Erro ao buscar dados:', error);
         setIsLoading(false);
-      });
+      }
+    };
+    
+    fetchData();
   }, []);
   const calculateNewUsersLast30Days = () => {
     const thirtyDaysAgo = new Date();
@@ -163,52 +172,68 @@ function Dashboard() {
     { name: 'Inativos', value: users.filter(user => user.codStatus !== 'ATIVO').length },
   ];
   const getRecentActivities = () => {
-    if (!users.length) return [];
+    if (!users.length && !orcamentos.length) return [];
 
-    // Ordena usuários pelos mais recentes
-    const sortedUsers = [...users].sort((a, b) =>
-      new Date(b.dataCriacao) - new Date(a.dataCriacao)
-    );
+    const activities = [];
 
-    // Pega os últimos 5 usuários cadastrados
-    const recentSignups = sortedUsers.slice(0, 5).map(user => ({
-      type: 'signup',
-      name: user.nome,
-      date: new Date(user.dataCriacao),
-      email: user.email
-    }));
-
-    // Calcula usuários inativos (supondo que temos data do último login)
-    const inactiveUsers = users.filter(user => {
-      // Adapte conforme seu modelo de dados
-      const lastLogin = user.ultimoLogin ? new Date(user.ultimoLogin) : new Date(0);
-      const thirtyDaysAgo = new Date();
-      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-      return lastLogin < thirtyDaysAgo;
-    }).slice(0, 3).map(user => ({
-      type: 'inactive',
-      name: user.nome,
-      date: new Date(user.ultimoLogin || user.dataCriacao),
-      email: user.email
-    }));
-
-    // Formata as atividades
-    const activities = [
-      ...recentSignups.map(user => ({
+    // Adiciona novos usuários
+    if (users.length) {
+      const sortedUsers = [...users].sort((a, b) =>
+        new Date(b.dataCriacao) - new Date(a.dataCriacao)
+      );
+      
+      const recentSignups = sortedUsers.slice(0, 3).map(user => ({
         icon: 'success',
-        iconClass: 'fa-user-plus',
-        text: `Novo usuário cadastrado: ${user.name}`,
-        date: user.date.toLocaleString('pt-BR', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })
-      })),
-      ...inactiveUsers.map(user => ({
-        icon: 'warning',
-        iconClass: 'fa-user-clock',
-        text: `Usuário inativo: ${user.name}`,
-        date: user.date.toLocaleString('pt-BR', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })
-      }))
-    ];
+        iconComponent: User,
+        text: `Novo usuário: ${user.nome}`,
+        date: new Date(user.dataCriacao),
+        type: 'user'
+      }));
+      
+      activities.push(...recentSignups);
+    }
 
-    return activities.sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 4);
+    // Adiciona orçamentos recentes
+    if (orcamentos.length) {
+      const sortedOrcamentos = [...orcamentos].sort((a, b) =>
+        new Date(b.dataColeta) - new Date(a.dataColeta)
+      );
+      
+      const recentOrcamentos = sortedOrcamentos.slice(0, 4).map(orcamento => {
+        const statusIcon = orcamento.codStatus === 'AGENDADA' ? Calendar :
+                          orcamento.codStatus === 'EM ANDAMENTO' ? RotateCcw :
+                          orcamento.codStatus === 'CONCLUIDA' ? CheckCircle : XCircle;
+        
+        const statusText = orcamento.codStatus === 'AGENDADA' ? 'Agendado' :
+                          orcamento.codStatus === 'EM ANDAMENTO' ? 'Em andamento' :
+                          orcamento.codStatus === 'CONCLUIDA' ? 'Concluído' : 'Inativo';
+        
+        return {
+          icon: orcamento.codStatus === 'CONCLUIDA' ? 'success' : 
+                orcamento.codStatus === 'EM ANDAMENTO' ? 'warning' : 'info',
+          iconComponent: statusIcon,
+          text: `Orçamento ${statusText}: ${orcamento.usuario?.nome || 'Usuário'} - ${orcamento.categorias?.map(c => c.nome).join(', ') || 'Categoria'}`,
+          date: new Date(orcamento.dataColeta),
+          type: 'orcamento'
+        };
+      });
+      
+      activities.push(...recentOrcamentos);
+    }
+
+    // Ordena todas as atividades por data e pega as 4 mais recentes
+    return activities
+      .sort((a, b) => new Date(b.date) - new Date(a.date))
+      .slice(0, 4)
+      .map(activity => ({
+        ...activity,
+        date: activity.date.toLocaleString('pt-BR', { 
+          day: 'numeric', 
+          month: 'short', 
+          hour: '2-digit', 
+          minute: '2-digit' 
+        })
+      }));
   };
 
   const calculateEngagement = () => {
@@ -374,17 +399,20 @@ function Dashboard() {
               <div className="chart-card">
                 <h3>Atividade Recente</h3>
                 <div className="activity-list">
-                  {getRecentActivities().map((activity, index) => (
-                    <div className="activity-item" key={index}>
-                      <div className={`activity-icon ${activity.icon}`}>
-                        <i className={`fas ${activity.iconClass}`}></i>
+                  {getRecentActivities().map((activity, index) => {
+                    const IconComponent = activity.iconComponent;
+                    return (
+                      <div className="activity-item" key={index}>
+                        <div className={`activity-icon ${activity.icon}`}>
+                          <IconComponent size={24} />
+                        </div>
+                        <div className="activity-details">
+                          <p>{activity.text}</p>
+                          <span>{activity.date}</span>
+                        </div>
                       </div>
-                      <div className="activity-details">
-                        <p>{activity.text}</p>
-                        <span>{activity.date}</span>
-                      </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             </div>

@@ -109,50 +109,122 @@ function CategoriaManagement() {
 
         img.onload = function () {
             const pageWidth = doc.internal.pageSize.width;
+            const pageHeight = doc.internal.pageSize.height;
+
+            // Adicionar fundo sutil
+            doc.setFillColor(250, 250, 250);
+            doc.rect(0, 0, pageWidth, pageHeight, 'F');
+            
+            // Adicionar borda decorativa
+            doc.setDrawColor(127, 192, 141);
+            doc.setLineWidth(0.5);
+            doc.rect(5, 5, pageWidth - 10, pageHeight - 10);
+
+            // Adicionar logo
             const imgWidth = 30;
             const imgHeight = (img.height / img.width) * imgWidth;
             const imgX = (pageWidth - imgWidth) / 2;
-
             doc.addImage(img, 'PNG', imgX, 10, imgWidth, imgHeight);
+
+            // Título do relatório
             doc.setTextColor(47, 124, 55);
             doc.setFont('Helvetica', 'bold');
             doc.setFontSize(22);
-            doc.text('Relatório de Categorias de Reciclagem', pageWidth / 2, imgHeight + 20, { align: 'center' });
+            doc.text('Relatório de Categorias', pageWidth / 2, imgHeight + 20, { align: 'center' });
 
+            // Data de geração
+            const dataAtual = new Date().toLocaleString();
             doc.setTextColor(18, 54, 21);
             doc.setFontSize(12);
             doc.setFont('Helvetica', 'italic');
-            doc.text(`Gerado em: ${new Date().toLocaleString()}`, pageWidth / 2, imgHeight + 30, { align: 'center' });
+            doc.text(`Gerado em: ${dataAtual}`, pageWidth / 2, imgHeight + 30, { align: 'center' });
 
-            const tableColumn = ['ID', 'Nome', 'Descrição', 'Preço por Kg (R$)', 'Status'];
+            // Informações do relatório
+            doc.setFont('Helvetica', 'normal');
+            doc.setFontSize(10);
+            doc.setTextColor(80, 80, 80);
+            doc.text(`Total de categorias: ${categories.length}`, 14, imgHeight + 40);
+            
+            const categoriasAtivas = categories.filter(cat => cat.codStatus === 'ATIVO').length;
+            doc.text(`Categorias ativas: ${categoriasAtivas}`, 14, imgHeight + 46);
+            doc.text(`Categorias inativas: ${categories.length - categoriasAtivas}`, 14, imgHeight + 52);
+
+            // Configuração da tabela
+            const tableColumn = ['ID', 'Nome', 'Descrição', 'Preço/Kg (R$)', 'Status'];
             const tableRows = categories.map(category => [
                 category.id,
                 category.nome,
-                category.descricao,
-                category.precoPorKg.toFixed(2),
-                category.codStatus.trim() === "ATIVO" ? 'Ativo' : 'Inativo'
+                category.descricao || '-',
+                `R$ ${category.precoPorKg.toFixed(2)}`,
+                category.codStatus === 'ATIVO' ? 'Ativo' : 'Inativo'
             ]);
 
             doc.autoTable({
                 head: [tableColumn],
                 body: tableRows,
-                startY: imgHeight + 38,
-                headStyles: { fillColor: [127, 192, 141], textColor: 255 },
-                bodyStyles: { fontSize: 10 },
-                alternateRowStyles: { fillColor: [240, 240, 240] },
-                didDrawPage: function (data) {
-                    const str = `Página ${doc.internal.getNumberOfPages()}`;
-                    doc.setFontSize(8);
-                    const pageHeight = doc.internal.pageSize.height;
-                    doc.text(str, pageWidth / 2, pageHeight - 10, { align: 'center' });
+                startY: imgHeight + 60,
+                headStyles: { 
+                    fillColor: [95, 170, 132], 
+                    textColor: 255,
+                    fontStyle: 'bold'
                 },
+                bodyStyles: { 
+                    fontSize: 10,
+                    cellPadding: 3
+                },
+                alternateRowStyles: { 
+                    fillColor: [240, 250, 240] 
+                },
+                columnStyles: {
+                    0: { cellWidth: 20 },
+                    2: { cellWidth: 'auto' },
+                    3: { halign: 'center' },
+                    4: { halign: 'center' }
+                },
+                didDrawPage: function (data) {
+                    // Adicionar cabeçalho em cada página
+                    if (data.pageNumber > 1) {
+                        doc.setFillColor(250, 250, 250);
+                        doc.rect(0, 0, pageWidth, 20, 'F');
+                        doc.setDrawColor(127, 192, 141);
+                        doc.setLineWidth(0.5);
+                        doc.line(0, 20, pageWidth, 20);
+                        
+                        doc.setTextColor(47, 124, 55);
+                        doc.setFont('Helvetica', 'bold');
+                        doc.setFontSize(12);
+                        doc.text('Relatório de Categorias', pageWidth / 2, 15, { align: 'center' });
+                    }
+                    
+                    // Adicionar rodapé em cada página
+                    const str = `Página ${data.pageNumber} de ${doc.internal.getNumberOfPages()}`;
+                    doc.setFontSize(8);
+                    doc.setTextColor(100, 100, 100);
+                    doc.text(str, pageWidth / 2, pageHeight - 10, { align: 'center' });
+                    
+                    // Adicionar data no rodapé
+                    doc.text(dataAtual, pageWidth - 15, pageHeight - 10, { align: 'right' });
+                },
+                margin: { top: 25, bottom: 25 }
             });
 
-            const pageHeight = doc.internal.pageSize.height;
-            doc.line((pageWidth - 180) / 2, pageHeight - 20, (pageWidth + 180) / 2, pageHeight - 20);
-            doc.text('Neotech', pageWidth / 2, pageHeight - 15, { align: 'center' });
+            // Espaço para assinatura no final da página
+            const finalY = doc.lastAutoTable.finalY + 20;
+            
+            if (finalY < pageHeight - 40) {
+                doc.line((pageWidth - 180) / 2, finalY, (pageWidth + 180) / 2, finalY);
+                doc.setFontSize(10);
+                doc.setTextColor(80, 80, 80);
+                doc.text('Neotech', pageWidth / 2, finalY + 5, { align: 'center' });
+                doc.setFontSize(8);
+                doc.text('Documento gerado automaticamente pelo sistema', pageWidth / 2, finalY + 12, { align: 'center' });
+            }
 
-            doc.save('relatorio_categorias_reciclagem.pdf');
+            // Salvar PDF com nome personalizado incluindo a data
+            const dataFormatada = new Date().toISOString().split('T')[0];
+            doc.save(`relatorio_categorias_${dataFormatada}.pdf`);
+            
+          setSnackbar({ open: true, message: 'Relatório gerado com sucesso!', severity: 'success' });
             setLoadingPDF(false);
         };
 

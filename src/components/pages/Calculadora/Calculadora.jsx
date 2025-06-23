@@ -116,7 +116,7 @@ const Calculadora = () => {
     }
   };
 
-// Verifique se as informações estão corretas!'
+  // Verifique se as informações estão corretas!'
   const getCountries = async () => {
     const response = await fetch('https://restcountries.com/v3.1/all');
     const data = await response.json();
@@ -186,7 +186,8 @@ const Calculadora = () => {
       metodoContato: formData.metodoContato,
       aceitaContato: formData.aceitaContato,
       usuario: { id: user?.id },
-      itens: formData.itens,  // Inclui as categorias selecionadas e quantidades
+      quantidadeKg: formData.itens.reduce((total, item) => total + item.quantidade, 0),
+      pontos: formData.itens.reduce((total, item) => total + item.pontos, 0),
       cep: formData.cep,
       endereco: formData.endereco,
       numero: formData.numero,
@@ -395,6 +396,12 @@ const Calculadora = () => {
     }
 
     return false;
+  };
+  const calcularPontos = (categoria, quantidade) => {
+    if (!categoria || typeof quantidade !== 'number' || quantidade <= 0) return 0;
+
+    const pontosPorKg = Number(categoria.pontosPorKg) || 1; // Fallback seguro para 1
+    return Math.round(quantidade * 50);
   };
 
   return (
@@ -833,10 +840,11 @@ const Calculadora = () => {
                                 const categoriaSelecionada = formData.categoriasDisponiveis.find(
                                   cat => cat.id == formData.novaCategoria
                                 );
-
                                 const novoItem = {
                                   categoria: categoriaSelecionada,
-                                  quantidade: parseFloat(formData.novaQuantidade)
+                                  quantidade: parseFloat(formData.novaQuantidade),
+                                  pontos: calcularPontos(categoriaSelecionada, parseFloat(formData.novaQuantidade))
+
                                 };
 
                                 setFormData({
@@ -927,12 +935,14 @@ const Calculadora = () => {
                                 <div className="receipt-item" key={index}>
                                   <span className="item-name">{item.categoria.nome}</span>
                                   <span className="item-quantity">{item.quantidade} kg</span>
+                                  <span className="item-points">{item.pontos} pts</span>
+
                                   <span className="item-price">R$ {(item.categoria.precoPorKg * item.quantidade).toFixed(2)}</span>
                                 </div>
                               ))}
                               <div className="receipt-total" >
-                               
-                                <span> <Receipt size={20} style={{ marginRight: '5px', marginBottom:'-px',color: "#2e7d32" }} />Total Estimado:</span>
+
+                                <span> <Receipt size={20} style={{ marginRight: '5px', marginBottom: '-px', color: "#2e7d32" }} />Total Estimado:</span>
                                 <span className="total-value">R$ {formData.itens.reduce((total, item) =>
                                   total + (item.categoria.precoPorKg * item.quantidade), 0).toFixed(2)}</span>
                               </div>

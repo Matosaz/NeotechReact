@@ -25,7 +25,7 @@ import {
     Snackbar
 } from '@mui/material';
 import { Alert as MuiAlert } from '@mui/material';
-import { AlignLeft, Search } from 'lucide-react';
+import { RefreshCw, Weight, Leaf, Mail, Smartphone, Search } from 'lucide-react';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import { DesktopDatePicker, DesktopTimePicker } from '@mui/x-date-pickers';
@@ -50,6 +50,8 @@ function OrcamentoManagement() {
         codStatus: 'AGENDADA' // Valor padrão
 
     });
+    const [isRefreshing, setIsRefreshing] = useState(false);
+
     const [isEditing, setIsEditing] = useState(false);
     const [editDialogOpen, setEditDialogOpen] = useState(false);
     const [dateError, setDateError] = useState('');
@@ -68,6 +70,22 @@ function OrcamentoManagement() {
         fetchOrcamentos();
         fetchCategories();
     }, []);
+
+
+    const refreshData = () => {
+        setIsRefreshing(true);
+        fetchOrcamentos()
+            .then(() => {
+                setSnackbar({ open: true, message: 'Dados atualizados com sucesso!', severity: 'success' });
+            })
+            .catch(error => {
+                console.error('Erro ao atualizar dados:', error);
+                setSnackbar({ open: true, message: 'Erro ao atualizar dados', severity: 'error' });
+            })
+            .finally(() => {
+                setIsRefreshing(false);
+            });
+    };
 
     const fetchOrcamentos = async () => {
         setIsLoading(true);
@@ -253,97 +271,139 @@ function OrcamentoManagement() {
 
         img.onload = function () {
             const pageWidth = doc.internal.pageSize.width;
+            const pageHeight = doc.internal.pageSize.height;
 
-            // Ajusta o tamanho do logo proporcionalmente
-            const imgWidth = 40;
+            // Adicionar fundo sutil
+            doc.setFillColor(250, 250, 250);
+            doc.rect(0, 0, pageWidth, pageHeight, 'F');
+
+            // Adicionar borda decorativa
+            doc.setDrawColor(127, 192, 141);
+            doc.setLineWidth(0.5);
+            doc.rect(5, 5, pageWidth - 10, pageHeight - 10);
+
+            // Adicionar logo
+            const imgWidth = 30;
             const imgHeight = (img.height / img.width) * imgWidth;
             const imgX = (pageWidth - imgWidth) / 2;
-
-            // Adiciona o logo centralizado
             doc.addImage(img, 'PNG', imgX, 10, imgWidth, imgHeight);
 
-            // Título do documento
+            // Título do relatório
             doc.setTextColor(47, 124, 55);
             doc.setFont('Helvetica', 'bold');
-            doc.setFontSize(20);
-            doc.text('Relatório de Orçamentos de Reciclagem', pageWidth / 2, imgHeight + 25, { align: 'center' });
+            doc.setFontSize(22);
+            doc.text('Relatório de Orçamentos', pageWidth / 2, imgHeight + 20, { align: 'center' });
 
-            // Data de geração do relatório
+            // Data de geração
+            const dataAtual = new Date().toLocaleString();
             doc.setTextColor(18, 54, 21);
+            doc.setFontSize(12);
             doc.setFont('Helvetica', 'italic');
+            doc.text(`Gerado em: ${dataAtual}`, pageWidth / 2, imgHeight + 30, { align: 'center' });
+
+            // Informações do relatório
+            doc.setFont('Helvetica', 'normal');
             doc.setFontSize(10);
-            doc.text(`Gerado em: ${new Date().toLocaleString()}`, pageWidth / 2, imgHeight + 35, { align: 'center' });
+            doc.setTextColor(80, 80, 80);
+            doc.text(`Total de orçamentos: ${orcamentos.length}`, 14, imgHeight + 40);
 
-            // Define as colunas da tabela
-            const tableColumn = [
-                'ID',
-                'Usuário',
-                'Categoria',
-                'Data Coleta',
-                'Hora Coleta',
-                'CEP',
-                'Endereço',
-                'Bairro',
-                'Número',
-                'Status'
+            const orcamentosAgendados = orcamentos.filter(orc => orc.codStatus === 'AGENDADA').length;
+            const orcamentosConcluidos = orcamentos.filter(orc => orc.codStatus === 'CONCLUIDA').length;
+            const orcamentosAndamento = orcamentos.filter(orc => orc.codStatus === 'EM ANDAMENTO').length;
 
+            doc.text(`Agendados: ${orcamentosAgendados}`, 14, imgHeight + 46);
+            doc.text(`Em andamento: ${orcamentosAndamento}`, 14, imgHeight + 52);
+            doc.text(`Concluídos: ${orcamentosConcluidos}`, 14, imgHeight + 58);
 
-            ];
-
-            // Mapeia os dados para as linhas da tabela
-            const tableRows = orcamentos.map((orc) => [
+            // Configuração da tabela
+            const tableColumn = ['ID', 'Usuário', 'Categoria', 'Qtd (kg)', 'Data', 'Hora', 'Status'];
+            const tableRows = orcamentos.map(orc => [
                 orc.id,
                 orc.usuario?.nome || '-',
                 orc.categorias?.map(cat => cat.nome).join(', ') || '-',
+                orc.quantidadeKg || '-',
                 orc.dataColeta ? new Date(orc.dataColeta).toLocaleDateString() : '-',
                 orc.horaColeta ? orc.horaColeta.substring(0, 5) : '-',
-                orc.cep || '-',
-                orc.endereco || '-',
-                orc.bairro || '-',
-                orc.numero || '-',
                 orc.codStatus === 'AGENDADA' ? 'Agendada' :
                     orc.codStatus === 'EM ANDAMENTO' ? 'Em andamento' :
                         orc.codStatus === 'CONCLUIDA' ? 'Concluída' :
                             orc.codStatus === 'INATIVO' ? 'Inativo' : orc.codStatus || '-'
-
             ]);
 
-            // Adiciona a tabela ao documento
             doc.autoTable({
                 head: [tableColumn],
                 body: tableRows,
-                startY: imgHeight + 45,
-                headStyles: { fillColor: [127, 192, 141], textColor: 255 },
-                bodyStyles: { fontSize: 9 },
-                alternateRowStyles: { fillColor: [240, 240, 240] },
-                margin: { left: 10, right: 10 },
-                didDrawPage: (data) => {
-                    // Rodapé com número da página
-                    const str = `Página ${doc.internal.getNumberOfPages()}`;
-                    doc.setFontSize(8);
-                    const pageHeight = doc.internal.pageSize.height;
-                    doc.text(str, pageWidth / 2, pageHeight - 10, { align: 'center' });
+                startY: imgHeight + 65,
+                headStyles: {
+                    fillColor: [95, 170, 132],
+                    textColor: 255,
+                    fontStyle: 'bold'
                 },
+                bodyStyles: {
+                    fontSize: 9,
+                    cellPadding: 2
+                },
+                alternateRowStyles: {
+                    fillColor: [240, 250, 240]
+                },
+                columnStyles: {
+                    0: { cellWidth: 15 },
+                    1: { cellWidth: 'auto' },
+                    2: { cellWidth: 'auto' },
+                    3: { halign: 'center', cellWidth: 20 },
+                    4: { halign: 'center', cellWidth: 25 },
+                    5: { halign: 'center', cellWidth: 20 },
+                    6: { halign: 'center', cellWidth: 25 }
+                },
+                didDrawPage: function (data) {
+                    // Adicionar cabeçalho em cada página
+                    if (data.pageNumber > 1) {
+                        doc.setFillColor(250, 250, 250);
+                        doc.rect(0, 0, pageWidth, 20, 'F');
+                        doc.setDrawColor(127, 192, 141);
+                        doc.setLineWidth(0.5);
+                        doc.line(0, 20, pageWidth, 20);
+
+                        doc.setTextColor(47, 124, 55);
+                        doc.setFont('Helvetica', 'bold');
+                        doc.setFontSize(12);
+                        doc.text('Relatório de Orçamentos', pageWidth / 2, 15, { align: 'center' });
+                    }
+
+                    // Adicionar rodapé em cada página
+                    const str = `Página ${data.pageNumber} de ${doc.internal.getNumberOfPages()}`;
+                    doc.setFontSize(8);
+                    doc.setTextColor(100, 100, 100);
+                    doc.text(str, pageWidth / 2, pageHeight - 10, { align: 'center' });
+
+                    // Adicionar data no rodapé
+                    doc.text(dataAtual, pageWidth - 15, pageHeight - 10, { align: 'right' });
+                },
+                margin: { top: 25, bottom: 25 }
             });
 
-            // Linha separadora no rodapé
-            const pageHeight = doc.internal.pageSize.height;
-            doc.setDrawColor(127, 192, 141);
-            doc.setLineWidth(0.8);
-            doc.line(15, pageHeight - 20, pageWidth - 15, pageHeight - 20);
+            // Espaço para assinatura no final da página
+            const finalY = doc.lastAutoTable.finalY + 20;
 
-            // Texto do rodapé
-            doc.setFontSize(10);
-            doc.setTextColor(47, 124, 55);
-            doc.text('Neotech', pageWidth / 2, pageHeight - 12, { align: 'center' });
+            if (finalY < pageHeight - 40) {
+                doc.line((pageWidth - 180) / 2, finalY, (pageWidth + 180) / 2, finalY);
+                doc.setFontSize(10);
+                doc.setTextColor(80, 80, 80);
+                doc.text('Neotech', pageWidth / 2, finalY + 5, { align: 'center' });
+                doc.setFontSize(8);
+                doc.text('Documento gerado automaticamente pelo sistema', pageWidth / 2, finalY + 12, { align: 'center' });
+            }
 
-            // Salva o PDF
-            doc.save('relatorio_orcamentos_reciclagem.pdf');
+            // Salvar PDF com nome personalizado incluindo a data
+            const dataFormatada = new Date().toISOString().split('T')[0];
+            doc.save(`relatorio_orcamentos_${dataFormatada}.pdf`);
+
+            setSnackbar({ open: true, message: 'Relatório gerado com sucesso!', severity: 'success' });
             setLoadingPDF(false);
         };
 
-        img.onerror = () => {
-            setSnackbar({ open: true, message: 'Erro ao carregar o logo para o PDF.', severity: 'error' });
+        img.onerror = function () {
+            setSnackbar({ open: true, message: 'Erro ao carregar o logotipo do PDF.', severity: 'error' });
             setLoadingPDF(false);
         };
     };
@@ -492,6 +552,58 @@ function OrcamentoManagement() {
             },
         },
         {
+            accessorKey: 'quantidadeKg',
+            header: 'Quantidade',
+            Cell: ({ cell }) => {
+                const quantidade = cell.getValue() ? `${cell.getValue()}kg` : '–'
+                return (
+                    <span style={{
+                        backgroundColor: '#E3F2FD ',
+                        color: '#1565C0 ',
+                        padding: '6px 10px',
+                        borderRadius: '20px',
+                        fontSize: '0.875rem',
+                        fontWeight: '600',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '3px',
+                        textAlign: 'center'
+                    }}>
+                        {quantidade}
+                        <Weight size={16} strokeWidth={2} />
+
+
+                    </span>
+                );
+            }
+        },
+
+        {
+            accessorKey: 'pontos',
+            header: 'Pontos Verdes',
+            Cell: ({ cell }) => {
+                const pontos = cell.getValue() || '–';
+                return (
+                    <span style={{
+                        backgroundColor: '#C8E6C9',
+                        color: '#1B5E20',
+                        padding: '6px 10px',
+                        borderRadius: '20px',
+                        fontSize: '0.875rem',
+                        fontWeight: '600',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '2px',
+                        textAlign: 'center'
+                    }}>
+                        {pontos}
+                        <Leaf size={16} strokeWidth={2} />
+
+                    </span>
+                );
+            }
+        },
+        {
             accessorKey: 'cep',
             header: 'Cep',
             Cell: ({ cell }) => cell.getValue() || '-'
@@ -577,7 +689,48 @@ function OrcamentoManagement() {
             },
         },
         {
-            accessorKey: 'metodoContato', header: 'Método/Contato', size: 10
+            accessorKey: 'metodoContato',
+            header: 'Método/Contato',
+            size: 120,
+            Cell: ({ cell }) => {
+                const metodo = cell.getValue();
+                let bgColor, textColor, icon;
+
+                switch (metodo?.toLowerCase()) {
+                    case 'email':
+                        bgColor = '#E3F2FD';
+                        textColor = '#1565C0';
+                        icon = <Mail size={16} strokeWidth={2} />
+                        break;
+                    case 'whatsapp':
+                        bgColor = '#E8F5E8';
+                        textColor = '#2E7D32';
+                        icon = <Smartphone size={16} strokeWidth={2} />
+                        break;
+                    default:
+                        bgColor = '#F5F5F5';
+                        textColor = '#666666';
+                        icon = '📞';
+                }
+
+                return (
+                    <span style={{
+                        backgroundColor: bgColor,
+                        color: textColor,
+                        padding: '6px 12px',
+                        borderRadius: '20px',
+                        fontSize: '0.875rem',
+                        fontWeight: '600',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '4px',
+                        textAlign: 'center',
+                        minWidth: '80px'
+                    }}>
+                        {metodo || 'N/A'}  {icon}
+                    </span>
+                );
+            }
         },
         {
             accessorKey: 'aceitaContato',
@@ -1010,17 +1163,39 @@ function OrcamentoManagement() {
                     )}
                 </div>
 
+                <div className='headerButtons'>
+                    <button
+                        onClick={refreshData}
+                        className="refresh-data-button"
+                        disabled={isRefreshing}
+                        style={{ backgroundColor: "#ffffff", color: "#2f7c37", border: "1px solid rgba(95, 170, 132, 0.3)" }}
 
-                <button onClick={generatePDF} className="generate-pdf-button" disabled={loadingPDF}>
-                    {loadingPDF ? (
-                        <CircularProgress size={24} color="inherit" />
-                    ) : (
-                        <>
-                            <PrintIcon sx={{ marginRight: "8px" }} />
-                            Gerar Relatório
-                        </>
-                    )}
-                </button>
+                    >
+                        {isRefreshing ? (
+                            <CircularProgress size={24} color="inherit" />
+                        ) : (
+                            <>
+                                <RefreshCw size={18} style={{ marginRight: "8px" }} className={isRefreshing ? "rotating" : ""} />
+                                Atualizar Dados
+                            </>
+                        )}
+                    </button>
+
+                    <button
+                        onClick={generatePDF}
+                        className="generate-pdf-button"
+                        disabled={loadingPDF}
+                    >
+                        {loadingPDF ? (
+                            <CircularProgress size={24} color="inherit" />
+                        ) : (
+                            <>
+                                <PrintIcon sx={{ marginRight: "8px" }} />
+                                Gerar Relatório
+                            </>
+                        )}
+                    </button>
+                </div>
 
                 <Snackbar
                     open={snackbar.open}

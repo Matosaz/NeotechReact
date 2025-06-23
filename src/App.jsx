@@ -60,7 +60,7 @@ function App() {
           <Route path='/Calculadora' element={<Calculadora />} />
           <Route path='/Politica' element={<Politica />} />
           <Route path='/FAQ' element={<FAQ1 />} />
-          <Route path='/Dashboard' element={<Dashboard />} />
+          <Route path='/Dashboard' element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           <Route path='/UserManagement' element={<ProtectedRoute><UserManagement /></ProtectedRoute>} />
           <Route path='/CategoriaManagement' element={<ProtectedRoute><CategoriaManagement /></ProtectedRoute>} />
           <Route path='/OrcamentoManagement' element={<ProtectedRoute><OrcamentoManagement /></ProtectedRoute>} />

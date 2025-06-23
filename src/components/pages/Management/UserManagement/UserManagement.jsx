@@ -61,7 +61,7 @@ function UserManagement() {
       // Adicionar fundo sutil
       doc.setFillColor(250, 250, 250);
       doc.rect(0, 0, pageWidth, pageHeight, 'F');
-      
+
       // Adicionar borda decorativa
       doc.setDrawColor(127, 192, 141);
       doc.setLineWidth(0.5);
@@ -91,10 +91,10 @@ function UserManagement() {
       doc.setFontSize(10);
       doc.setTextColor(80, 80, 80);
       doc.text(`Total de usuários: ${users.length}`, 14, imgHeight + 40);
-      
+
       const usuariosAtivos = users.filter(user => user.codStatus === 'ATIVO').length;
       const usuariosAdmins = users.filter(user => user.admin).length;
-      
+
       doc.text(`Usuários ativos: ${usuariosAtivos}`, 14, imgHeight + 46);
       doc.text(`Administradores: ${usuariosAdmins}`, 14, imgHeight + 52);
 
@@ -112,17 +112,17 @@ function UserManagement() {
         head: [tableColumn],
         body: tableRows,
         startY: imgHeight + 60,
-        headStyles: { 
-          fillColor: [95, 170, 132], 
+        headStyles: {
+          fillColor: [95, 170, 132],
           textColor: 255,
           fontStyle: 'bold'
         },
-        bodyStyles: { 
+        bodyStyles: {
           fontSize: 10,
           cellPadding: 3
         },
-        alternateRowStyles: { 
-          fillColor: [240, 250, 240] 
+        alternateRowStyles: {
+          fillColor: [240, 250, 240]
         },
         columnStyles: {
           0: { cellWidth: 20 },
@@ -138,19 +138,19 @@ function UserManagement() {
             doc.setDrawColor(127, 192, 141);
             doc.setLineWidth(0.5);
             doc.line(0, 20, pageWidth, 20);
-            
+
             doc.setTextColor(47, 124, 55);
             doc.setFont('Helvetica', 'bold');
             doc.setFontSize(12);
             doc.text('Relatório de Usuários', pageWidth / 2, 15, { align: 'center' });
           }
-          
+
           // Adicionar rodapé em cada página
           const str = `Página ${data.pageNumber} de ${doc.internal.getNumberOfPages()}`;
           doc.setFontSize(8);
           doc.setTextColor(100, 100, 100);
           doc.text(str, pageWidth / 2, pageHeight - 10, { align: 'center' });
-          
+
           // Adicionar data no rodapé
           doc.text(dataAtual, pageWidth - 15, pageHeight - 10, { align: 'right' });
         },
@@ -159,7 +159,7 @@ function UserManagement() {
 
       // Espaço para assinatura no final da página
       const finalY = doc.lastAutoTable.finalY + 20;
-      
+
       if (finalY < pageHeight - 40) {
         doc.line((pageWidth - 180) / 2, finalY, (pageWidth + 180) / 2, finalY);
         doc.setFontSize(10);
@@ -172,7 +172,7 @@ function UserManagement() {
       // Salvar PDF com nome personalizado incluindo a data
       const dataFormatada = new Date().toISOString().split('T')[0];
       doc.save(`relatorio_usuarios_${dataFormatada}.pdf`);
-      
+
       setSnackbar({ open: true, message: 'Relatório gerado com sucesso!', severity: 'success' });
       setLoadingPDF(false);
     };
@@ -228,13 +228,13 @@ function UserManagement() {
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
   };
-  
+
   const filteredUsers = useMemo(() => {
     if (!searchTerm.trim()) return users;
-    
+
     const searchTermLower = searchTerm.toLowerCase().trim();
-    return users.filter(user => 
-      user.nome.toLowerCase().includes(searchTermLower) || 
+    return users.filter(user =>
+      user.nome.toLowerCase().includes(searchTermLower) ||
       user.email.toLowerCase().includes(searchTermLower) ||
       (user.codStatus && user.codStatus.toLowerCase().includes(searchTermLower))
     );
@@ -245,12 +245,12 @@ function UserManagement() {
   };
   const handleInputChange = (event) => {
     const { name, value, type, checked } = event.target;
-    
+
     // Limpar mensagem de erro quando o usuário começa a digitar
     if (errorMessage) {
       setErrorMessage('');
     }
-    
+
     setNewUser(prevState => ({
       ...prevState,
       [name]: type === 'checkbox' ? checked : value
@@ -264,33 +264,35 @@ function UserManagement() {
       setErrorMessage('O nome deve ter pelo menos 3 caracteres');
       return false;
     }
-    
+
     // Validar email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!newUser.email || !emailRegex.test(newUser.email)) {
       setErrorMessage('Por favor, insira um email válido');
       return false;
     }
-    
+
     // Validar senha (apenas para novos usuários ou se foi preenchida durante edição)
     if (!isEditing && (!newUser.senha || newUser.senha.length < 6)) {
       setErrorMessage('A senha deve ter pelo menos 6 caracteres');
       return false;
     }
-    
+
     // Se estiver editando e a senha foi preenchida, verificar o comprimento
     if (isEditing && newUser.senha && newUser.senha.length > 0 && newUser.senha.length < 6) {
       setErrorMessage('A senha deve ter pelo menos 6 caracteres');
       return false;
     }
-    
+
     setErrorMessage('');
     return true;
   };
-
+useEffect(() => {
+  console.log('Estado atual do newUser:', newUser);
+}, [newUser]);
   const handleAddUser = async () => {
     if (!validateForm()) return;
-    
+
     setLoadingUserSubmit(true);
 
     try {
@@ -310,10 +312,10 @@ function UserManagement() {
 
       if (!response.ok) {
         const errorText = await response.text();
-        setSnackbar({ 
-          open: true, 
-          message: `Erro ao adicionar o usuário: ${response.statusText || errorText}`, 
-          severity: 'error' 
+        setSnackbar({
+          open: true,
+          message: `Erro ao adicionar o usuário: ${response.statusText || errorText}`,
+          severity: 'error'
         });
         return;
       }
@@ -322,7 +324,7 @@ function UserManagement() {
       setUsers(prevUsers => [...prevUsers, data]);
       setSnackbar({ open: true, message: 'Usuário adicionado com sucesso!', severity: 'success' });
       resetForm();
-      
+
       // Voltar para a aba de listagem após adicionar
       setTabValue(0);
     } catch (error) {
@@ -343,22 +345,22 @@ function UserManagement() {
       email: user.email,
       senha: '' // Deixar o campo de senha vazio na edição
     });
-    
+
     // Mudar para a aba de edição
     setTabValue(1);
-    
+
     // Feedback visual
-    setSnackbar({ 
-      open: true, 
-      message: `Editando usuário: ${user.nome}`, 
-      severity: 'info' 
+    setSnackbar({
+      open: true,
+      message: `Editando usuário: ${user.nome}`,
+      severity: 'info'
     });
   };
   const handleUpdateUser = async () => {
     if (!currentUser || typeof currentUser.id !== 'number') return;
-    
+
     if (!validateForm()) return;
-    
+
     setLoadingUserSubmit(true);
 
     // Criar objeto com apenas os campos que foram alterados
@@ -366,9 +368,9 @@ function UserManagement() {
       nome: newUser.nome.trim(),
       email: newUser.email.trim(),
       admin: newUser.administrador,
-      codStatus: newUser.ativo ? "ATIVO" : "INATIVO"
+      codStatus: newUser.ativo ? 'ATIVO' : 'INATIVO'
     };
-    
+
     // Adicionar senha apenas se foi alterada
     if (newUser.senha && newUser.senha.trim() !== '') {
       updateData.senha = newUser.senha;
@@ -385,23 +387,23 @@ function UserManagement() {
 
       if (!response.ok) {
         const errorText = await response.text();
-        setSnackbar({ 
-          open: true, 
-          message: `Erro ao atualizar o usuário: ${response.statusText || errorText}`, 
-          severity: 'error' 
+        setSnackbar({
+          open: true,
+          message: `Erro ao atualizar o usuário: ${response.statusText || errorText}`,
+          severity: 'error'
         });
         return;
       }
 
       const updatedUser = await response.json();
       setUsers(users.map(user => (user.id === currentUser.id ? updatedUser : user)));
-      setSnackbar({ 
-        open: true, 
-        message: `Usuário ${updatedUser.nome} atualizado com sucesso!`, 
-        severity: 'success' 
+      setSnackbar({
+        open: true,
+        message: `Usuário ${updatedUser.nome} atualizado com sucesso!`,
+        severity: 'success'
       });
       resetForm();
-      
+
       // Voltar para a aba de listagem após atualizar
       setTabValue(0);
     } catch (error) {
@@ -493,13 +495,13 @@ function UserManagement() {
       size: 150,
       filterVariant: 'text',
       Cell: ({ cell, row }) => (
-        <div style={{ 
-          fontWeight: 500, 
-          color: '#555', 
+        <div style={{
+          fontWeight: 500,
+          color: '#555',
           cursor: 'pointer',
           transition: 'color 0.2s ease'
         }}
-        onClick={() => handleEditUser(row.original)}
+          onClick={() => handleEditUser(row.original)}
         >
           {cell.getValue()}
         </div>
@@ -592,8 +594,8 @@ function UserManagement() {
         }
       }
     },
-    { 
-      accessorKey: 'email', 
+    {
+      accessorKey: 'email',
       header: 'Email',
       size: 200,
       filterVariant: 'text',
@@ -615,7 +617,7 @@ function UserManagement() {
       Cell: ({ row }) => (
         <div style={{ display: 'flex', justifyContent: 'center', gap: '0.5rem' }}>
           <Tooltip title="Editar usuário" arrow>
-            <IconButton 
+            <IconButton
               onClick={() => handleEditUser(row.original)}
               sx={{
                 backgroundColor: 'rgba(105, 167, 136, 0.1)',
@@ -629,7 +631,7 @@ function UserManagement() {
             </IconButton>
           </Tooltip>
           <Tooltip title="Excluir usuário" arrow>
-            <IconButton 
+            <IconButton
               onClick={() => handleOpenDeleteDialog(row.original.id)}
               sx={{
                 backgroundColor: 'rgba(244, 67, 54, 0.1)',
@@ -716,10 +718,10 @@ function UserManagement() {
         </Dialog>
 
         <div className="header-container">
-          
+
           <h1 className='titleManag'>Gerenciar usuários</h1>
         </div>
-        
+
         <div className="search-container" style={{ position: 'relative', width: '100%', maxWidth: '435px', marginBottom: '20px' }}>
           <input
             type="text"
@@ -746,74 +748,74 @@ function UserManagement() {
           />
         </div>
 
-    <Box 
-  sx={{ 
-    backgroundColor: "transparent", 
-    borderRadius: "16px", 
-    display: 'flex',
-    alignItems: "center",
-    justifyContent: "space-between",
-  }}
->
-  {/* Tabs à esquerda */}
-  <Tabs 
-    value={tabValue} 
-    onChange={handleTabChange} 
-    sx={{
-      '& .MuiTab-root': {
-        padding: '10px 20px',
-        textTransform: 'none',
-        fontSize: '14px',
-        fontWeight: 500,
-        color: '#555',
-        '&.Mui-selected': {
-          color: '#2f7c37',
-          fontWeight: 600,
-        }
-      },
-      '& .MuiTabs-indicator': {
-        backgroundColor: '#2f7c37',
-      }
-    }}
-  >
-    <Tab label="Lista de Usuários" icon={<Search size={18} />} iconPosition="start" />
-    <Tab label="Adicionar/Editar Usuário" icon={<UserPlus size={18} />} iconPosition="start" />
-  </Tabs>
+        <Box
+          sx={{
+            backgroundColor: "transparent",
+            borderRadius: "16px",
+            display: 'flex',
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          {/* Tabs à esquerda */}
+          <Tabs
+            value={tabValue}
+            onChange={handleTabChange}
+            sx={{
+              '& .MuiTab-root': {
+                padding: '10px 20px',
+                textTransform: 'none',
+                fontSize: '14px',
+                fontWeight: 500,
+                color: '#555',
+                '&.Mui-selected': {
+                  color: '#2f7c37',
+                  fontWeight: 600,
+                }
+              },
+              '& .MuiTabs-indicator': {
+                backgroundColor: '#2f7c37',
+              }
+            }}
+          >
+            <Tab label="Lista de Usuários" icon={<Search size={18} />} iconPosition="start" />
+            <Tab label="Adicionar/Editar Usuário" icon={<UserPlus size={18} />} iconPosition="start" />
+          </Tabs>
 
-  {/* Botões à direita */}
-  <div className='headerButtons'>
-    <button 
-      onClick={refreshData} 
-      className="refresh-data-button" 
-      disabled={isRefreshing}
-      style={{ backgroundColor: "#fafafa", color: "#2f7c37", border: "1px solid rgba(95, 170, 132, 0.3)" }}
-    >
-      {isRefreshing ? (
-        <CircularProgress size={24} color="inherit" />
-      ) : (
-        <>
-          <RefreshCw size={18} style={{ marginRight: "8px" }} className={isRefreshing ? "rotating" : ""} />
-          Atualizar Dados
-        </>
-      )}
-    </button>
+          {/* Botões à direita */}
+          <div className='headerButtons'>
+            <button
+              onClick={refreshData}
+              className="refresh-data-button"
+              disabled={isRefreshing}
+              style={{ backgroundColor: "#fafafa", color: "#2f7c37", border: "1px solid rgba(95, 170, 132, 0.3)" }}
+            >
+              {isRefreshing ? (
+                <CircularProgress size={24} color="inherit" />
+              ) : (
+                <>
+                  <RefreshCw size={18} style={{ marginRight: "8px" }} className={isRefreshing ? "rotating" : ""} />
+                  Atualizar Dados
+                </>
+              )}
+            </button>
 
-    <button 
-      onClick={generatePDF} 
-      className="generate-pdf-button" 
-      disabled={loadingPDF}
-    >
-      {loadingPDF ? (
-        <CircularProgress size={24} color="inherit" />
-      ) : (
-        <>
-          <PrintIcon sx={{ marginRight: "8px" }} />
-          Gerar Relatório
-        </>
-      )}
-    </button>
-  </div>
-</Box>
+            <button
+              onClick={generatePDF}
+              className="generate-pdf-button"
+              disabled={loadingPDF}
+            >
+              {loadingPDF ? (
+                <CircularProgress size={24} color="inherit" />
+              ) : (
+                <>
+                  <PrintIcon sx={{ marginRight: "8px" }} />
+                  Gerar Relatório
+                </>
+              )}
+            </button>
+          </div>
+        </Box>
 
 
         <Fade in={tabValue === 0} timeout={300}>
@@ -829,7 +831,7 @@ function UserManagement() {
                 <MaterialReactTable
                   columns={columns}
                   data={filteredUsers}
-                  initialState={{ 
+                  initialState={{
                     pagination: { pageSize: 5 },
                     density: 'compact'
                   }}
@@ -843,10 +845,10 @@ function UserManagement() {
                   enableGlobalFilter={false}
                   positionFilterRow="top"
                   muiFilterTextFieldProps={{
-                    sx: { 
-                      '& .MuiInputBase-root': { 
-                        justifyContent: 'flex-start' 
-                      } 
+                    sx: {
+                      '& .MuiInputBase-root': {
+                        justifyContent: 'flex-start'
+                      }
                     }
                   }}
                   muiTableBodyProps={{
@@ -911,13 +913,20 @@ function UserManagement() {
                   }}>
                     <div className="status-user-select-container">
                       <select
-                        name="codStatus"
-                        value={newUser.ativo || 'ATIVO'}
-                        onChange={(e) => setNewUser({ ...newUser, ativo: e.target.value })}
-                        className="status-user-select"
+                        name="ativo"
+                        value={newUser.ativo ? 'true' : 'false'}
+                        onChange={(e) => {
+                          handleInputChange({
+                            target: {
+                              name: 'ativo',
+                              value: e.target.value === 'true',
+                              type: 'checkbox' // Trataremos como checkbox para manter a lógica existente
+                            }
+                          });
+                        }} className="status-user-select"
                       >
-                        <option value="ATIVO">Ativo</option>
-                        <option value="INATIVO">Inativo</option>
+                        <option value="true">Ativo</option>
+                        <option value="false">Inativo</option>
                       </select>
                     </div>
                     <FormControlLabel
