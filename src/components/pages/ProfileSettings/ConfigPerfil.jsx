@@ -88,11 +88,8 @@ const ConfigPerfil = () => {
 
     setLoading(true);
 
-    // Salva os valores de administrador antes da atualização
-    
-    // Cria uma cópia do usuário sem incluir os campos de administrador
     const updatedUser = {
-
+        ...user,
       cpf: Cpf,
       telefone: telefone,
       cep: Cep,
@@ -103,12 +100,29 @@ const ConfigPerfil = () => {
       data_nascimento: birthDate,
       genero: genero,
     };
+
+
     try {
       const formData = new FormData();
-      formData.append("data", JSON.stringify({
-        ...updatedUser,
-        // Força o envio dos campos de admin mesmo se forem null/undefined
-      }));
+
+       const userDataToSend = {
+      cpf: updatedUser.cpf,
+      telefone: updatedUser.telefone,
+      cep: updatedUser.cep,
+      endereco: updatedUser.endereco,
+      cidade: updatedUser.cidade,
+      bairro: updatedUser.bairro,
+      estado: updatedUser.estado,
+      data_nascimento: updatedUser.data_nascimento,
+      genero: updatedUser.genero,
+      nome: updatedUser.nome,
+      email: updatedUser.email,
+      admin: updatedUser.admin,
+      codStatus: updatedUser.codStatus
+    };
+
+      formData.append("data", JSON.stringify(userDataToSend));
+      
       if (previewAvatar && avatar instanceof File) {
         formData.append("avatar", avatar);
       }
@@ -124,10 +138,10 @@ const ConfigPerfil = () => {
         throw new Error(`Falha ao atualizar perfil: ${errorData.message || "Erro desconhecido"}`);
       }
 
-      const newUserData = await response.json();
+  const updatedUserData = await response.json(); // Renomeado para manter consistência
 
       // Cria um novo objeto com os dados atualizados
-     
+
       console.log("Dados recebidos:", updatedUserData);
 
       // Atualiza o estado e o localStorage

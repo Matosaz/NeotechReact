@@ -8,7 +8,7 @@ const NoPermission = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (user && user.isAdmin === true) {
+    if (user && user.admin === true) {
       navigate('/UserManagement'); // ajuste para a página que o admin pode acessar
     }
   }, [user, navigate]);

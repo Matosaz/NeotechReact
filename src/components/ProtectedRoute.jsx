@@ -6,7 +6,7 @@ const ProtectedRoute = ({ children }) => {
   const { user } = useContext(UserContext); // Acessa o contexto do usuário
 
   // Verifique se o usuário está autenticado e se é um administrador
-  if (!user || user.isAdmin!== true) {
+  if (!user || user.admin!== true) {
     // Redireciona para a página de login ou qualquer outra página
     return <Navigate to="/NoPermission" />;
   }
