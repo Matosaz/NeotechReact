@@ -132,7 +132,7 @@ const Navbar = () => {
                       <AccountCircleIcon sx={{ color: '#121212' }}/>
                       <p>Configurações de perfil</p>
                     </a>
-                    <a href="#" className="sub-menu-link">
+                    <a href="/FAQ" className="sub-menu-link">
                       <HelpOutlineIcon sx={{ color: '#121212' }}/>
                       <p>Ajuda e suporte</p>
                     </a>
