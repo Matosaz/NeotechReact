@@ -169,7 +169,7 @@ const Auth = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
-console.log(getBrasiliaDateTime());
+      console.log(getBrasiliaDateTime());
       // Tratamento específico para erro 401 (Unauthorized)
       if (response.status === 401) {
         throw new Error('Credenciais inválidas. Verifique seu email e senha.');
@@ -187,7 +187,7 @@ console.log(getBrasiliaDateTime());
         const userData = await fetchUserDetails(userId);
 
         if (userData) {
-          userData.isAdmin = data.isAdmin === 'true';
+          userData.admin = data.isAdmin === 'true';
           setUser(userData);
           localStorage.setItem('user', JSON.stringify(userData));
         }
