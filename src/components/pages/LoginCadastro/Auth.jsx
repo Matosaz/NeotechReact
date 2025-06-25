@@ -185,7 +185,7 @@ const Auth = () => {
         localStorage.setItem('userId', userId); // Salvar o ID do usuário para referência
 
         const userData = await fetchUserDetails(userId);
-
+//Envio e armazenamento do valor de admin corrigido
         if (userData) {
           userData.admin = data.isAdmin === 'true';
           setUser(userData);
