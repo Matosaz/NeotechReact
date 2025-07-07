@@ -88,11 +88,12 @@ color:#1f5c25 ;
     
 @media(max-width: 520px){
     .mapaview{
-        width: 430px;
-        height: 650px;
+        width: 420px;
+        height: 750px;
     }
-    .botaotestediv{
-        height: 1100px;
-
+    .encontre{
+        padding-top: 100px;
+        font-size: 1.9rem;
     }
+   
     }

@@ -1,7 +1,9 @@
 import React from 'react'
 import './NaoEncontrada.css'
 import { ArrowBack } from '@mui/icons-material';
-import cat404 from '../../../assets/error404-2.gif';
+import Lottie from 'lottie-react';
+import animationData from '../../../assets/404-animation.json';
+
 const NaoEncontrada = () => {
 
   const Voltar =() =>{
@@ -9,10 +11,12 @@ const NaoEncontrada = () => {
   }
   return ( 
     <div className='ErrorNotFound'>
-   
-      <img className="cat404"src={cat404} alt="" />
+      <div style={{ width: 600, height: 300 }} className='animation'>
+                <Lottie animationData={animationData} loop={true} />
+
+      </div>
       <h1 className='Errorh1'> Ooooooops...</h1>
-      <h3 className='Errorh3'>Aparentemente sua página não foi encontrada! Tente retornar para a página anterior</h3>
+      <h3 className='Errorh3'>Aparentemente sua página não foi encontrada! <br /> Tente retornar para a página anterior</h3>
       <button onClick={Voltar} className='voltar'>   
       <ArrowBack fontSize="small" className="icon" />Retornar</button>
       </div>

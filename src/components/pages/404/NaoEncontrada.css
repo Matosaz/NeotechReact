@@ -2,19 +2,19 @@
     font-size: 4rem;
     color: #2f7c37;
     font-weight: 800;
-    padding-top: -200px;
-}
-.cat404{
     padding-top: 200px;
+}
+.animation{
+    padding-top: 10px;
     margin-bottom: -20px;
 }
 
 .Errorh3 {
-    padding-top: 20px;
+    padding-top: 10px;
     max-width: 700px;
-    font-size: 1.8rem;
-    color: #2f7c37;
-    font-weight: 700;
+    font-size: 1.6rem;
+    color: #29692f;
+    font-weight: 00;
     text-align: center;
     /* Centraliza o texto */
 }
@@ -29,7 +29,7 @@
     /* Alinha os elementos verticalmente */
     align-items: center;
     /* Centraliza os itens horizontalmente */
-    padding: 0 20px;
+    padding-top: 80px;
     /* Adiciona espaço lateral */
     text-align: center;
     /* Centraliza o conteúdo de texto */

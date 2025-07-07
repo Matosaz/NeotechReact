@@ -163,7 +163,7 @@ useEffect(() => {
           <div className="format-container">
   <div className="courses_box">
     <div className="courses_item">
-      <a href="#" className="item_link">
+      <a className="item_link">
         <div className="item_bg"></div>
 
         <div className="item_title">
@@ -180,7 +180,7 @@ useEffect(() => {
     </div>
 
     <div className="courses_item">
-      <a href="#" className="item_link">
+      <a  className="item_link">
         <div className="item_bg"></div>
 
         <div className="item_title">
@@ -197,7 +197,7 @@ useEffect(() => {
     </div>
 
     <div className="courses_item">
-      <a href="#" className="item_link">
+      <a  className="item_link">
         <div className="item_bg"></div>
 
         <div className="item_title">
