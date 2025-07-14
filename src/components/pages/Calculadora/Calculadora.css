@@ -607,6 +607,10 @@ button {
 }
 /* Tablet */
 @media (max-width: 768px) {
+
+  .voltar-orcamento{
+    scale: 0.89;
+  }
   .wrap-orcamento {
     max-width: 90%;
     min-width: auto;
@@ -685,6 +689,8 @@ button {
 
 /* Mobile pequeno */
 @media (max-width: 360px) {
+
+
   .wrap-orcamento {
     margin: 5px;
     padding: 10px;

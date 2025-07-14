@@ -243,6 +243,8 @@ function UserManagement() {
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
   };
+
+
   const handleInputChange = (event) => {
     const { name, value, type, checked } = event.target;
 
@@ -887,7 +889,6 @@ useEffect(() => {
                   <div className="password-container">
                     <input
                       type={showPassword ? 'text' : 'password'}
-                      autoComplete="current-password"
                       name="senha"
                       placeholder={isEditing ? "Senha (deixe em branco para não alterar)" : "Senha"}
                       value={newUser.senha}

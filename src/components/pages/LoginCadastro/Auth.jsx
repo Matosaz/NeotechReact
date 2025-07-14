@@ -7,6 +7,16 @@ import ResetPassword from './ResetPassword';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import CircularProgress from '@mui/material/CircularProgress';
+import IconButton from '@mui/material/IconButton';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
+/*
+ * Para underline vermelha em validação, adicione uma classe condicional na <span className="underline"> 
+ * e defina o CSS para .underline.error { background: red; }.
+ * Exemplo de uso abaixo:
+ */
+
+// Exemplo de função para determinar erro de cada campo:
+
 const API_BASE_URL = "https://intellij-neotech.onrender.com/api/v1/users";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
@@ -35,7 +45,15 @@ const Auth = () => {
   const [emailExists, setEmailExists] = useState(false);
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'info' });
   const navigate = useNavigate();
+  const [isTypingPassword, setIsTypingPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
+  const [errors, setErrors] = useState({
+    name: false,
+    email: false,
+    password: false,
+    confirmPassword: false
+  });
 
 
   const getBrasiliaDateTime = () => {
@@ -76,12 +94,25 @@ const Auth = () => {
     if (name === 'password') validatePassword(value);
   };
 
+
+  useEffect(() => {
+    if (!formData.password) {
+      setIsTypingPassword(false);
+      setShowPasswordInfo(false);
+    }
+  }, [formData.password]);
+
+  // ...existin
   const handlePasswordChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-    if (name === 'password') validatePassword(value);
+    if (name === 'password') {
+      validatePassword(value);
+      setIsTypingPassword(true);
+      // Tooltip permanece visível enquanto houver caracteres
+      setShowPasswordInfo(value.length > 0);
+    }
   };
-
   const validatePassword = (password) => {
     setPasswordValidations({
       length: password.length >= 8,
@@ -92,6 +123,36 @@ const Auth = () => {
     });
   };
 
+
+  const getUnderlineClass = (field) => {
+    if (field === 'name') {
+      return !isLoginMode && formData.name && formData.name.trim().length < 3 ? 'underline error' : 'underline';
+    }
+    if (field === 'email') {
+      return !isLoginMode && emailExists ? 'underline error' : 'underline';
+    }
+    if (field === 'password') {
+      return (
+        !isLoginMode &&
+        isTypingPassword &&
+        (
+          !passwordValidations.length ||
+          !passwordValidations.lowercase ||
+          !passwordValidations.uppercase ||
+          !passwordValidations.number ||
+          !passwordValidations.specialChar
+        )
+      ) ? 'underline error' : 'underline';
+    }
+    if (field === 'confirmPassword') {
+      return (
+        !isLoginMode &&
+        formData.confirmPassword &&
+        formData.password !== formData.confirmPassword
+      ) ? 'underline error' : 'underline';
+    }
+    return 'underline';
+  };
   const fetchUserDetails = async (userId) => {
     try {
       const token = localStorage.getItem('token');
@@ -125,6 +186,7 @@ const Auth = () => {
     try {
       const response = await fetch(`${API_BASE_URL}/check-email?email=${email}`);
       setEmailExists(response.status === 409);
+
     } catch (error) {
       console.error("Erro ao verificar e-mail:", error);
     }
@@ -134,12 +196,45 @@ const Auth = () => {
     e.preventDefault();
     setLoading(true);
 
+
+    if (!isLoginMode) {
+    // Validação senha
+    if (
+      !passwordValidations.length ||
+      !passwordValidations.lowercase ||
+      !passwordValidations.uppercase ||
+      !passwordValidations.number ||
+      !passwordValidations.specialChar
+    ) {
+      setSnackbar({
+        open: true,
+        message: 'A senha não atende aos requisitos mínimos.',
+        severity: 'warning',
+      });
+      setLoading(false);
+      return;
+    }
+  }
     if (!isLoginMode && formData.password !== formData.confirmPassword) {
       setSnackbar({ open: true, message: 'As senhas não coincidem.', severity: 'warning' });
       setLoading(false);
       return;
+    } else {
+      setErrors(prev => ({ ...prev, name: false }));
     }
 
+    const nameRegex =/^[A-Za-zÀ-ÿ\s'-]+$/;
+    if (!isLoginMode && formData.name.trim().length < 3 || !nameRegex.test(formData.name.trim()) ) {
+      setSnackbar({
+        open: true,
+        message: 'O nome deve ter pelo menos 3 letras e conter APENAS letras.',
+        severity: 'warning'
+      });
+      setLoading(false);
+      return;
+    } else {
+      setErrors(prev => ({ ...prev, name: false }));
+    }
     if (!isLoginMode) {
       await checkEmailExists(formData.email);
       if (emailExists) {
@@ -185,7 +280,7 @@ const Auth = () => {
         localStorage.setItem('userId', userId); // Salvar o ID do usuário para referência
 
         const userData = await fetchUserDetails(userId);
-//Envio e armazenamento do valor de admin corrigido
+        //Envio e armazenamento do valor de admin corrigido
         if (userData) {
           userData.admin = data.isAdmin === 'true';
           setUser(userData);
@@ -210,7 +305,9 @@ const Auth = () => {
     if (reason === 'clickaway') return;
     setSnackbar({ ...snackbar, open: false });
   };
-
+  const toggleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
   return (
 
     <div className="auth-container">
@@ -220,17 +317,27 @@ const Auth = () => {
         <h2 className="Criarconta">{isLoginMode ? '' : 'Crie uma conta'}</h2>
         <form onSubmit={handleSubmit}>
           {!isLoginMode && (
-            <div className="input-container">
+          <div className="input-container tooltip-container">
               <input
                 type="text"
                 name="name"
+                title="O nome deve conter apenas letras e espaços"
                 value={formData.name}
                 onChange={handleChange}
                 required
+                className={errors.name ? 'error' : ''}
+
               />
               <label className="label">Nome</label>
-              <span className="underline"></span>
+
+              <span className={getUnderlineClass('name')}></span>
+              {!isLoginMode && formData.name && formData.name.trim().length >= 0 && formData.name.trim().length < 3 && (
+                <div className="tooltip" style={{ color: '#e53935', marginTop: '5px' }}>
+                  O nome deve possuir no mínimo 3 letras.
+                </div>
+              )}
             </div>
+
           )}
           <div className="input-container">
             <input
@@ -240,21 +347,46 @@ const Auth = () => {
               onChange={handleChange}
               onBlur={checkEmailExists} // Verifica o e-mail ao perder o foco
               required
+                              className={errors.name ? 'error' : ''}
+
             />
             <label className="label">Email</label>
             <span className="underline"></span>
           </div>
 
           <div className="input-container tooltip-container">
+
             <input
-              type="password"
+              type={showPassword ? 'text' : 'password'}
               name="password"
               value={formData.password}
               onChange={handlePasswordChange}
               required
-              onFocus={() => setShowPasswordInfo(true)}
-              onBlur={() => setShowPasswordInfo(false)}
+              onFocus={() => {
+                setShowPasswordInfo(formData.password.length >= 0);
+                setIsTypingPassword(true);
+              }}
+              onBlur={() => {
+                setIsTypingPassword(false);
+                setShowPasswordInfo(formData.password.length > 0);
+              }}
             />
+            <IconButton sx={{
+              position: 'absolute',
+              top: '20%',
+              right: '12px',
+              zIndex: 1,
+              color: '#555',
+
+            }}
+              onClick={toggleShowPassword}
+              className="toggle-password-btn"
+              edge="end"
+              size="small"
+              aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
+            >
+              {showPassword ? <VisibilityOff fontSize="small" /> : <Visibility fontSize="small" />}
+            </IconButton>
             <label className="label">Senha</label>
             <span className="underline"></span>
 
@@ -279,6 +411,7 @@ const Auth = () => {
               </div>
             )}
 
+
           </div>
           {isLoginMode && (
             <p className="Forgotpassword" onClick={() => setOpenModal(true)}>
@@ -301,7 +434,21 @@ const Auth = () => {
           <button
             type="submit"
             className="submit-btn"
-            disabled={loading || (emailExists && !isLoginMode)}
+            disabled={
+              loading ||
+              (
+                !isLoginMode &&
+                (
+                  (isTypingPassword && (
+                    !passwordValidations.length ||
+                    !passwordValidations.lowercase ||
+                    !passwordValidations.uppercase ||
+                    !passwordValidations.number ||
+                    !passwordValidations.specialChar
+                  ))
+                )
+              )
+            }
           >
             {loading ? <CircularProgress size={20} color="inherit" /> : (isLoginMode ? 'Login' : 'Cadastrar')}
           </button>

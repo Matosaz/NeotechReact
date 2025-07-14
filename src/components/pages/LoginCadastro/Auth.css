@@ -77,16 +77,18 @@
 
 .input-container input {
   font-size: 1rem;
+  position: relative;
+  z-index: 0;
   width: 100%;
   padding: 0.75rem;
   border: none;
+  border-bottom: 2px solid rgba(0, 0, 0, 0.2);
   border-radius: 0px;
   width: 352px;
   background-color: transparent;
   box-shadow: none;
-  border-bottom: 2px solid rgba(0, 0, 0, 0.2);
   outline: none;
-  transition: all 0.2s ease-in-out;
+  transition: all 0.3s ease-in-out;
 }
 
 .input-container .label {
@@ -102,9 +104,9 @@
 .input-container input:focus ~ .label,
 .input-container input:valid ~ .label {
   top: -20px;
-  font-size: 0.9rem;
+  font-size: 14px;
   color: #488042;
-  font-weight: 450;
+  font-weight: 500;
 }
 
 .input-container .underline {
@@ -112,6 +114,8 @@
   bottom: 0;
   left: 0;
   height: 2px;
+  z-index: 2;
+  pointer-events: none;
   width: 100%;
   background-color: #488042;
   transform: scaleX(0);
@@ -123,6 +127,9 @@
   transform: scaleX(1.02);
 }
 
+.input-container .underline.error {
+  background: #e53935; /* vermelho para erro */
+}
 /* Button */
 .submit-btn {
   width: 100%;
@@ -136,6 +143,15 @@
   transition: background-color 0.1s ease;
 }
 
+
+.submit-btn:disabled {
+  background-color: #999;
+  cursor: not-allowed;
+}
+.submit-btn:disabled:hover {
+  background-color: #888  ;
+  cursor: not-allowed;
+}
 .submit-btn:hover {
   background-color: #4c906b;
 }

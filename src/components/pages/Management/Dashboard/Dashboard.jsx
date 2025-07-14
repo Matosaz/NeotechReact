@@ -14,7 +14,7 @@ import {
   ResponsiveContainer,
   Cell
 } from 'recharts';
-import { User, Calendar, RotateCcw, CheckCircle, XCircle } from 'lucide-react';
+import { User, CalendarCheck, Truck , CheckCircle, XCircle } from 'lucide-react';
 import Sidebar1 from '../Sidebar/SidebarManagement';
 import './Dashboard.css';
 
@@ -200,8 +200,8 @@ function Dashboard() {
       );
       
       const recentOrcamentos = sortedOrcamentos.slice(0, 4).map(orcamento => {
-        const statusIcon = orcamento.codStatus === 'AGENDADA' ? Calendar :
-                          orcamento.codStatus === 'EM ANDAMENTO' ? RotateCcw :
+        const statusIcon = orcamento.codStatus === 'AGENDADA' ? CalendarCheck :
+                          orcamento.codStatus === 'EM ANDAMENTO' ? Truck  :
                           orcamento.codStatus === 'CONCLUIDA' ? CheckCircle : XCircle;
         
         const statusText = orcamento.codStatus === 'AGENDADA' ? 'Agendado' :
