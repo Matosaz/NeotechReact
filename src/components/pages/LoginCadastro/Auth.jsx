@@ -198,23 +198,23 @@ const Auth = () => {
 
 
     if (!isLoginMode) {
-    // Validação senha
-    if (
-      !passwordValidations.length ||
-      !passwordValidations.lowercase ||
-      !passwordValidations.uppercase ||
-      !passwordValidations.number ||
-      !passwordValidations.specialChar
-    ) {
-      setSnackbar({
-        open: true,
-        message: 'A senha não atende aos requisitos mínimos.',
-        severity: 'warning',
-      });
-      setLoading(false);
-      return;
+      // Validação senha
+      if (
+        !passwordValidations.length ||
+        !passwordValidations.lowercase ||
+        !passwordValidations.uppercase ||
+        !passwordValidations.number ||
+        !passwordValidations.specialChar
+      ) {
+        setSnackbar({
+          open: true,
+          message: 'A senha não atende aos requisitos mínimos.',
+          severity: 'warning',
+        });
+        setLoading(false);
+        return;
+      }
     }
-  }
     if (!isLoginMode && formData.password !== formData.confirmPassword) {
       setSnackbar({ open: true, message: 'As senhas não coincidem.', severity: 'warning' });
       setLoading(false);
@@ -223,24 +223,27 @@ const Auth = () => {
       setErrors(prev => ({ ...prev, name: false }));
     }
 
-    const nameRegex =/^[A-Za-zÀ-ÿ\s'-]+$/;
-    if (!isLoginMode && formData.name.trim().length < 3 || !nameRegex.test(formData.name.trim()) ) {
+    const nameRegex = /^[A-Za-zÀ-ÿ\s'-]+$/;
+    if (!isLoginMode && (formData.name.trim().length < 3 || !nameRegex.test(formData.name.trim()))) {
       setSnackbar({
         open: true,
         message: 'O nome deve ter pelo menos 3 letras e conter APENAS letras.',
         severity: 'warning'
       });
+      setErrors(prev => ({ ...prev, name: true }))
       setLoading(false);
       return;
     } else {
       setErrors(prev => ({ ...prev, name: false }));
     }
+
+    
     if (!isLoginMode) {
       await checkEmailExists(formData.email);
       if (emailExists) {
         setSnackbar({
           open: true,
-          message: 'E-mail já cadastrado! Por favor, utilize outro!',
+          message: 'E-mail já cadastrado. Por favor, utilize outro ou faça login!',
           severity: 'warning'
         });
         setLoading(false);
@@ -300,6 +303,16 @@ const Auth = () => {
       setLoading(false);
     }
   };
+// useEffect para verificar email com debounce
+useEffect(() => {
+  if (!formData.email || isLoginMode) return;
+
+  const delayDebounceFn = setTimeout(() => {
+    checkEmailExists(formData.email);
+  }, 500); // Espera 500ms após parar de digitar
+
+  return () => clearTimeout(delayDebounceFn); // Cancela se o usuário digitar novamente
+}, [formData.email, isLoginMode]);
 
   const handleCloseSnackbar = (_, reason) => {
     if (reason === 'clickaway') return;
@@ -317,7 +330,7 @@ const Auth = () => {
         <h2 className="Criarconta">{isLoginMode ? '' : 'Crie uma conta'}</h2>
         <form onSubmit={handleSubmit}>
           {!isLoginMode && (
-          <div className="input-container tooltip-container">
+            <div className="input-container tooltip-container">
               <input
                 type="text"
                 name="name"
@@ -325,17 +338,18 @@ const Auth = () => {
                 value={formData.name}
                 onChange={handleChange}
                 required
-                className={errors.name ? 'error' : ''}
+                className={!isLoginMode && errors.name ? 'error' : ''}
 
               />
               <label className="label">Nome</label>
 
               <span className={getUnderlineClass('name')}></span>
-              {!isLoginMode && formData.name && formData.name.trim().length >= 0 && formData.name.trim().length < 3 && (
+              {!isLoginMode && errors.name && (
                 <div className="tooltip" style={{ color: '#e53935', marginTop: '5px' }}>
-                  O nome deve possuir no mínimo 3 letras.
+                  O nome deve ter no mínimo 3 letras e conter apenas letras.
                 </div>
               )}
+
             </div>
 
           )}
@@ -345,9 +359,8 @@ const Auth = () => {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              onBlur={checkEmailExists} // Verifica o e-mail ao perder o foco
               required
-                              className={errors.name ? 'error' : ''}
+              className={errors.name ? 'error' : ''}
 
             />
             <label className="label">Email</label>

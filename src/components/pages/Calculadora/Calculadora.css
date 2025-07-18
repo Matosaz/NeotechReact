@@ -495,7 +495,7 @@ button {
   color: #333;
 }
 
-.item-quantity {
+.item-quantity, .item-points {
   flex: 1;
   text-align: center;
   color: #666;

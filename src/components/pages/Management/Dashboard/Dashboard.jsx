@@ -158,7 +158,6 @@ function Dashboard() {
     if (otherStatesCount > 0) {
       result.push({ name: 'Outros', value: otherStatesCount });
     }
-
     // Adiciona "Não selecionado" no fim, se houver
     if (stateCounts['Não selecionado']) {
       result.push({ name: 'Não selecionado', value: stateCounts['Não selecionado'] });

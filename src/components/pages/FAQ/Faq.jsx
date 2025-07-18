@@ -90,7 +90,7 @@ function Faq() {
       <div className="BackgroundAnimation"></div>
 
       <div className="HeroFaq">
-        <h4 className="FaqSign" data-text="FAQ (Perguntas Frequentes">)</h4>
+        <h4 className="FaqSign" data-text="FAQ (Perguntas Frequentes)"></h4>
         <h1>Vamos produzir algo incrível juntos?</h1>
         <p>
         Nosso propósito é cuidar de você e do planeta. Estamos comprometidos em proporcionar um atendimento personalizado e de alta qualidade, transformando cada dúvida em uma possibilidade de estruturar um futuro mais sustentável, harmônico e seguro para todos.
