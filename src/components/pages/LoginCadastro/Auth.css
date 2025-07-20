@@ -233,6 +233,15 @@
     box-shadow: none;
     margin-bottom: -10px;
   }
+
+  .auth-box{
+    max-width: 400px;
+  margin: 20px 50px;
+  }
+  
+  .toggle-password-btn{
+    margin-top: 0px!important;
+  }
   .tooltip::after{
     visibility: hidden;
   }

@@ -120,7 +120,10 @@ select.form-control-orcamento {
   background-color: #fff;
   cursor: pointer;
 }
-
+select option:disabled {
+  color: #999;
+  background-color: #f5f5f5;
+}
 
 
 textarea {
@@ -131,6 +134,7 @@ textarea {
   background-color: #80808085;
   margin-right: 15px;
 }
+
 .form-navigation .buttonprevious:hover {
   background-color: #69696985;
   margin-right: 15px;
@@ -159,7 +163,8 @@ textarea {
   color: #666666 !important;
   cursor: not-allowed !important;
 }
-.disabled-button:hover{
+
+.disabled-button:hover {
   background-color: #cccccc !important;
   color: #535353 !important;
 }
@@ -172,9 +177,11 @@ button {
   border-radius: 8px;
   transition: background-color 0.3s ease;
 }
+
 .enabled-button:hover {
-    background-color: #4c906b!important;
+  background-color: #4c906b !important;
 }
+
 .fieldset-orcamento input {
   border-style: none;
   background-color: #dad7d75d;
@@ -318,7 +325,7 @@ button {
 .resume-label {
   font-weight: 600;
   color: #555;
-  
+
 }
 
 .resume-value {
@@ -326,7 +333,7 @@ button {
   font-size: 15px;
   text-align: right;
   max-width: 300px;
-  }
+}
 
 .success-note {
   font-size: 0.95rem;
@@ -495,10 +502,53 @@ button {
   color: #333;
 }
 
-.item-quantity, .item-points {
+.item-quantity,
+.item-points {
   flex: 1;
   text-align: center;
   color: #666;
+}
+
+/* Adicione ao seu arquivo Calculadora.css */
+.MuiDialog-paper {
+  border-radius: 12px !important;
+  padding: 20px;
+}
+
+.alert-dialog-title{
+  color: #2E7D32;
+  font-weight: 600; 
+  padding: 8px 20px;
+  margin-bottom: -15px;
+  font-size: 26px;
+}
+
+
+
+.CANCEL_button_orc {
+  background-color: rgb(196, 31, 31);
+
+}
+
+.MuiDialogActions-root button {
+  padding: 12px 30px;
+  font-size: 16px;
+  border-radius: 10px;
+
+}
+
+.CANCEL_button_orc:hover {
+  background-color: rgb(175, 29, 29);
+  transform: translateY(-1px);
+}
+
+
+
+.MuiDialogContentText-root {
+  font-size: 16px !important;
+  color: #333 !important;
+  margin: auto !important;
+  max-width: 480px;
 }
 
 .item-price {
@@ -506,6 +556,15 @@ button {
   text-align: right;
   color: #2E7D32;
   font-weight: 500;
+}
+
+.max-items-warning {
+  color:#e53935;
+  background-color: #fde8e8;
+  padding: 10px;
+  border-radius: 4px;
+  margin: 10px 0;
+  text-align: center;
 }
 
 .receipt-total {
@@ -598,30 +657,33 @@ button {
   color: #2f7c37;
   font-weight: 700;
 }
-.legend-orcamento-confirmar{
- font-size: 24px;
+
+.legend-orcamento-confirmar {
+  font-size: 24px;
   margin-bottom: 5px;
   color: #2f7c37;
   font-weight: 600;
   text-align: center;
 }
+
 /* Tablet */
 @media (max-width: 768px) {
 
-  .voltar-orcamento{
+  .voltar-orcamento {
     scale: 0.89;
   }
+
   .wrap-orcamento {
     max-width: 90%;
     min-width: auto;
     margin: 20px;
     padding: 20px;
   }
-  
+
   .title-orcamento {
     font-size: 28px;
   }
-  
+
   .contact-orcamento-p {
     font-size: 20px;
   }
@@ -636,52 +698,57 @@ button {
     justify-items: center;
     flex-direction: column;
   }
-  
+
+  .MuiDialogActions-root,
+  button {
+    margin: 0 auto;
+  }
+
   .wrap-orcamento {
     max-width: 95%;
     min-width: auto;
     margin: 10px;
     padding: 15px;
   }
-  
+
   .title-orcamento {
     font-size: 24px;
     margin-bottom: 15px;
   }
-  
+
   .contact-orcamento-p {
     font-size: 18px;
   }
-  
+
   .form-navigation {
     flex-direction: column;
     gap: 10px;
   }
-  
+
   .form-navigation button {
     width: 100%;
   }
-  
+
   .voltar-orcamento {
     position: absolute;
     margin-bottom: 15px;
     align-self: flex-start;
   }
-  
+
   .receipt-container {
     padding: 15px;
     margin: 10px;
   }
-  
+
   .receipt-title {
     font-size: 20px;
   }
-  
+
   .resume-value {
     max-width: 200px;
     font-size: 14px;
   }
-  
+
   .itens-container {
     gap: 15px;
   }
@@ -695,29 +762,29 @@ button {
     margin: 5px;
     padding: 10px;
   }
-  
+
   .title-orcamento {
     font-size: 20px;
   }
-  
+
   .contact-orcamento-p {
     font-size: 16px;
   }
-  
+
   .form-control-orcamento {
     padding: 8px;
   }
-  
+
   .receipt-container {
     padding: 10px;
   }
-  
+
   .resume-item {
     flex-direction: column;
     align-items: flex-start;
     gap: 5px;
   }
-  
+
   .resume-value {
     max-width: 100%;
     text-align: left;

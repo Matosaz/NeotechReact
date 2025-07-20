@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import './Calculadora.css';
-import { Radio, RadioGroup, FormControlLabel, Checkbox, TextField, } from '@mui/material';
+import { Radio, RadioGroup, FormControlLabel, Checkbox, TextField, Dialog, DialogTitle, DialogActions, DialogContentText, DialogContent } from '@mui/material';
 import { ArrowBack } from '@mui/icons-material';
 import { InputTel } from '../ProfileSettings/MaskedInput';
 import { UserContext } from "../../UserContext"; // Importando o UserContext
@@ -52,6 +52,8 @@ const Calculadora = () => {
   const [dateError, setDateError] = useState('');
   const [timeError, setTimeError] = useState('');
   const [disableNextButton, setDisableNextButton] = useState(false); // Estado para desabilitar o botão de próximo
+  const [openloginModal, setOpenLoginModal] = useState(false);
+
 
 
   useEffect(() => {
@@ -138,9 +140,21 @@ const Calculadora = () => {
   const handleCepChange = (value) => {
     const cleanedCep = value.replace(/\D/g, "");
     setFormData({ ...formData, cep: value });
-    if (cleanedCep.length === 8) {
-      fetchCepData(cleanedCep);
+    if (cleanedCep.length === 0) {
+      setFormData(prev => ({
+        ...prev,
+        endereco: '',
+        bairro: '',
+        cidade: '',
+        estado: '',
+        numero: '',
+
+      }));
+      return;
     }
+    if (cleanedCep.length === 8) {
+    fetchCepData(cleanedCep);
+  }
   };
 
   const fetchCepData = async (cep) => {
@@ -164,7 +178,7 @@ const Calculadora = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (currentStep != 6) return; // ✅ Garante que só envia no passo 5
+    if (currentStep != 6) return; // ✅ Garante que só envia no passo 6
 
 
 
@@ -200,6 +214,7 @@ const Calculadora = () => {
     console.log('Itens selecionados:', formData.itens);
     console.log('Categorias para envio:', categoriasPayload);
     // Verifica se todos os campos obrigatórios estão preenchidos
+
 
     if (!formData.metodoContato) {
       setSnackbar({
@@ -252,10 +267,18 @@ const Calculadora = () => {
       setLoading(false); // Desativa o loading independente do resultado
     }
   };
+
   const nextStep = () => {
     const form = document.querySelector('form');
 
     if (currentStep < 7 && form.checkValidity()) {
+
+      if (currentStep === 1 && !user) {
+
+        setOpenLoginModal(true);
+        return;
+      }
+
       if (currentStep === 4 && !validateDateTime()) {
         return;
       }
@@ -378,6 +401,14 @@ const Calculadora = () => {
     }
   };
 
+  const handleCloseLoginModal = () => {
+    setOpenLoginModal(false);
+  }
+
+  const handleRedirectToLogin = () => {
+    window.location.href = '/Auth';
+  }
+
 
   const shouldDisableTime = (timeValue, view) => {
     const now = dayjs();
@@ -403,9 +434,45 @@ const Calculadora = () => {
     const pontosPorKg = Number(categoria.pontosPorKg) || 1; // Fallback seguro para 1
     return Math.round(quantidade * 50);
   };
+  if (formData.itens.length >= 10) {
+    (true);
+    setSnackbar({
+      open: true,
+      message: 'Você atingiu o limite de 10 itens por orçamento',
+      severity: 'warning',
+    }); return;
+  }
+
 
   return (
     <>
+
+      <Dialog
+        open={openloginModal}
+        onClose={handleCloseLoginModal}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <h2 className="alert-dialog-title" >
+          Login necessário!
+        </h2>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Para continuar com o orçamento, é necessário estar logado em sua conta.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+
+          <button onClick={handleCloseLoginModal} className='CANCEL_button_orc' >
+            Cancelar
+          </button>
+          <button onClick={handleRedirectToLogin} className='button_redirect_login' s>
+            Efetue Login
+          </button>
+
+        </DialogActions>
+      </Dialog>
+
       {currentStep === 7 ? (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -794,75 +861,89 @@ const Calculadora = () => {
                           </div>
                         )}
 
+                        {
+                          formData.itens.length >= 10 && (
+                            <div className="max-itens-warning">
+                              Você atingiu o limite máximo de 10 itens por orçamento.
+                            </div>
+
+                          )}
+
                         {/* Formulário para adicionar novo item */}
-                        <div className="novo-item-form">
-                          <div className="form-group-orcamento">
-                            <label>Categoria do Item</label>
-                            <select
-                              name="novaCategoria"
-                              value={formData.novaCategoria || ''}
-                              onChange={(e) => setFormData({ ...formData, novaCategoria: e.target.value })}
-                              required={formData.itens.length === 0} // Só é required quando não há itens
+                        {formData.itens.length < 10 && (
 
-                              className="form-control-orcamento"
+
+                          <div className="novo-item-form">
+                            <div className="form-group-orcamento">
+                              <label>Categoria do Item</label>
+                              <select
+                                name="novaCategoria"
+                                value={formData.novaCategoria || ''}
+                                onChange={(e) => setFormData({ ...formData, novaCategoria: e.target.value })}
+                                required={formData.itens.length === 0} // Só é required quando não há itens
+
+                                className="form-control-orcamento"
+                              >
+                                <option value="">Selecione uma categoria</option>
+                                {formData.categoriasDisponiveis
+                                  .filter(cat => cat.codStatus.trim() === 'ATIVO') // Mostra apenas categorias ativas
+                                  .map((categoria) => (
+                                    <option key={categoria.id} value={categoria.id} disabled={formData.itens.some(item => item.categoria.id === categoria.id)}>
+                                      {categoria.nome} (R$ {categoria.precoPorKg.toFixed(2)}/kg)
+                                      {formData.itens.some(item => item.categoria.id === categoria.id) && ' - Já adicionado'}
+
+                                    </option>
+                                  ))}
+                              </select>
+                            </div>
+
+                            <div className="form-group-orcamento">
+                              <label>Quantidade (kg)</label>
+                              <input
+                                type="number"
+                                name="novaQuantidade"
+                                min="0.1"
+                                step="0.1"
+                                value={formData.novaQuantidade || ''}
+                                onChange={(e) => setFormData({ ...formData, novaQuantidade: e.target.value })}
+                                required={formData.itens.length === 0} // Só é required quando não há itens
+
+                                placeholder="Ex: 2.5"
+                                className="form-control-orcamento"
+                              />
+                            </div>
+
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (formData.novaCategoria && formData.novaQuantidade) {
+                                  const categoriaSelecionada = formData.categoriasDisponiveis.find(
+                                    cat => cat.id == formData.novaCategoria
+                                  );
+                                  const novoItem = {
+                                    categoria: categoriaSelecionada,
+                                    quantidade: parseFloat(formData.novaQuantidade),
+                                    pontos: calcularPontos(categoriaSelecionada, parseFloat(formData.novaQuantidade))
+
+                                  };
+
+                                  setFormData({
+                                    ...formData,
+                                    itens: [...(formData.itens || []), novoItem],
+                                    novaCategoria: '',
+                                    novaQuantidade: ''
+                                  });
+                                }
+                              }}
+                              className="add-item-btn"
                             >
-                              <option value="">Selecione uma categoria</option>
-                              {formData.categoriasDisponiveis
-                                .filter(cat => cat.codStatus.trim() === 'ATIVO') // Mostra apenas categorias ativas
-                                .map((categoria) => (
-                                  <option key={categoria.id} value={categoria.id}>
-                                    {categoria.nome} (R$ {categoria.precoPorKg.toFixed(2)}/kg)
-                                  </option>
-                                ))}
-                            </select>
-                          </div>
-
-                          <div className="form-group-orcamento">
-                            <label>Quantidade (kg)</label>
-                            <input
-                              type="number"
-                              name="novaQuantidade"
-                              min="0.1"
-                              step="0.1"
-                              value={formData.novaQuantidade || ''}
-                              onChange={(e) => setFormData({ ...formData, novaQuantidade: e.target.value })}
-                              required={formData.itens.length === 0} // Só é required quando não há itens
-
-                              placeholder="Ex: 2.5"
-                              className="form-control-orcamento"
-                            />
-                          </div>
-
-                          <button
-                            type="button"
-                            onClick={() => {
-                              if (formData.novaCategoria && formData.novaQuantidade) {
-                                const categoriaSelecionada = formData.categoriasDisponiveis.find(
-                                  cat => cat.id == formData.novaCategoria
-                                );
-                                const novoItem = {
-                                  categoria: categoriaSelecionada,
-                                  quantidade: parseFloat(formData.novaQuantidade),
-                                  pontos: calcularPontos(categoriaSelecionada, parseFloat(formData.novaQuantidade))
-
-                                };
-
-                                setFormData({
-                                  ...formData,
-                                  itens: [...(formData.itens || []), novoItem],
-                                  novaCategoria: '',
-                                  novaQuantidade: ''
-                                });
-                              }
-                            }}
-                            className="add-item-btn"
-                          >
-                            Adicionar Item
-                          </button>
-                        </div>
+                              Adicionar Item
+                            </button>
+                          </div>)}
                       </div>
                     </fieldset>
                   )}
+
                   {currentStep === 6 && (
                     <fieldset className='fieldset-orcamento'>
                       <legend className='legend-orcamento-confirmar'>Confirme todos os seus dados!</legend>

@@ -386,7 +386,7 @@ useEffect(() => {
             />
             <IconButton sx={{
               position: 'absolute',
-              top: '20%',
+              top: '15%',
               right: '12px',
               zIndex: 1,
               color: '#555',
