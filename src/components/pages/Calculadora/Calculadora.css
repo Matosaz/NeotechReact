@@ -120,10 +120,7 @@ select.form-control-orcamento {
   background-color: #fff;
   cursor: pointer;
 }
-select option:disabled {
-  color: #999;
-  background-color: #f5f5f5;
-}
+
 
 
 textarea {

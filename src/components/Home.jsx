@@ -1,7 +1,7 @@
 
 import './Home.css'
 import RecVideo from '../assets/RecVideo.mp4'
-import Phoneimg from '../assets/Mockup1.png'
+import Phoneimg from '../assets/Mockup6.svg'
 import { UserContext } from './UserContext'
 import { motion } from 'framer-motion';
 import React, { useEffect, useState, useContext, } from 'react';
