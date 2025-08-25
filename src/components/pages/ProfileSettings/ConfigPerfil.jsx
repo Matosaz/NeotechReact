@@ -270,6 +270,7 @@ const ConfigPerfil = () => {
                 <input
                   type="text"
                   value={user?.nome}
+                  onChange={(event) => setUser({ ...user, nome: event.target.value })}
                   required
                   minLength="3"
                   placeholder="Digite seu nome completo"
