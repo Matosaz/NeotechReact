@@ -3,7 +3,7 @@ import './Calculadora.css';
 import { Radio, RadioGroup, FormControlLabel, Checkbox, TextField, Dialog, DialogTitle, DialogActions, DialogContentText, DialogContent } from '@mui/material';
 import { ArrowBack } from '@mui/icons-material';
 import { InputTel } from '../ProfileSettings/MaskedInput';
-import { UserContext } from "../../UserContext"; // Importando o UserContext
+import { UserContext } from "../../UserContext";
 import { InputCep } from '../ProfileSettings/MaskedInput';
 import { DesktopDatePicker, DesktopTimePicker } from '@mui/x-date-pickers';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -16,17 +16,17 @@ import 'dayjs/locale/pt-br';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import CircularProgress from '@mui/material/CircularProgress';
-import backgroundImage from '../../../assets/TesteCalculadora.png'; // ajuste o caminho conforme sua pasta
+import backgroundImage from '../../../assets/TesteCalculadora.png';
 import { Receipt } from 'lucide-react';
-
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
+
 const Calculadora = () => {
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'info' });
   const [loading, setLoading] = useState(false);
-  const { user, setUser } = useContext(UserContext); // Usando o contexto para pegar o usuário logado
+  const { user, setUser } = useContext(UserContext);
   const [countries, setCountries] = useState([]);
   const [formData, setFormData] = useState({
     id: user?.id || '',
@@ -51,13 +51,14 @@ const Calculadora = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [dateError, setDateError] = useState('');
   const [timeError, setTimeError] = useState('');
-  const [disableNextButton, setDisableNextButton] = useState(false); // Estado para desabilitar o botão de próximo
+  const [disableNextButton, setDisableNextButton] = useState(false);
   const [openloginModal, setOpenLoginModal] = useState(false);
-
-
+  const [cepLoading, setCepLoading] = useState(false);
+  const [pixData, setPixData] = useState(null);
+  const [copied, setCopied] = useState(false);
+  const [valorTotal, setValorTotal] = useState(0);
 
   useEffect(() => {
-    // Carrega categorias disponíveis
     const fetchCategorias = async () => {
       try {
         const response = await fetch('https://intellij-neotech.onrender.com/api/v1/categorias');
@@ -87,10 +88,17 @@ const Calculadora = () => {
     }
   }, [user]);
 
+  useEffect(() => {
+    // Calcular valor total sempre que os itens mudarem
+    const total = formData.itens.reduce((total, item) => 
+      total + (item.categoria.precoPorKg * item.quantidade), 0);
+    setValorTotal(total);
+  }, [formData.itens]);
 
   const Voltarorcamento = () => {
     window.history.back();
   }
+
   const getStepTitle = () => {
     switch (currentStep) {
       case 1:
@@ -104,21 +112,21 @@ const Calculadora = () => {
         );
       case 3:
         return 'Onde a coleta será realizada?';
-
       case 4:
         return 'Quando você almeja que a coleta ocorra?:';
       case 5:
         return 'Quais itens você deseja reciclar?';
       case 6:
-        return '';
+        return 'Verifique se as informações estão corretas!';
       case 7:
+        return 'Hora de finalizarmos o agendamento!';
+      case 8:
         return 'Agendamento Confirmado!';
       default:
         return 'Vamos começar!';
     }
   };
 
-  // Verifique se as informações estão corretas!'
   const getCountries = async () => {
     const response = await fetch('https://restcountries.com/v3.1/all');
     const data = await response.json();
@@ -148,20 +156,34 @@ const Calculadora = () => {
         cidade: '',
         estado: '',
         numero: '',
-
       }));
       return;
     }
     if (cleanedCep.length === 8) {
-    fetchCepData(cleanedCep);
-  }
+      fetchCepData(cleanedCep);
+    }
   };
 
   const fetchCepData = async (cep) => {
+    setCepLoading(true);
+    setDisableNextButton(true);
     try {
       const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
       const data = await response.json();
-      if (!data.erro) {
+      if (data.erro) {
+        setSnackbar({
+          open: true,
+          message: 'CEP não encontrado. Verifique o número digitado.',
+          severity: 'error'
+        });
+        setFormData((prev) => ({
+          ...prev,
+          endereco: '',
+          bairro: '',
+          cidade: '',
+          estado: '',
+        }));
+      } else {
         setFormData((prev) => ({
           ...prev,
           endereco: data.logradouro || '',
@@ -169,31 +191,62 @@ const Calculadora = () => {
           cidade: data.localidade || '',
           estado: data.uf || '',
         }));
+        setSnackbar({
+          open: true,
+          message: 'CEP encontrado com sucesso!',
+          severity: 'success'
+        });
       }
     } catch (error) {
       console.error("Erro ao buscar CEP", error);
+      setSnackbar({
+        open: true,
+        message: 'Erro ao consultar CEP. Tente novamente.',
+        severity: 'error'
+      });
+    } finally {
+      setCepLoading(false);
+      setDisableNextButton(false);
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (currentStep != 6) return; // ✅ Garante que só envia no passo 6
+    if (currentStep !== 6) return;
 
+    setLoading(true);
 
+    // Validar campos obrigatórios
+    if (!formData.metodoContato) {
+      setSnackbar({
+        open: true,
+        message: 'Por favor, selecione um método de contato',
+        severity: 'warning',
+      });
+      setLoading(false);
+      return;
+    }
 
-    setLoading(true)
+    if (formData.aceitaContato === null || formData.aceitaContato === undefined) {
+      setSnackbar({
+        open: true,
+        message: 'Por favor, informe se deseja receber contato',
+        severity: 'warning',
+      });
+      setLoading(false);
+      return;
+    }
+
     // Converter hora para formato com segundos
     const horaComSegundos = formData.horaColeta.includes(':')
       ? `${formData.horaColeta}:00`
       : `${formData.horaColeta.slice(0, 2)}:${formData.horaColeta.slice(2, 4)}:00`;
 
-
     const categoriasPayload = formData.itens.map(item => ({ id: item.categoria.id }));
 
     // Preparar dados no formato esperado pelo backend
     const requestData = {
-
       categorias: categoriasPayload,
       dataColeta: formData.dataColeta,
       horaColeta: horaComSegundos,
@@ -208,73 +261,87 @@ const Calculadora = () => {
       bairro: formData.bairro,
       cidade: formData.cidade,
       estado: formData.estado,
-
+      valorTotal: valorTotal
     };
 
-    console.log('Itens selecionados:', formData.itens);
-    console.log('Categorias para envio:', categoriasPayload);
-    // Verifica se todos os campos obrigatórios estão preenchidos
-
-
-    if (!formData.metodoContato) {
-      setSnackbar({
-        open: true,
-        message: 'Por favor, selecione um método de contato',
-        severity: 'warning',
-      }); return;
-    }
-    if (formData.aceitaContato === null || formData.aceitaContato === undefined) {
-      setSnackbar({
-        open: true,
-        message: 'Por favor, informe se deseja receber contato',
-        severity: 'warning',
-      }); return;
-    }
-
+    // Salvar no localStorage em vez de enviar imediatamente
+    localStorage.setItem("orcamento-pendente", JSON.stringify(requestData));
+    
+   // Gerar PIX usando endpoint correto
     try {
-      const response = await fetch("https://intellij-neotech.onrender.com/api/v1/orcamentos", {
-        method: 'POST',
+      const pixResponse = await fetch(`https://intellij-neotech.onrender.com/api/v1/orcamentos/teste-pix?valor=${valorTotal}`, {
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(requestData),
       });
 
-      const responseText = await response.text();
-      if (!response.ok) {
-        console.error('Erro na requisição:', responseText);
-        setSnackbar({
-          open: true,
-          message: (`Erro: ${responseText.message || 'Erro ao enviar dados'}`),
-          severity: 'error',
-        });;
-        setLoading(false);
-
-        return;
+      if (pixResponse.ok) {
+        const pixData = await pixResponse.json();
+        setPixData(pixData);
+        setCurrentStep(7);
+      } else {
+        const errorText = await pixResponse.text();
+        throw new Error(errorText || "Erro ao gerar PIX");
+    
       }
-
-      console.log('Dados recebidos:', responseText);
-      setCurrentStep(7); // Avança para a tela de sucesso
-
     } catch (error) {
-      console.error('Erro ao enviar os dados:', error);
+      console.error('Erro ao gerar PIX:', error);
       setSnackbar({
         open: true,
-        message: 'Erro ao enviar os dados para o servidor',
+        message: 'Erro ao gerar código PIX',
         severity: 'error',
       });
     } finally {
-      setLoading(false); // Desativa o loading independente do resultado
+      setLoading(false);
+    }
+  };
+
+  const copyToClipboard = (text) => {
+    navigator.clipboard.writeText(text).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  };
+
+  const handlePaymentConfirmed = async () => {
+    const orcamento = JSON.parse(localStorage.getItem("orcamento-pendente"));
+    if (!orcamento) return;
+
+    setLoading(true);
+    try {
+      const response = await fetch("https://intellij-neotech.onrender.com/api/v1/orcamentos", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(orcamento),
+      });
+
+      if (!response.ok) {
+        const text = await response.text();
+        throw new Error(text || "Erro ao enviar orçamento");
+      }
+
+      // Limpa cache e vai para sucesso
+      localStorage.removeItem("orcamento-pendente");
+      setCurrentStep(8);
+
+    } catch (err) {
+      console.error(err);
+      setSnackbar({
+        open: true,
+        message: "Erro ao confirmar pagamento",
+        severity: "error",
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
   const nextStep = () => {
     const form = document.querySelector('form');
 
-    if (currentStep < 7 && form.checkValidity()) {
-
+    if (currentStep < 8 && form.checkValidity()) {
       if (currentStep === 1 && !user) {
-
         setOpenLoginModal(true);
         return;
       }
@@ -291,13 +358,14 @@ const Calculadora = () => {
   const prevStep = () => {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
-
     }
   };
 
   const updateProgress = () => {
-    return (currentStep / 7) * 100;
-  }; const handleDateChange = (newDate) => {
+    return (currentStep / 8) * 100;
+  };
+
+  const handleDateChange = (newDate) => {
     const now = dayjs();
     const selectedDate = dayjs(newDate);
 
@@ -308,7 +376,6 @@ const Calculadora = () => {
       setDateError('Não é possível selecionar uma data passada');
       setDisableNextButton(true);
     } else {
-      // Se a data é válida (hoje ou futuro), verifica o horário
       if (formData.horaColeta) {
         const horaSemSegundos = formData.horaColeta.split(':').slice(0, 2).join(':');
         const selectedTime = dayjs(horaSemSegundos, 'HH:mm');
@@ -330,13 +397,11 @@ const Calculadora = () => {
     }));
   };
 
-  // E modifique a função validateDateTime para:
   const validateDateTime = () => {
     const now = dayjs();
     const selectedDate = dayjs(formData.dataColeta);
     const selectedTime = formData.horaColeta ? dayjs(formData.horaColeta, 'HH:mm') : null;
 
-    // Resetar erros
     setDateError('');
     setTimeError('');
     setDisableNextButton(false);
@@ -367,10 +432,10 @@ const Calculadora = () => {
 
     return true;
   };
+
   const shouldDisableDate = (date) => {
     return date.isBefore(dayjs(), 'day');
   };
-
 
   const handleTimeChange = (newTime) => {
     const now = dayjs();
@@ -409,7 +474,6 @@ const Calculadora = () => {
     window.location.href = '/Auth';
   }
 
-
   const shouldDisableTime = (timeValue, view) => {
     const now = dayjs();
     const selectedDate = dayjs(formData.dataColeta);
@@ -428,25 +492,44 @@ const Calculadora = () => {
 
     return false;
   };
+
   const calcularPontos = (categoria, quantidade) => {
     if (!categoria || typeof quantidade !== 'number' || quantidade <= 0) return 0;
-
-    const pontosPorKg = Number(categoria.pontosPorKg) || 1; // Fallback seguro para 1
+    const pontosPorKg = Number(categoria.pontosPorKg) || 1;
     return Math.round(quantidade * 50);
   };
-  if (formData.itens.length >= 10) {
-    (true);
-    setSnackbar({
-      open: true,
-      message: 'Você atingiu o limite de 10 itens por orçamento',
-      severity: 'warning',
-    }); return;
-  }
 
+  const addItem = () => {
+    if (formData.itens.length >= 10) {
+      setSnackbar({
+        open: true,
+        message: 'Você atingiu o limite de 10 itens por orçamento',
+        severity: 'warning',
+      });
+      return;
+    }
+
+    if (formData.novaCategoria && formData.novaQuantidade) {
+      const categoriaSelecionada = formData.categoriasDisponiveis.find(
+        cat => cat.id == formData.novaCategoria
+      );
+      const novoItem = {
+        categoria: categoriaSelecionada,
+        quantidade: parseFloat(formData.novaQuantidade),
+        pontos: calcularPontos(categoriaSelecionada, parseFloat(formData.novaQuantidade))
+      };
+
+      setFormData({
+        ...formData,
+        itens: [...formData.itens, novoItem],
+        novaCategoria: '',
+        novaQuantidade: ''
+      });
+    }
+  };
 
   return (
     <>
-
       <Dialog
         open={openloginModal}
         onClose={handleCloseLoginModal}
@@ -462,18 +545,16 @@ const Calculadora = () => {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-
           <button onClick={handleCloseLoginModal} className='CANCEL_button_orc' >
             Cancelar
           </button>
-          <button onClick={handleRedirectToLogin} className='button_redirect_login' s>
+          <button onClick={handleRedirectToLogin} className='button_redirect_login'>
             Efetue Login
           </button>
-
         </DialogActions>
       </Dialog>
 
-      {currentStep === 7 ? (
+      {currentStep === 8 ? (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -519,7 +600,6 @@ const Calculadora = () => {
                     {formData.endereco}, {formData.numero} - {formData.bairro}, {formData.cidade}/{formData.estado}
                   </span>
                 </div>
-
               </div>
 
               <p className="success-note">
@@ -545,16 +625,15 @@ const Calculadora = () => {
           </div>
         </motion.div>
       ) : (
-
         <section className='body-orcamento'>
-          <button type="button" onClick={Voltarorcamento} className='voltar-orcamento'> <ArrowBack fontSize="small" className="icon" />Retornar</button>
+          <button type="button" onClick={Voltarorcamento} className='voltar-orcamento'> 
+            <ArrowBack fontSize="small" className="icon" />Retornar
+          </button>
           <div className='upper-orcamento'>
-
             <h2 className='title-orcamento'>{getStepTitle()}</h2>
 
-            <div className="wrap-orcamento">
+            <div className="wrap-orcamento" style={{ maxWidth: currentStep === 6 ? "600px" : "800px"}}>
               <div className="col-lg-12-orcamento">
-                {/* Barra de Progresso */}
                 <div id="progress-orcamento">
                   <div
                     id="progress-complete-orcamento"
@@ -562,7 +641,6 @@ const Calculadora = () => {
                   ></div>
                 </div>
 
-                {/* Formulário Multi-step */}
                 <form className="form-orcamento" onSubmit={handleSubmit} noValidate>
                   {/* Passo 1: Account information */}
                   {currentStep === 1 && (
@@ -594,8 +672,6 @@ const Calculadora = () => {
                           required
                         />
                       </div>
-
-
                       <div className="form-group-orcamento">
                         <label>Telefone</label>
                         <InputTel
@@ -650,7 +726,6 @@ const Calculadora = () => {
                             label="Email"
                           />
                         </RadioGroup>
-
                       </div>
                       <div className="form-group-orcamento2">
                         <FormControlLabel
@@ -681,7 +756,6 @@ const Calculadora = () => {
                       <div className="form-group-orcamento">
                         <label>CEP</label>
                         <InputCep value={formData.cep} onChange={(e) => handleCepChange(e.target.value)} />
-
                       </div>
                       <div className="form-group-orcamento">
                         <label>Endereço</label>
@@ -741,8 +815,7 @@ const Calculadora = () => {
                     </fieldset>
                   )}
 
-
-                  {/* Passo 4: Estimativa de Orçamento */}
+                  {/* Passo 4: Data e Hora */}
                   {currentStep === 4 && (
                     <fieldset className='fieldset-orcamento'>
                       <legend className='legend-orcamento'>Escolha a data e horário para a coleta</legend>
@@ -752,15 +825,15 @@ const Calculadora = () => {
                           <DesktopDatePicker
                             value={formData.dataColeta ? dayjs(formData.dataColeta) : null}
                             onChange={handleDateChange}
-                            shouldDisableDate={shouldDisableDate}// Bloqueia datas anteriores
+                            shouldDisableDate={shouldDisableDate}
                             slotProps={{
                               textField: {
-                                fullWidth: true, margin: 'dense',
+                                fullWidth: true, 
+                                margin: 'dense',
                                 error: !!dateError,
                                 helperText: dateError,
                               }
                             }}
-
                             renderInput={(params) => (
                               <TextField
                                 {...params}
@@ -789,7 +862,9 @@ const Calculadora = () => {
                             slotProps={{
                               textField: {
                                 error: !!timeError,
-                                helperText: timeError, fullWidth: true, margin: 'dense',
+                                helperText: timeError, 
+                                fullWidth: true, 
+                                margin: 'dense',
                               }
                             }}
                             renderInput={(params) => (
@@ -815,12 +890,11 @@ const Calculadora = () => {
                     </fieldset>
                   )}
 
+                  {/* Passo 5: Itens para reciclagem */}
                   {currentStep === 5 && (
                     <fieldset className='fieldset-orcamento'>
                       <legend className='legend-orcamento'>Itens para Reciclagem</legend>
-
                       <div className="itens-container">
-                        {/* Lista de itens adicionados */}
                         {formData.itens && formData.itens.length > 0 && (
                           <div className="itens-list">
                             <h4>Itens adicionados:</h4>
@@ -857,22 +931,16 @@ const Calculadora = () => {
                                   total + (item.categoria.precoPorKg * item.quantidade), 0).toFixed(2)}
                               </span>
                             </div>
-
                           </div>
                         )}
 
-                        {
-                          formData.itens.length >= 10 && (
-                            <div className="max-itens-warning">
-                              Você atingiu o limite máximo de 10 itens por orçamento.
-                            </div>
+                        {formData.itens.length >= 10 && (
+                          <div className="max-itens-warning">
+                            Você atingiu o limite máximo de 10 itens por orçamento.
+                          </div>
+                        )}
 
-                          )}
-
-                        {/* Formulário para adicionar novo item */}
                         {formData.itens.length < 10 && (
-
-
                           <div className="novo-item-form">
                             <div className="form-group-orcamento">
                               <label>Categoria do Item</label>
@@ -880,18 +948,16 @@ const Calculadora = () => {
                                 name="novaCategoria"
                                 value={formData.novaCategoria || ''}
                                 onChange={(e) => setFormData({ ...formData, novaCategoria: e.target.value })}
-                                required={formData.itens.length === 0} // Só é required quando não há itens
-
+                                required={formData.itens.length === 0}
                                 className="form-control-orcamento"
                               >
                                 <option value="">Selecione uma categoria</option>
                                 {formData.categoriasDisponiveis
-                                  .filter(cat => cat.codStatus.trim() === 'ATIVO') // Mostra apenas categorias ativas
+                                  .filter(cat => cat.codStatus.trim() === 'ATIVO')
                                   .map((categoria) => (
                                     <option key={categoria.id} value={categoria.id} disabled={formData.itens.some(item => item.categoria.id === categoria.id)}>
                                       {categoria.nome} (R$ {categoria.precoPorKg.toFixed(2)}/kg)
                                       {formData.itens.some(item => item.categoria.id === categoria.id) && ' - Já adicionado'}
-
                                     </option>
                                   ))}
                               </select>
@@ -906,8 +972,7 @@ const Calculadora = () => {
                                 step="0.1"
                                 value={formData.novaQuantidade || ''}
                                 onChange={(e) => setFormData({ ...formData, novaQuantidade: e.target.value })}
-                                required={formData.itens.length === 0} // Só é required quando não há itens
-
+                                required={formData.itens.length === 0}
                                 placeholder="Ex: 2.5"
                                 className="form-control-orcamento"
                               />
@@ -915,42 +980,24 @@ const Calculadora = () => {
 
                             <button
                               type="button"
-                              onClick={() => {
-                                if (formData.novaCategoria && formData.novaQuantidade) {
-                                  const categoriaSelecionada = formData.categoriasDisponiveis.find(
-                                    cat => cat.id == formData.novaCategoria
-                                  );
-                                  const novoItem = {
-                                    categoria: categoriaSelecionada,
-                                    quantidade: parseFloat(formData.novaQuantidade),
-                                    pontos: calcularPontos(categoriaSelecionada, parseFloat(formData.novaQuantidade))
-
-                                  };
-
-                                  setFormData({
-                                    ...formData,
-                                    itens: [...(formData.itens || []), novoItem],
-                                    novaCategoria: '',
-                                    novaQuantidade: ''
-                                  });
-                                }
-                              }}
+                              onClick={addItem}
                               className="add-item-btn"
                             >
                               Adicionar Item
                             </button>
-                          </div>)}
+                          </div>
+                        )}
                       </div>
                     </fieldset>
                   )}
 
+                  {/* Passo 6: Confirmação */}
                   {currentStep === 6 && (
                     <fieldset className='fieldset-orcamento'>
                       <legend className='legend-orcamento-confirmar'>Confirme todos os seus dados!</legend>
                       <div className="receipt-container">
                         <div className="receipt-header">
-                          <div className="receipt-logo">
-                          </div>
+                          <div className="receipt-logo"></div>
                           <h3 className="receipt-title">Orçamento</h3>
                           <div className="receipt-meta">
                             <span>{new Date().toLocaleDateString('pt-BR')}</span>
@@ -1035,25 +1082,89 @@ const Calculadora = () => {
                       </div>
                     </fieldset>
                   )}
+                  {/* Passo 7: PIX */}
+                  {currentStep === 7 && (
+                    <fieldset className='fieldset-orcamento'>
+                      <legend className='legend-orcamento' style={{ textAlign: 'center', marginBottom: '-20px' }}>Pagamento via PIX</legend>
 
+                      <div className="pix-container">
+                        <div className="pix-header">
+                          <p>Escaneie o QR Code ou copie o código para pagar</p>
+                        </div>
+
+                        <div className="pix-content">
+                          <div className="pix-qr-code">
+                            {!pixData ? (
+                              <div className="loading-pix">
+                                <CircularProgress />
+                                <p>Gerando QR Code PIX...</p>
+                              </div>
+                            ) : (
+                              <img
+                                src={pixData.qrCodeDataUrl || pixData.qrCodeBase64}
+                                alt="QR Code PIX"
+                                className="qr-code-image"
+                                style={{ width: '250px', height: '250px' }}
+                              />)}
+                          </div>
+
+                          <div className="pix-details">
+                            <div className="pix-amount">
+                              <span className="label">Valor:</span>
+                              <span className="value">
+                                R$ {pixData?.valorTotal?.toFixed(2) || valorTotal.toFixed(2)}
+                              </span>
+                            </div>
+
+                            <div className="pix-code-section">
+                              <span className="label">Chave PIX:</span>
+                              <div className="copy-field">
+                                <span className="pix-code">{pixData?.chavePix}</span>
+                                <button
+                                  className={`copy-button ${copied ? 'copied' : ''}`}
+                                  onClick={() => copyToClipboard(pixData?.chavePix)}
+                                  title="Copiar chave PIX"
+                                >
+                                  {copied ? 'Copiado!' : 'Copiar'}
+                                </button>
+                              </div>
+                            </div>
+
+                            <div className="pix-instructions">
+                              <h4>Como pagar:</h4>
+                              <ol>
+                                <li>Abra o app do seu banco</li>
+                                <li>Selecione a opção PIX</li>
+                                <li>Escaneie o QR Code ou cole a chave PIX</li>
+                                <li>Confirme o pagamento</li>
+                              </ol>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="pix-footer">
+                          <p>Após o pagamento, clique em "Já efetuei o pagamento" para finalizar</p>
+                        </div>
+                      </div>
+                    </fieldset>
+                  )}
                   {/* Navegação */}
                   <div className="form-navigation">
-                    {currentStep > 1 && (
+                    {currentStep > 1 && currentStep !== 7 && (
                       <button type="button" className="buttonprevious" onClick={prevStep}>
                         Voltar
                       </button>
                     )}
                     {currentStep <= 5 ? (
-                      <button type="button" onClick={nextStep} className={disableNextButton ? "disabled-button" : "enabled-button"}
-                        disabled={disableNextButton}>
+                      <button type="button" onClick={nextStep} className={disableNextButton || cepLoading ? "disabled-button" : "enabled-button"}
+                        disabled={disableNextButton || cepLoading}>
                         Próximo
                       </button>
                     ) : currentStep === 6 ? (
                       <button
                         type="button"
-                        disabled={loading || disableNextButton}
-                        onClick={handleSubmit} // Explicitamente chama o handleSubmit no clique
-
+                        disabled={loading || disableNextButton || cepLoading}
+                        onClick={handleSubmit}
                         style={{ position: 'relative' }}
                       >
                         {loading ? (
@@ -1067,12 +1178,42 @@ const Calculadora = () => {
                                 marginLeft: '-12px',
                               }}
                             />
-                            <span style={{ opacity: 0 }}>Confirmar orçamento</span>
+                            <span style={{ opacity: 0 }}>Gerar PIX</span>
                           </>
                         ) : (
-                          'Confirmar orçamento'
+                          'Gerar PIX'
                         )}
                       </button>
+                    ) : currentStep === 7 ? (
+                      <>
+                        <button type="button" className="buttonprevious" onClick={() => setCurrentStep(6)}>
+                          Voltar
+                        </button>
+                        <button
+                          type="button"
+                          onClick={handlePaymentConfirmed}
+                          disabled={loading}
+                          className="enabled-button"
+                          style={{ position: 'relative' }}
+                        >
+                          {loading ? (
+                            <>
+                              <CircularProgress
+                                size={24}
+                                color="inherit"
+                                style={{
+                                  position: 'absolute',
+                                  left: '50%',
+                                  marginLeft: '-12px',
+                                }}
+                              />
+                              <span style={{ opacity: 0 }}>Já efetuei o pagamento</span>
+                            </>
+                          ) : (
+                            'Já efetuei o pagamento'
+                          )}
+                        </button>
+                      </>
                     ) : null}
                   </div>
                 </form>
