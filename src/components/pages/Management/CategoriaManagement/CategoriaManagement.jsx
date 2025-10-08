@@ -968,9 +968,9 @@ function CategoriaManagement() {
                                         {loadingRelatedOrcamentos && (
                                             <div style={{
                                                 position: 'absolute',
-                                                right: '10px',
-                                                top: '50%',
-                                                transform: 'translateY(-50%)'
+                                                right: '40%',
+                                                top: '90%',
+                                                transform: 'translateY(-50%)',
                                             }}>
                                                 <CircularProgress size={20} />
                                             </div>

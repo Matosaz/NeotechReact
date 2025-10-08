@@ -126,3 +126,103 @@
   width: 150px;
   padding: 12px;
 }
+
+.optional-divider {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  margin: 20px 0;
+  color: #666;
+  font-size: 14px;
+}
+
+.optional-divider::before,
+.optional-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #ddd;
+}
+
+.optional-divider::before {
+  margin-right: 15px;
+}
+
+.optional-divider::after {
+  margin-left: 15px;
+}
+
+.voltarperfil {
+  display: none;
+}
+
+.CustomButton {
+  display: none;
+}
+
+@media(max-width: 768px) {
+  .CustomButton {
+    display: flex !important;
+  }
+  
+  .profile-info {
+    margin-top: 60px;
+  }
+}
+
+@media(max-width: 768px) {
+  .sidebar2 {
+    display: none !important;
+  }
+
+
+  .CustomButton {
+    display: none;
+  }
+  
+  
+  
+  .profile-form {
+    grid-template-columns: 1fr;
+    width: 100%;
+    padding: 10px;
+    gap: 15px;
+  }
+  
+  .profile-container {
+    margin: 10px;
+    padding: 15px;
+  }
+  
+  .profile-main {
+    padding: 20px;
+  }
+  
+  .profile-card {
+    width: 100%;
+    flex-direction: column;
+    text-align: center;
+    padding: 15px;
+  }
+  
+  .profile-avatar {
+    margin-right: 0;
+    margin-bottom: 15px;
+  }
+  
+  .EditAvatarPic {
+    background-color: rgba(255, 245, 238, 0.445);
+    margin-left: 60px;
+    margin-top: -112px;
+  }
+  
+  .save-button-container {
+    padding-right: 0;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  
+  .profile-email-section {
+    padding-left: 10px;
+  }
+}

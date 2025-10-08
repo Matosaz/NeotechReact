@@ -13,6 +13,8 @@ import 'dayjs/locale/pt-br';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import CircularProgress from '@mui/material/CircularProgress';
+import CustomButton from '../../props/CustomButton';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 
 const ConfigPerfil = () => {
@@ -21,6 +23,7 @@ const ConfigPerfil = () => {
   });
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'info' });
   const [loading, setLoading] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const { user, setUser } = useContext(UserContext); // Usando o contexto para pegar o usuário logado
   const [Cpf, setCpf] = useState(user?.cpf || ""); // Preenchendo com dados existentes, caso haja
   const [telefone, settelefone] = useState(user?.telefone || "");
@@ -89,7 +92,7 @@ const ConfigPerfil = () => {
     setLoading(true);
 
     const updatedUser = {
-        ...user,
+      ...user,
       cpf: Cpf,
       telefone: telefone,
       cep: Cep,
@@ -105,24 +108,24 @@ const ConfigPerfil = () => {
     try {
       const formData = new FormData();
 
-       const userDataToSend = {
-      cpf: updatedUser.cpf,
-      telefone: updatedUser.telefone,
-      cep: updatedUser.cep,
-      endereco: updatedUser.endereco,
-      cidade: updatedUser.cidade,
-      bairro: updatedUser.bairro,
-      estado: updatedUser.estado,
-      data_nascimento: updatedUser.data_nascimento,
-      genero: updatedUser.genero,
-      nome: updatedUser.nome,
-      email: updatedUser.email,
-      admin: updatedUser.admin,
-      codStatus: updatedUser.codStatus
-    };
+      const userDataToSend = {
+        cpf: updatedUser.cpf,
+        telefone: updatedUser.telefone,
+        cep: updatedUser.cep,
+        endereco: updatedUser.endereco,
+        cidade: updatedUser.cidade,
+        bairro: updatedUser.bairro,
+        estado: updatedUser.estado,
+        data_nascimento: updatedUser.data_nascimento,
+        genero: updatedUser.genero,
+        nome: updatedUser.nome,
+        email: updatedUser.email,
+        admin: updatedUser.admin,
+        codStatus: updatedUser.codStatus
+      };
 
       formData.append("data", JSON.stringify(userDataToSend));
-      
+
       if (previewAvatar && avatar instanceof File) {
         formData.append("avatar", avatar);
       }
@@ -138,7 +141,7 @@ const ConfigPerfil = () => {
         throw new Error(`Falha ao atualizar perfil: ${errorData.message || "Erro desconhecido"}`);
       }
 
-  const updatedUserData = await response.json(); // Renomeado para manter consistência
+      const updatedUserData = await response.json(); // Renomeado para manter consistência
 
       // Cria um novo objeto com os dados atualizados
 
@@ -170,6 +173,15 @@ const ConfigPerfil = () => {
 
 
   useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  useEffect(() => {
     const fetchStates = async () => {
       try {
         const response = await fetch(
@@ -181,14 +193,14 @@ const ConfigPerfil = () => {
           code: state.sigla,
         }));
         statesFormatted.sort((a, b) => a.name.localeCompare(b.name));
-        setStates(statesFormatted); // Atualizando o estado de 'states'
+        setStates(statesFormatted);
       } catch (error) {
         console.error("Erro ao buscar estados:", error);
       }
     };
 
     fetchStates();
-  }, []); // Carrega os estados apenas uma vez
+  }, []);
 
   useEffect(() => {
     // Ao carregar o componente, verifique se o usuário tem um avatar no banco
@@ -239,14 +251,21 @@ const ConfigPerfil = () => {
     setCpf(cleanedCpf); // Agora o CPF é limpo de caracteres não numéricos
   };
 
-
+  const Retornar = () => {
+    window.history.back();
+  }
   return (
     <div className="profile-container">
       <div className="profile-content">
-        <div style={{ display: "flex" }}>
+        <div className="sidebar2" style={{ display: "flex" }}>
           <Sidebar2 />
         </div>
         <main className="profile-main">
+          {isMobile && (
+            <CustomButton className="CustomButton" top="35px" left="35px" onClick={() => Retornar()}>
+              Retornar
+            </CustomButton>
+          )}
           <section className="profile-info">
             <div className="profile-card">
               <input className="AvatarInput" type="file" accept="image/*" ref={fileInputRef} onChange={handleAvatarChange} />
@@ -328,6 +347,18 @@ const ConfigPerfil = () => {
                   required
                   pattern="\d{3}\.\d{3}\.\d{3}-\d{2}" // Validação para o formato XXX.XXX.XXX-XX
                   title="CPF deve estar no formato XXX.XXX.XXX-XX"
+                />
+              </div>
+              <div className="optional-divider">
+                Opcional
+              </div>
+              <div className="profile-form-group">
+                <label>CEP</label>
+                <InputCep
+                  value={Cep}
+                  onChange={(event) => handleCepChange(event.target.value)}
+                  pattern="\d{5}-\d{3}"
+                  title="CEP deve estar no formato XXXXX-XXX"
                 />
               </div>
               <div className="profile-form-group">

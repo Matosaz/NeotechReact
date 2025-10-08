@@ -42,50 +42,166 @@
     width: 100%;
 }
 
-.sidebar a{
-    color: #121212;
-    height: 10%;
-    font-size: 20px;
-    text-decoration: none;
-    display: flex;
-    padding-top: 60px;
-    margin-left:20px ;
+/* Menu Hambúrguer Minimalista */
+.Menu{
+  scale: 2;
+  margin-right: -10px;
+  margin-left: 10px;
+  transition: transform 0.2s ease;
 }
+
+.Menu:hover {
+  transform: scale(1.1);
+}
+
+.botaomenu{
+    display: none;
+    padding: 8px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.botaomenu:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Sidebar Minimalista */
 .sidebar{
     position: fixed;
     top: 0;
     right: 0;
     height: 100vh;
-    width: 250px;
-    z-index: 999;
-    background-color: #fafafa;
-    box-shadow: -20px 2px 20px rgba(12, 12, 12, 0.105);
+    width: 280px;
+    z-index: 1300;
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: -8px 0 24px rgba(0, 0, 0, 0.12);
     display: none;
     flex-direction: column;
-    align-items: flex-start;
-    justify-content: flex-start;
+    backdrop-filter: blur(20px);
+    border-radius: 16px 0 0 16px;
+    transform: translateX(100%);
+    transition: transform 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
-.Menu{
-  scale: 2;
-  margin-right: -10px;
-  margin-left: 10px;
+
+.sidebar.open {
+    display: flex;
+    transform: translateX(0);
+}
+
+.sidebar-header {
+    width: 100%;
+    padding: 16px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.sidebar-logo {
+    font-size: 18px;
+    font-weight: 600;
+    color: #2E7D32;
 }
 
 .Fechar{
-    scale: 1.7;
-    align-items: end;}
-
-.botaomenu{
-    display: none;
+    scale: 1.2;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: #666;
 }
 
+.Fechar:hover {
+    color: #2E7D32;
+    transform: rotate(90deg);
+}
+
+.sidebar-content {
+    flex: 1;
+    padding: 8px;
+    overflow-y: auto;
+}
+
+.sidebar-menu-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    margin-bottom: 4px;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+    font-size: 15px;
+    min-height: 44px;
+    transition: all 0.2s ease;
+}
+
+.sidebar-menu-item:hover {
+    background: rgba(46, 125, 50, 0.08);
+}
+
+.sidebar-menu-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 12px;
+    color: #2E7D32;
+}
+
+.sidebar-user-section {
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+    padding-top: 8px;
+}
+
+.sidebar-user-info {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    gap: 12px;
+}
+
+.sidebar-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #2E7D32;
+    color: #fafafa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 14px;
+}
+
+.sidebar-user-name {
+    font-weight: 500;
+    color: #333;
+    font-size: 14px;
+}
+
+.sidebar-login-btn {
+    width: 100%;
+    padding: 12px;
+    background: #2E7D32;
+    color: #fafafa;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.sidebar-login-btn:hover {
+    background: #1B5E20;
+}
+
+/* Menu Desktop */
 .sub-menu-wrap{
     position: absolute;
     top: 48px;
     right: -80px;
     width: 350px;
     border-bottom-left-radius: 15px;
-  }
+}
 
 .sub-menu{
     background-color: #fafafa;
@@ -111,6 +227,7 @@
   background: #90ca96;
   margin: 15px 10px;
 }
+
 .sub-menu-link{
   display: flex;
   align-items: center;
@@ -126,22 +243,13 @@
     transition: all 0.1s ease-in-out;
     letter-spacing: 0.2px;
 }
-.sub-menu-link img{
-  width: 40px;
-  background-color: #e9e9e9;
-  border-radius: 50%;
-  margin-left: -80px;
-
-}
-
-
 
 .sub-menu-link:hover p{
     padding: 4px 2px;
     font-weight: 600;
     scale: 1.02;
-
 }
+
 .sub-menu-link svg {
     width: 40px;
   height: 40px;
@@ -150,8 +258,9 @@
   padding: 5px;
   margin-left: -80px;
   fill: #ffffff;
-  }
-  
+}
+
+/* Media Queries */
 @media(min-width:2380px){
     .header{
     align-items: center;
@@ -169,15 +278,21 @@
     }
 }
 
-@media(max-width: 460px){
+@media(max-width: 480px){
     .sidebar{
-        width: 100%;
+        width: 100vw;
+        border-radius: 0;
     }
 }
 
 @media(max-width: 470px){
     .header{
-        align-items: f;
-        align-content: flex-start;
+        padding: 15px 20px;
+            background:linear-gradient(to left, transparent 0.10%, #90ca96 90%);
+
+    }
+    
+    .logo{
+        font-size: 28px;
     }
 }

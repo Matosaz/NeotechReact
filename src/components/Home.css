@@ -92,6 +92,10 @@ body {
   margin-top: -400px;
 }
 
+.HandMobile {
+  display: none;
+}
+
 .Serviço {
   height: 1040px;
   background-color: bisque;
@@ -502,6 +506,19 @@ background: radial-gradient(circle, rgb(195, 236, 153) 1%, rgb(187, 226, 200) 10
 
 /*Fim Orçamento*/
 
+@media(max-width: 768px) {
+  .TxtHeroBoasVindas {
+    animation: none;
+    width: auto;
+    overflow: visible;
+  }
+  
+  .TxtHeroBoasVindas::after {
+    display: none;
+  }
+  
+}
+
 /* MEDIA QUERY PARA TELAS INFERIORES A 100% DO ZOOM DA PÁGINA */
 
 
@@ -877,12 +894,14 @@ background: radial-gradient(circle, rgb(195, 236, 153) 1%, rgb(187, 226, 200) 10
   }
 
   .TxtHero2 {
-    font-size: 45px;
+    font-size: 2rem;
+    padding-bottom: 20px;
   }
 
   .TxtHeroBoasVindas {
-    scale: 0.9;
     padding-top: 5px;
+    font-size: 1.8rem;
+    max-width: 500px;
   }
 
   .contentTL p {
@@ -1005,9 +1024,22 @@ background: radial-gradient(circle, rgb(195, 236, 153) 1%, rgb(187, 226, 200) 10
   
 }
 
-@media(max-width: 445px) and (min-width:0) {
+@media(max-width: 443px) and (min-width:0) {
+  html, body {
+    overflow-x: hidden;
+  }
 
+  .HandMobile {
+    display: block;
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+  }
   .Hero {
-    background: url('/src/assets/Backgroundheromobile.png') no-repeat center / cover;
+    background: url('/src/assets/Backgroundheromobile.svg') no-repeat center / cover;
+    width: 100%;
+   overflow-x: hidden;
   }
 }

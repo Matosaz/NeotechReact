@@ -248,6 +248,7 @@ function UserManagement() {
   const handleInputChange = (event) => {
     const { name, value, type, checked } = event.target;
 
+
     // Limpar mensagem de erro quando o usuário começa a digitar
     if (errorMessage) {
       setErrorMessage('');
@@ -257,6 +258,12 @@ function UserManagement() {
       ...prevState,
       [name]: type === 'checkbox' ? checked : value
     }));
+    if (name === "ativo" && value === false) {
+      setNewUser(prevState => ({
+        ...prevState,
+        administrador: false
+      }));
+    }
   };
 
   // Função para validar o formulário
@@ -289,9 +296,9 @@ function UserManagement() {
     setErrorMessage('');
     return true;
   };
-useEffect(() => {
-  console.log('Estado atual do newUser:', newUser);
-}, [newUser]);
+  useEffect(() => {
+    console.log('Estado atual do newUser:', newUser);
+  }, [newUser]);
   const handleAddUser = async () => {
     if (!validateForm()) return;
 
@@ -307,7 +314,7 @@ useEffect(() => {
           nome: newUser.nome.trim(),
           email: newUser.email.trim(),
           senha: newUser.senha,
-          admin: newUser.administrador,
+          admin: newUser.ativo ? newUser.administrador : false, // <-- Aqui
           codStatus: newUser.ativo ? 'ATIVO' : 'INATIVO'
         }),
       });
@@ -520,10 +527,7 @@ useEffect(() => {
       header: 'Status',
       size: 100,
       filterVariant: 'select',
-      filterSelectOptions: [
-        { text: 'Ativo', value: 'ATIVO' },
-        { text: 'Inativo', value: 'INATIVO' }
-      ],
+      filterSelectOptions: ['ATIVO', 'INATIVO'],
       Cell: ({ cell }) => {
         const status = cell.getValue();
         const isActive = status === 'ATIVO';
@@ -540,7 +544,6 @@ useEffect(() => {
               display: 'inline-block',
               minWidth: '60px',
               textAlign: 'center',
-              transition: 'all 0.2s ease',
               boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
             }}
           >
@@ -548,12 +551,6 @@ useEffect(() => {
           </span>
         );
       },
-      muiTableHeadCellProps: {
-        sx: {
-          color: '#555',
-          fontWeight: 'bold',
-        }
-      }
     },
     {
       accessorKey: 'admin',
@@ -649,7 +646,7 @@ useEffect(() => {
         </div>
       )
     }
-  ], []);
+  ], [users]);
   ;
 
   return (
@@ -921,7 +918,6 @@ useEffect(() => {
                             target: {
                               name: 'ativo',
                               value: e.target.value === 'true',
-                              type: 'checkbox' // Trataremos como checkbox para manter a lógica existente
                             }
                           });
                         }} className="status-user-select"

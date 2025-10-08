@@ -2,6 +2,8 @@
 import './Home.css'
 import RecVideo from '../assets/RecVideo.mp4'
 import Phoneimg from '../assets/Mockup6.svg'
+import HandMobile from '../assets/hand.png'
+
 import { UserContext } from './UserContext'
 import { motion } from 'framer-motion';
 import React, { useEffect, useState, useContext, } from 'react';
@@ -141,6 +143,8 @@ const Home = () => {
             <h3 className='TxtHeroBoasVindas'>Bem vindo(a), {firstName || +"!"}</h3>
           </div>
           <img src={Phoneimg} className='Phoneimg' />
+                  <img src={HandMobile} className='HandMobile' />
+
         </div>
       </motion.section>
 
